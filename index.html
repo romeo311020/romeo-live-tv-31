@@ -2,98 +2,176 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>𝑅𝑂𝑀𝐸𝑂 𝐿𝐼𝑉𝐸 𝑇𝑉 - أفضل موقع لبث القنوات المباشرة</title>
+<title>ROMEO LIVE TV - أفضل موقع للبث المباشر</title>
 <meta name="description" content="ROMEO LIVE TV - تابع جميع القنوات المباشرة، الرياضة والمسلسلات بسهولة وسرعة.">
 <meta name="keywords" content="ROMEO LIVE TV, بث مباشر, قنوات, مسلسلات, رياضة">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   body {
     margin: 0;
     font-family: Arial, sans-serif;
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* العنوان فوق شوي */
-    background: linear-gradient(135deg, #0b1a3d, #1f2a5b);
-    color: white;
-    overflow: hidden;
+    align-items: flex-start;
     text-align: center;
-    padding-top: 80px; /* مسافة من فوق */
+    padding-top: 100px;
+    /* خلفية متدرجة متحركة */
+    background: linear-gradient(270deg, #4b3a00, #b8860b, #ffd700, #8b6508);
+    background-size: 600% 600%;
+    animation: gradientMove 15s ease infinite;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* شعاع ضوء من تحت */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at bottom center, rgba(255, 215, 0, 0.15), transparent 70%);
+    animation: riseLight 6s infinite alternate ease-in-out;
+    z-index: -1;
+  }
+
+  @keyframes riseLight {
+    0% { transform: scale(1) translateY(50px); opacity: 0.3; }
+    50% { transform: scale(1.2) translateY(0px); opacity: 0.5; }
+    100% { transform: scale(1) translateY(-30px); opacity: 0.3; }
   }
 
   h1 {
-    font-size: 3.5rem;
-    margin-bottom: 25px;
-    color: #ffd700; /* ذهبي فاتح */
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 2px 2px 8px rgba(0,0,0,0.8);
+    font-size: 3.8rem;
+    margin-bottom: 20px;
+    color: white;
+    text-shadow: 0 0 15px #fff, 0 0 30px #ffd700, 2px 2px 15px rgba(0,0,0,0.8);
+    animation: shine 3s linear infinite;
   }
 
-  p {
-    font-size: 1.3rem;
-    margin-bottom: 50px;
-    color: #ddd;
+  @keyframes shine {
+    0% { text-shadow: 0 0 10px #fff, 0 0 20px #ffd700; }
+    50% { text-shadow: 0 0 20px #fff, 0 0 40px #ffd700; }
+    100% { text-shadow: 0 0 10px #fff, 0 0 20px #ffd700; }
+  }
+
+  .prompt-box {
+    background: rgba(255, 215, 0, 0.08);
+    border-radius: 12px;
+    padding: 25px 30px;
+    margin-bottom: 40px;
+    color: #fff;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prompt-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    animation: moveLight 6s infinite alternate ease-in-out;
+    z-index: 0;
+  }
+
+  .prompt-box span {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes moveLight {
+    0% { transform: scale(1) translateY(20px); opacity: 0.3; }
+    50% { transform: scale(1.2) translateY(0px); opacity: 0.5; }
+    100% { transform: scale(1) translateY(-20px); opacity: 0.3; }
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
 
   .btn {
-    padding: 20px 60px;
-    font-size: 1.6rem;
+    padding: 18px 60px;
+    font-size: 1.5rem;
     color: #fff;
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     cursor: pointer;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    margin: 10px;
+    justify-content: center;
     font-weight: bold;
-    background: linear-gradient(45deg, #b8860b, #8b6508); /* ذهبي داكن */
-    box-shadow: 0 8px 25px rgba(184,134,11,0.6), 0 0 15px rgba(184,134,11,0.4) inset;
-    transition: all 0.3s ease;
-    animation: glow 2s infinite alternate;
+    background: linear-gradient(145deg, #b8860b, #8b6508);
+    box-shadow: 0 6px 20px rgba(184,134,11,0.5), 0 0 10px rgba(184,134,11,0.3) inset;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    transform: scale(0);
+    transition: all 0.5s ease;
+    z-index: 0;
+  }
+
+  .btn:hover::before {
+    transform: scale(1);
+  }
+
+  .btn span {
+    position: relative;
+    z-index: 1;
   }
 
   .btn:hover {
     transform: scale(1.15);
-    box-shadow: 0 12px 35px rgba(184,134,11,0.9), 0 0 25px rgba(184,134,11,0.6) inset;
+    background: linear-gradient(145deg, #ffd700, #b8860b);
+    box-shadow: 0 10px 35px rgba(255,215,0,0.9), 0 0 25px rgba(184,134,11,0.6) inset;
   }
 
-  @keyframes glow {
-    0% {
-      box-shadow: 0 8px 25px rgba(184,134,11,0.6), 0 0 15px rgba(184,134,11,0.4) inset;
-    }
-    100% {
-      box-shadow: 0 15px 40px rgba(184,134,11,0.9), 0 0 25px rgba(184,134,11,0.7) inset;
-    }
+  @media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    .prompt-box { font-size: 1rem; padding: 15px 20px; margin-bottom: 30px; }
+    .btn { font-size: 1.3rem; padding: 15px 40px; }
   }
 
-  @keyframes moveBg {
-    0% {background-position: 0 0;}
-    100% {background-position: 100% 100%;}
-  }
-
-  body::before {
-    content: '';
-    position: absolute;
-    top:0; left:0; width:100%; height:100%;
-    background: url('https://images.unsplash.com/photo-1593642532973-d31b6557fa68?auto=format&fit=crop&w=1350&q=80') no-repeat center center;
-    background-size: cover;
-    opacity: 0.15;
-    z-index: -1;
-    animation: moveBg 60s linear infinite;
-  }
 </style>
 </head>
 <body>
   <div>
-    <h1>𝑅𝑂𝑀𝐸𝑂 𝐿𝐼𝑉𝐸 𝑇𝑉</h1>
-    <p>أفضل موقع لمتابعة القنوات المباشرة، الرياضة والمسلسلات.</p>
-    <a href="https://romeo-live-online.lovable.app/dashboard" class="btn">
-      📺 دخول الموقع
-    </a>
-    <a href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/" class="btn">
-      📥 تحميل التطبيق
-    </a>
+    <h1>ROMEO LIVE TV</h1>
+
+    <div class="prompt-box">
+      <span>تابع جميع القنوات المباشرة والمسلسلات والرياضة بسهولة وسرعة على موقع ROMEO LIVE TV.</span>
+    </div>
+
+    <div class="button-container">
+      <a href="https://romeo-live-online.lovable.app/dashboard" class="btn"><span>دخول</span></a>
+      <a href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/" class="btn"><span>تحميل تطبيق</span></a>
+    </div>
   </div>
 </body>
 </html>
