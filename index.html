@@ -2,179 +2,186 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>ROMEO LIVE TV - أفضل موقع للبث المباشر</title>
-<meta name="description" content="ROMEO LIVE TV - تابع جميع القنوات المباشرة، الرياضة والمسلسلات بسهولة وسرعة.">
-<meta name="keywords" content="ROMEO LIVE TV, بث مباشر, قنوات, مسلسلات, رياضة">
+<title>ROMEO LIVE TV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-  @keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
 
-  @keyframes waveGold {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 0%; }
-    100% { background-position: 0% 0%; }
-  }
+body{
+margin:0;
+font-family:Arial;
+background:#6b0000;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+padding-top:100px;
+text-align:center;
+height:100vh;
+overflow:hidden;
+position:relative;
+}
 
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    text-align: center;
-    padding-top: 100px;
-    background: linear-gradient(270deg, #660000, #990000, #cc0000, #660000);
-    background-size: 600% 600%;
-    animation: gradientMove 20s ease infinite;
-    overflow: hidden;
-    position: relative;
-  }
+/* ضوء أصفر من تحت */
 
-  /* موجات ذهبية خفيفة */
-  body::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(45deg, rgba(255,215,0,0.05) 0px, rgba(255,215,0,0.05) 2px, transparent 2px, transparent 10px);
-    animation: waveGold 10s linear infinite;
-    z-index: 0;
-  }
+body::before{
+content:"";
+position:absolute;
+bottom:-120px;
+left:0;
+width:100%;
+height:420px;
+background:radial-gradient(circle,#ffd70066,transparent 70%);
+animation:lightmove 6s infinite alternate;
+}
 
-  /* شعاع الضوء الأصفر من تحت */
-  .light-ray {
-    position: absolute;
-    bottom: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at bottom center, rgba(255, 255, 0, 0.15), transparent 70%);
-    animation: riseLight 6s infinite alternate ease-in-out;
-    z-index: 0;
-  }
+@keyframes lightmove{
+from{transform:scale(1)}
+to{transform:scale(1.4)}
+}
 
-  @keyframes riseLight {
-    0% { transform: scale(1) translateY(50px); opacity: 0.3; }
-    50% { transform: scale(1.2) translateY(0px); opacity: 0.5; }
-    100% { transform: scale(1) translateY(-30px); opacity: 0.3; }
-  }
+/* العنوان */
 
-  h1 {
-    font-size: 3.8rem;
-    margin-bottom: 20px;
-    color: white;
-    text-shadow: 0 0 15px #fff, 0 0 30px #ffff99, 2px 2px 15px rgba(0,0,0,0.8);
-    animation: shine 3s linear infinite;
-  }
+h1{
+color:white;
+font-size:3rem;
+margin-bottom:25px;
+text-shadow:
+0 0 10px #fff,
+0 0 20px #ffd700,
+0 0 40px #ffd700;
+}
 
-  @keyframes shine {
-    0% { text-shadow: 0 0 10px #fff, 0 0 20px #ffff99; }
-    50% { text-shadow: 0 0 20px #fff, 0 0 40px #ffff99; }
-    100% { text-shadow: 0 0 10px #fff, 0 0 20px #ffff99; }
-  }
+/* مربع الوصف */
 
-  .prompt-box {
-    background: rgba(255, 255, 0, 0.08);
-    border-radius: 12px;
-    padding: 25px 30px;
-    margin-bottom: 40px;
-    color: #fff;
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    position: relative;
-    overflow: hidden;
-  }
+.desc{
+max-width:600px;
+margin:auto;
+padding:20px;
+background:rgba(255,255,255,0.08);
+border-radius:12px;
+color:white;
+font-size:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+margin-bottom:50px;
+}
 
-  .prompt-box::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-    animation: moveLight 6s infinite alternate ease-in-out;
-    z-index: 0;
-  }
+/* الأزرار */
 
-  .prompt-box span { position: relative; z-index: 1; }
+.buttons{
+display:flex;
+flex-direction:column;
+gap:30px;
+align-items:center;
+}
 
-  @keyframes moveLight {
-    0% { transform: scale(1) translateY(20px); opacity: 0.3; }
-    50% { transform: scale(1.2) translateY(0px); opacity: 0.5; }
-    100% { transform: scale(1) translateY(-20px); opacity: 0.3; }
-  }
+.btn{
+padding:18px 65px;
+font-size:21px;
+color:white;
+text-decoration:none;
+border-radius:12px;
+font-weight:bold;
+background:linear-gradient(145deg,#caa300,#8b6a00);
+box-shadow:
+0 6px 20px rgba(0,0,0,0.6),
+0 0 20px #ffd70066;
+transition:0.3s;
+}
 
-  .button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    position: relative;
-    z-index: 1;
-  }
+.btn:hover{
+transform:scale(1.1);
+box-shadow:0 0 30px #ffd700;
+}
 
-  .btn {
-    padding: 18px 60px;
-    font-size: 1.5rem;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    background: linear-gradient(145deg, #cc9900, #996600);
-    box-shadow: 0 6px 20px rgba(204,153,0,0.5), 0 0 10px rgba(204,153,0,0.3) inset, 0 0 20px rgba(255,255,0,0.5);
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-    animation: btnGlow 2s infinite alternate;
-  }
+/* زر واتساب العائم */
 
-  .btn span { position: relative; z-index: 1; }
+.whatsapp{
+position:fixed;
+bottom:25px;
+right:25px;
+width:65px;
+height:65px;
+background:#25D366;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+transition:0.3s;
+}
 
-  @keyframes btnGlow {
-    0% { box-shadow: 0 6px 20px rgba(204,153,0,0.5), 0 0 10px rgba(204,153,0,0.3) inset, 0 0 20px rgba(255,255,0,0.4); }
-    50% { box-shadow: 0 6px 25px rgba(204,153,0,0.6), 0 0 15px rgba(204,153,0,0.4) inset, 0 0 30px rgba(255,255,0,0.6); }
-    100% { box-shadow: 0 6px 20px rgba(204,153,0,0.5), 0 0 10px rgba(204,153,0,0.3) inset, 0 0 20px rgba(255,255,0,0.5); }
-  }
+.whatsapp img{
+width:35px;
+}
 
-  .btn:hover {
-    transform: scale(1.15);
-    background: linear-gradient(145deg, #ffff00, #cc9900);
-    box-shadow: 0 10px 35px rgba(255,255,0,0.9), 0 0 25px rgba(204,153,0,0.6) inset;
-  }
+.whatsapp:hover{
+transform:scale(1.1);
+}
 
-  @media (max-width: 768px) {
-    h1 { font-size: 2.5rem; }
-    .prompt-box { font-size: 1rem; padding: 15px 20px; margin-bottom: 30px; }
-    .btn { font-size: 1.3rem; padding: 15px 40px; }
-  }
+/* النص أسفل الموقع */
+
+.footer{
+position:fixed;
+bottom:10px;
+left:0;
+right:0;
+text-align:center;
+font-size:16px;
+color:white;
+text-shadow:
+0 0 5px #fff,
+0 0 10px #ffd700;
+}
+
+@media(max-width:768px){
+
+h1{font-size:2.2rem}
+
+.btn{
+font-size:18px;
+padding:15px 50px
+}
+
+}
 
 </style>
 </head>
+
 <body>
-  <div>
-    <h1>ROMEO LIVE TV</h1>
 
-    <div class="prompt-box">
-      <span>تابع جميع القنوات المباشرة والمسلسلات والرياضة بسهولة وسرعة على موقع ROMEO LIVE TV.</span>
-    </div>
+<div>
 
-    <div class="button-container">
-      <a href="https://romeo-live-online.lovable.app/dashboard" class="btn"><span>دخول</span></a>
-      <a href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/" class="btn"><span>تحميل تطبيق</span></a>
-    </div>
-  </div>
+<h1>ROMEO LIVE TV</h1>
 
-  <!-- شعاع الضوء الأصفر -->
-  <div class="light-ray"></div>
+<div class="desc">
+تابع القنوات المباشرة والمسلسلات والرياضة بجودة عالية وسرعة ممتازة عبر موقع ROMEO LIVE TV.
+</div>
+
+<div class="buttons">
+
+<a class="btn" href="https://romeo-live-online.lovable.app/dashboard">
+🎬 دخول الموقع
+</a>
+
+<a class="btn" href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/">
+📱 تحميل التطبيق
+</a>
+
+</div>
+
+</div>
+
+<!-- زر واتساب -->
+
+<a class="whatsapp" href="https://api.whatsapp.com/send?phone=201286716976" target="_blank">
+<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+</a>
+
+<!-- النص أسفل الصفحة -->
+
+<div class="footer">
+روماني جرجس ¶ كيرلس عياد
+</div>
+
 </body>
 </html>
