@@ -24,6 +24,7 @@ body{
 @keyframes bgShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 .particle{position:absolute;width:4px;height:4px;background:white;border-radius:50%;opacity:0.6;box-shadow:0 0 6px #00bfff;animation:moveParticle linear infinite;}
 @keyframes moveParticle{0%{transform: translate(0,0);}100%{transform: translate(50px, -100vh);}}
+
 .container{width:100%;max-width:380px;background:rgba(0,0,0,0.45);padding:25px 18px;border-radius:15px;box-shadow:0 0 25px rgba(0,0,0,0.6);backdrop-filter:blur(7px);position:relative;z-index:1;}
 .logo{width:110px;height:110px;margin:0 auto 15px auto;background:radial-gradient(circle,#ffcc00,#b38f00);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:32px;font-weight:bold;color:#0a0f26;animation: logoGlow 2s infinite alternate;}
 @keyframes logoGlow{0%{box-shadow:0 0 10px #ffcc00;}50%{box-shadow:0 0 20px #ffcc00;}100%{box-shadow:0 0 10px #ffcc00;}}
@@ -56,10 +57,15 @@ h1{font-size:30px;margin-bottom:12px;color:#ffcf41;}
   box-shadow:0 0 15px #ffcf41;
   transition:0.3s;
 }
-#skipBtn:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 25px #ffcf41,0 0 35px #ffcf41;
+#skipBtn:hover{transform:scale(1.1);box-shadow:0 0 25px #ffcf41,0 0 35px #ffcf41;}
+#soundBtn{
+  position:absolute;top:50px;left:50%;transform:translateX(-50%);
+  padding:6px 14px;background:#0a0f26;color:#ffcf41;font-weight:bold;border:none;border-radius:50px;cursor:pointer;font-size:16px;
+  display:block;
+  box-shadow:0 0 10px #ffcf41;
+  transition:0.3s;
 }
+#soundBtn:hover{transform:scale(1.1);box-shadow:0 0 20px #ffcf41;}
 </style>
 </head>
 
@@ -69,9 +75,9 @@ h1{font-size:30px;margin-bottom:12px;color:#ffcf41;}
 <div class="container">
   <div class="logo">R</div>
   <h1>ROMEO LIVE TV</h1>
-  <div class="desc" ROMEO LIVE TV</div>
+  <div class="desc">مرحباً بك في عالم ROMEO LIVE TV</div>
 
-  <div class="btn btn-login" onclick="showAd('https://romeo-live-online.lovable.app/dashboard')">🔥👨🏾‍💻دخول</div>
+  <div class="btn btn-login" onclick="showAd('https://romeo-live-online.lovable.app/dashboard')">دخول الموقع</div>
   <a href="https://romeo311020.github.io/romeo-music-" class="btn btn-music">الأغاني 🔥</a>
   <a href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/" class="btn btn-download">تحميل التطبيق 📱</a>
   <div class="footer">Powered by ROMEO LIVE TV</div>
@@ -84,11 +90,12 @@ h1{font-size:30px;margin-bottom:12px;color:#ffcf41;}
 <!-- إعلان الفيديو -->
 <div id="adPopup">
   <div class="ad-box">
-    <video id="adVideo" autoplay muted>
+    <video id="adVideo" autoplay playsinline>
       <source src="https://raw.githubusercontent.com/romeo311020/romeo-live-tv-31/e1e58aa151973e1cdf083810606414fe7bed2e0b/ad.mp4" type="video/mp4">
     </video>
     <div id="skipTimer">5</div>
     <button id="skipBtn" onclick="closeAd()">تخطي الإعلان ✖</button>
+    <button id="soundBtn" onclick="toggleSound()">🔊 كتم/تشغيل الصوت</button>
   </div>
 </div>
 
@@ -130,8 +137,15 @@ function closeAd(){
   window.location.href=targetLink;
 }
 
+// تشغيل/كتم الصوت
+const adVideo = document.getElementById("adVideo");
+function toggleSound(){
+  adVideo.muted = !adVideo.muted;
+  document.getElementById("soundBtn").textContent = adVideo.muted ? "🔇 كتم" : "🔊 تشغيل الصوت";
+}
+
 // يغلق الإعلان تلقائياً بعد انتهاء الفيديو
-document.getElementById("adVideo").onended=function(){ closeAd(); };
+adVideo.onended=function(){ closeAd(); };
 </script>
 </body>
 </html>
