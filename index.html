@@ -1,151 +1,236 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>ROMEO LIVE TV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>ROMEO LIVE TV</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-  font-family: Arial, sans-serif;
-  background: linear-gradient(130deg,#0a0f26,#1b243b,#0d1124);
-  background-size:400% 400%;
-  animation: bgShift 15s ease infinite;
-  color:#fff;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  text-align:center;
-  overflow:hidden;
-}
-@keyframes bgShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-.particle{position:absolute;width:4px;height:4px;background:white;border-radius:50%;opacity:0.6;box-shadow:0 0 6px #00bfff;animation:moveParticle linear infinite;}
-@keyframes moveParticle{0%{transform: translate(0,0);}100%{transform: translate(50px, -100vh);}}
-
-.container{width:100%;max-width:380px;background:rgba(0,0,0,0.45);padding:25px 18px;border-radius:15px;box-shadow:0 0 25px rgba(0,0,0,0.6);backdrop-filter:blur(7px);position:relative;z-index:1;}
-.logo{width:110px;height:110px;margin:0 auto 15px auto;background:radial-gradient(circle,#ffcc00,#b38f00);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:32px;font-weight:bold;color:#0a0f26;animation: logoGlow 2s infinite alternate;}
-@keyframes logoGlow{0%{box-shadow:0 0 10px #ffcc00;}50%{box-shadow:0 0 20px #ffcc00;}100%{box-shadow:0 0 10px #ffcc00;}}
-h1{font-size:30px;margin-bottom:12px;color:#ffcf41;}
-.desc{font-size:17px;margin-bottom:20px;color:#e0e0e0;}
-.btn{display:flex;align-items:center;justify-content:center;padding:14px;margin-top:12px;font-size:19px;text-decoration:none;width:100%;border-radius:8px;transition:0.3s;color:#fff;cursor:pointer;}
-.btn:hover{ transform:scale(1.05); }
-.btn-login{ background:linear-gradient(90deg,#4e6ef2,#2c3ce6); }
-.btn-music{ background:linear-gradient(90deg,#b45dee,#7b31d4); }
-.btn-download{ background:linear-gradient(90deg,#26b5ff,#0c80c9); }
-.footer{font-size:13px;margin-top:18px;color:#ccc;}
-.whatsapp{position:fixed;bottom:25px;right:25px;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;justify-content:center;align-items:center;z-index:2;}
-.whatsapp img{ width:32px; }
-
-/* إعلان الفيديو */
-#adPopup{position:fixed;top:0; left:0;width:100%; height:100%;background:rgba(0,0,0,0.95);display:none;justify-content:center;align-items:center;z-index:999;}
-.ad-box{position:relative;width:90%;max-width:450px;border-radius:15px;overflow:hidden;box-shadow:0 15px 50px rgba(0,0,0,0.8);border:2px solid #ffcf41;}
-.ad-box video{width:100%; display:block; border-radius:15px; box-shadow:0 5px 25px rgba(255,255,255,0.2);}
-#skipTimer{
-  position:absolute;top:10px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,0.7);color:#ffcf41;padding:8px 16px;border-radius:12px;font-weight:bold;font-size:18px;
-  text-shadow:0 0 8px #ffcf41;
-  animation: glow 1.5s ease-in-out infinite alternate;
-}
-@keyframes glow{0%{text-shadow:0 0 5px #ffcf41;}100%{text-shadow:0 0 15px #ffcf41;}}
-#skipBtn{
-  position:absolute;top:10px;left:50%;transform:translateX(-50%);
-  padding:8px 20px;background:#ffcf41;color:#0a0f26;font-weight:bold;border:none;border-radius:50px;cursor:pointer;font-size:18px;
-  display:none;
-  box-shadow:0 0 15px #ffcf41;
-  transition:0.3s;
-}
-#skipBtn:hover{transform:scale(1.1);box-shadow:0 0 25px #ffcf41,0 0 35px #ffcf41;}
-#soundBtn{
-  position:absolute;top:50px;left:50%;transform:translateX(-50%);
-  padding:6px 14px;background:#0a0f26;color:#ffcf41;font-weight:bold;border:none;border-radius:50px;cursor:pointer;font-size:16px;
-  display:block;
-  box-shadow:0 0 10px #ffcf41;
-  transition:0.3s;
-}
-#soundBtn:hover{transform:scale(1.1);box-shadow:0 0 20px #ffcf41;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{background:#0b1120;color:#fff;transition:0.3s;}
+header{display:flex;justify-content:space-between;align-items:center;padding:15px;background:#020617;border-bottom:2px solid gold;cursor:default;position:relative;}
+.title{font-weight:800;font-size:18px;cursor:pointer;transition:0.3s;}
+.title:hover{transform:scale(1.05);}
+.menu-btn{font-size:26px;cursor:pointer;transition:0.3s;}
+.menu-btn:hover{transform:rotate(90deg);}
+.dropdown{position:absolute;top:60px;right:10px;background:rgba(17,24,39,0.95);border-radius:12px;overflow:hidden;display:none;flex-direction:column;box-shadow:0 0 20px rgba(0,0,0,0.6);padding:10px;z-index:1000;}
+.dropdown div{padding:12px;cursor:pointer;border-bottom:1px solid #333;transition:.3s;}
+.dropdown div:hover{background:#1e3a8a;transform:scale(1.05);}
+.menu{display:flex;flex-direction:column;gap:15px;padding:15px;transition:0.5s;}
+.btn{background:linear-gradient(90deg,#1e3a8a,#2563eb);border-radius:15px;padding:18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:0.3s;}
+.btn:hover{transform:scale(1.05);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:20px;padding:10px 10px 80px 10px;}
+.card{background:#020617;border-radius:12px;overflow:hidden;cursor:pointer;transition:.3s;position:relative;}
+.card:hover{transform:scale(1.05);}
+.card img{width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;}
+.card p{font-size:14px;text-align:center;padding:8px;background:rgba(0,0,0,0.6);}
+.card .fav{position:absolute;top:8px;right:8px;font-size:20px;cursor:pointer;transition:.3s;color:white;text-shadow:0 0 6px black;}
+.card .fav.active{color:red;}
+.card .notif{position:absolute;top:0;left:50%;transform:translateX(-50%);background:gold;color:#000;padding:3px 8px;border-radius:6px;font-size:12px;display:none;z-index:100;}
+.page{display:none;}
+.bottom-bar{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;align-items:center;background:rgba(0,0,0,0.6);padding:12px 0;backdrop-filter:blur(6px);border-top:1px solid gold;z-index:1000;}
+.bottom-btn{font-size:22px;cursor:pointer;transition:.3s;}
+.bottom-btn:hover{transform:scale(1.2);}
+.modal{display:none;position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:90%;max-height:60%;background:#020617;border-radius:12px;overflow:auto;padding:10px;box-shadow:0 0 20px rgba(0,0,0,0.7);z-index:999;}
+.modal input{width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:10px;font-size:16px;}
+.menu-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);z-index:999;}
+.menu-overlay .menu-content{background:rgba(17,24,39,0.95);margin:50px auto;padding:20px;border-radius:12px;width:90%;max-width:400px;display:flex;flex-direction:column;gap:12px;animation:dropDown 0.4s ease;}
+@keyframes dropDown{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.menu-overlay .menu-content div{padding:15px;background:linear-gradient(90deg,#1e3a8a,#2563eb);border-radius:12px;text-align:center;color:#fff;cursor:pointer;transition:0.3s;}
+.menu-overlay .menu-content div:hover{transform:scale(1.05);}
 </style>
 </head>
-
 <body>
-<div id="particles"></div>
 
-<div class="container">
-  <div class="logo">R</div>
-  <h1>ROMEO LIVE TV</h1>
-  <div class="desc">مرحباً بك في عالم ROMEO LIVE TV</div>
+<header>
+<div class="theme-btn" onclick="toggleTheme()">🌙</div>
+<div class="title" onclick="goHome()">ROMEO LIVE TV</div>
+<div class="menu-btn" onclick="toggleOverlay()">☰</div>
+</header>
 
-  <div class="btn btn-login" onclick="showAd('https://romeo311020.github.io/ROMEO-LIVE-TV-New-/')">دخول الموقع</div>
-  <a href="https://romeo311020.github.io/romeo-music-" class="btn btn-music">الأغاني 🔥</a>
-  <a href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/" class="btn btn-download">تحميل التطبيق 📱</a>
-  <div class="footer">Powered by ROMEO LIVE TV</div>
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-content">
+    <div onclick="window.open('https://www.appcreator24.com/app3955137-obzs8n')">📲 تحميل التطبيق</div>
+    <div onclick="alert('قريباً')">👤 تسجيل دخول</div>
+  </div>
 </div>
 
-<a class="whatsapp" href="https://api.whatsapp.com/send?phone=201286716976" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-</a>
+<!-- HOME -->
+<div class="menu" id="home">
+<div class="btn" onclick="openPage('movies')">🎥 الأفلام <span>▶</span></div>
+<div class="btn" onclick="openPage('series')">📺 المسلسلات <span>▶</span></div>
+<div class="btn" onclick="openPage('searchPage')">🔍 البحث <span>▶</span></div>
+<div class="btn" onclick="openPage('favoritesPage')">❤️ المفضلة <span>▶</span></div>
+<div class="btn">⚽ ملخص مباريات اليوم</div>
+<div class="btn" onclick="window.location.href='https://romeo311020.github.io/ROMEO-MATCH/'">📊 جدول المباريات</div>
+<div class="btn" onclick="window.open('https://wa.me/201286716976')">🎁 اطلب فيلم/مسلسل</div>
+</div>
 
-<!-- إعلان الفيديو -->
-<div id="adPopup">
-  <div class="ad-box">
-    <video id="adVideo" autoplay playsinline>
-      <source src="https://raw.githubusercontent.com/romeo311020/romeo-live-tv-31/e1e58aa151973e1cdf083810606414fe7bed2e0b/ad.mp4" type="video/mp4">
-    </video>
-    <div id="skipTimer">5</div>
-    <button id="skipBtn" onclick="closeAd()">تخطي الإعلان ✖</button>
-    <button id="soundBtn" onclick="toggleSound()">🔊 كتم/تشغيل الصوت</button>
+<!-- MOVIES -->
+<div class="page" id="movies">
+<div class="cards" id="moviesCards"></div>
+</div>
+
+<!-- SERIES -->
+<div class="page" id="series">
+<div class="menu">
+<div class="btn" onclick="openSeries('ramadan')">رمضان ▶</div>
+<div class="btn" onclick="openSeries('arabic')">عربي ▶</div>
+</div>
+<div id="ramadan" class="cards"></div>
+<div id="arabic" class="cards"></div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div class="page" id="searchPage">
+<div style="padding:15px;">
+<input type="text" id="searchInputPage" placeholder="ابحث عن فيلم أو مسلسل..." style="width:100%;padding:12px;border-radius:8px;border:none;margin-bottom:10px;font-size:16px;">
+<div id="searchResultsPage" class="cards"></div>
+</div>
+</div>
+
+<!-- FAVORITES PAGE -->
+<div class="page" id="favoritesPage">
+<h2 style="padding:15px;">🎯 المفضلة</h2>
+<div id="favoritesCardsPage" class="cards"></div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-btn" onclick="goHome()">🏠</div>
+  <div class="bottom-btn" onclick="openPage('searchPage')">🔍</div>
+  <div class="bottom-btn" onclick="openPage('favoritesPage')">❤️</div>
+  <div class="bottom-btn" onclick="window.open('https://wa.me/201286716976')">
+    <img src="https://i.postimg.cc/T3wwRdCy/images-(26).jpg" style="width:24px;height:24px;">
   </div>
 </div>
 
 <script>
-// Particles
-const particleContainer=document.getElementById('particles');
-for(let i=0;i<50;i++){
-  const p=document.createElement('div');
-  p.classList.add('particle');
-  p.style.top=Math.random()*window.innerHeight+'px';
-  p.style.left=Math.random()*window.innerWidth+'px';
-  p.style.animationDuration=(8+Math.random()*12)+'s';
-  particleContainer.appendChild(p);
+let home=document.getElementById('home');
+let favorites=[];
+
+/* THEME */
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  document.querySelector('.theme-btn').textContent = document.body.classList.contains('light')?'🌙':'☀️';
 }
 
-// إعلان الفيديو مع عد تنازلي
-let targetLink="",countdown=5,countdownInterval;
-function showAd(link){
-  targetLink=link;
-  countdown=5;
-  document.getElementById("adPopup").style.display="flex";
-  document.getElementById("skipTimer").textContent=countdown;
-  document.getElementById("skipBtn").style.display="none";
+/* NAVIGATION */
+function openPage(p){
+  home.style.display='none';
+  document.querySelectorAll('.page').forEach(e=>e.style.display='none');
+  document.getElementById(p).style.display='block';
+}
+function goHome(){
+  window.location.href='https://romeo311020.github.io/romeo-live-tv-31/';
+}
 
-  countdownInterval=setInterval(()=>{
-    countdown--;
-    if(countdown>0){
-      document.getElementById("skipTimer").textContent=countdown;
-    } else {
-      clearInterval(countdownInterval);
-      document.getElementById("skipTimer").style.display="none";
-      document.getElementById("skipBtn").style.display="block";
+/* MENU OVERLAY */
+function toggleOverlay(){
+  let o=document.getElementById('menuOverlay');
+  o.style.display=o.style.display==='flex'?'none':'flex';
+  o.style.flexDirection='column';
+}
+
+/* CARD CREATION */
+function createCard(name,img,link){
+  let c=document.createElement('div');
+  c.className='card';
+  c.innerHTML=`<img src="${img}">
+               <p>${name}</p>
+               <div class="fav" onclick="toggleFavorite(event,'${name}','${img}','${link}')">❤️</div>
+               <div class="notif">تمت الإضافة للمفضلة ✅</div>`;
+  c.onclick=()=>location.href=link;
+  return c;
+}
+
+/* FAVORITES */
+function toggleFavorite(e,name,img,link){
+  e.stopPropagation();
+  let idx=favorites.findIndex(f=>f.name===name);
+  let notif=e.target.nextElementSibling;
+  notif.style.display='block';
+  setTimeout(()=>notif.style.display='none',1000);
+  if(idx===-1){
+    favorites.push({name,img,link});
+    e.target.classList.add('active');
+  }else{
+    favorites.splice(idx,1);
+    e.target.classList.remove('active');
+  }
+  renderFavoritesPage();
+}
+
+/* SEARCH PAGE */
+let searchInputPage=document.getElementById('searchInputPage');
+searchInputPage.addEventListener('input',function(){
+  let val=this.value.toLowerCase();
+  let results=document.getElementById('searchResultsPage');
+  results.innerHTML='';
+  allMovies.forEach((m)=>{
+    if(m.name.toLowerCase().includes(val)){
+      results.appendChild(createCard(m.name,m.img,m.link));
     }
-  },1000);
+  });
+});
+
+/* FAVORITES PAGE */
+function renderFavoritesPage(){
+  let c=document.getElementById('favoritesCardsPage');
+  c.innerHTML='';
+  favorites.forEach(f=>{
+    c.appendChild(createCard(f.name,f.img,f.link));
+  });
 }
 
-function closeAd(){
-  document.getElementById("adPopup").style.display="none";
-  window.location.href=targetLink;
+/* SERIES */
+function openSeries(s){
+  document.getElementById('ramadan').style.display='none';
+  document.getElementById('arabic').style.display='none';
+  document.getElementById(s).style.display='grid';
+}
+function addSeries(n,i,l,s){
+  document.getElementById(s).appendChild(createCard(n,i,l));
 }
 
-// تشغيل/كتم الصوت
-const adVideo = document.getElementById("adVideo");
-function toggleSound(){
-  adVideo.muted = !adVideo.muted;
-  document.getElementById("soundBtn").textContent = adVideo.muted ? "🔇 كتم" : "🔊 تشغيل الصوت";
-}
+/* MOVIES DATA */
+let moviesCards=document.getElementById('moviesCards');
+let allMovies=[
+{name:"سيكو سيكو",img:"https://i.postimg.cc/fTGp0v4W/images-(12).jpg",link:"https://romeo311020.github.io/film-Siko-Siko-/"},
+{name:"اللعب مع العيال",img:"https://i.postimg.cc/c4LwBqS9/images-(14).jpg",link:"https://w10.mycima.cc/watch.php?vid=413391afb"},
+{name:"كابتن مصر",img:"https://i.postimg.cc/FRJN4H3W/images-(15).jpg",link:"https://romeo311020.github.io/-Film-Captain-Egypt-/"},
+{name:"إبراهيم الأبيض",img:"https://i.postimg.cc/zBWZQPYd/images-(16).jpg",link:"https://romeo311020.github.io/Film-Ibrahim-Al-Abyad-/"},
+{name:"صنع في مصر",img:"https://i.postimg.cc/W30C8F0C/images-(17).jpg",link:"https://romeo311020.github.io/-/"},
+{name:"جحيم في الهند",img:"https://i.postimg.cc/MpcstfSs/images-(18).jpg",link:"https://romeo311020.github.io/Hell-in-India-/"},
+{name:"تصبح على خير",img:"https://i.postimg.cc/vZR9F4n0/images-(19).jpg",link:"https://romeo311020.github.io/film-tsbah-al-ghar/"},
+{name:"الهرم الرابع",img:"https://i.postimg.cc/jjMhyyg7/302.jpg",link:"https://romeo311020.github.io/film-al-harm-la-rabh/"},
+{name:"موسى الخارق",img:"https://i.postimg.cc/Wbc0F9ph/images-(20).jpg",link:"https://romeo311020.github.io/film-Mosa/"},
+{name:"احمد و احمد",img:"https://i.postimg.cc/9QnMTMPM/images-(21).jpg",link:"https://romeo311020.github.io/film-Ahmed-And-Ahmed-/"},
+{name:"هارلي",img:"https://i.postimg.cc/7hHDj8Mh/315x420.jpg",link:"https://romeo311020.github.io/film-Harley-/"},
+{name:"شد أجزاء",img:"https://i.postimg.cc/XqzhLTsQ/images-(22).jpg",link:"https://romeo311020.github.io/film-Shad-Ajza-/"}
+];
+allMovies.forEach(m=>moviesCards.appendChild(createCard(m.name,m.img,m.link)));
 
-// يغلق الإعلان تلقائياً بعد انتهاء الفيديو
-adVideo.onended=function(){ closeAd(); };
+/* مسلسلات */
+
+/* مسلسلات رمضان */
+addSeries("درش","https://i.postimg.cc/t4D1m48w/2026-2-26-12-46-56-866.jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=Darsh","ramadan");
+addSeries("سوا سوا","https://i.postimg.cc/J72mxbDm/social-thumb.jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=Sawa-Sawa","ramadan");
+addSeries("علي كلاي","https://i.postimg.cc/7LR894bP/images-(4).jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=Ali-clay","ramadan");
+addSeries("راس الافعي","https://i.postimg.cc/3w8hbHKy/ras-alafʿy.jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=ras-elaf3a","ramadan");
+addSeries("فخر الدلتا","https://i.postimg.cc/1XDXcsMJ/images-(1).jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=Fakhr-El-Delta","ramadan");
+addSeries("وننسي اللي كان","https://i.postimg.cc/BbGhYgcN/images-(7).jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=w-nensa-elli-kan","ramadan");
+addSeries("المداح","https://i.postimg.cc/QC13Vz8D/images-(3).jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=ElMaddah-Ostorat-Al-Nehaya","ramadan");
+addSeries("رامز ليفل الوحش","https://i.postimg.cc/RZRvc2c6/images-(2).jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=ramez-level-elwa7sh","ramadan");
+addSeries("الكينج","https://i.postimg.cc/x8bZtNhz/92ae9f039-1.jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=El-King","ramadan");
+addSeries("الست موناليزا","https://i.postimg.cc/BQRSSxJf/images.jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=El-Set-Monalisa","ramadan");
+addSeries("فن الحرب","https://i.postimg.cc/59TPtcRx/images-(23).jpg","https://vid.mycima.cc/categories-cimawbas.php?cat=Fan-Al-Harb","ramadan");
+
+/* مسلسلات عربية */
+addSeries("بابا المجال","https://i.postimg.cc/2Sznk2rb/IMG-20260315-085406.jpg","https://romeo311020.github.io/Baba-Al-Majal-/","arabic");
+addSeries("نسر الصعيد","https://i.postimg.cc/m24Hj8ch/images-(8).jpg","https://romeo311020.github.io/nsar-al-saed/","arabic");
+
 </script>
 </body>
 </html>
