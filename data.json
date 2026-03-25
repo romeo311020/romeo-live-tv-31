@@ -299,6 +299,11 @@
       "id": "match",
       "name": "ملخصات المباريات",
       "parent": "matches"
+    },
+    {
+      "id": "cat_1774481989717",
+      "name": "مسلسلات مصرية",
+      "parent": "series"
     }
   ]
 }
