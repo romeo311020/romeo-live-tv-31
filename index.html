@@ -127,30 +127,39 @@
 </div>
 
 <script>
-    // تعديل: جلب البيانات من ملف JSON الخارجي بدلاً من كتابتها هنا
+    // تعديل برمجي ليناسب هيكلة الـ JSON الجديدة
     let database = [];
     let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
 
     async function loadData() {
         try {
             const response = await fetch('data.json');
-            database = await response.json();
+            const result = await response.json();
+            
+            // هنا التعديل: التأكد من سحب مصفوفة items سواء كانت مباشرة أو داخل كائن
+            database = Array.isArray(result) ? result : (result.items || []);
+            
             render(database);
         } catch (e) {
-            console.log("Error loading data.json");
+            console.log("Error loading data.json", e);
+            document.getElementById('gridTitle').innerText = "خطأ في تحميل البيانات!";
         }
     }
 
     function render(data) {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = '';
+        if(!data || data.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; opacity: 0.5;">لا يوجد محتوى هنا حالياً</div>';
+            return;
+        }
         data.forEach(item => {
             const isFav = favorites.includes(item.id);
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <div class="fav-tag ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${item.id})">❤</div>
-                <img src="${item.img}" loading="lazy">
+                <img src="${item.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/260x380?text=No+Image'">
                 <div class="card-info">${item.name}</div>
             `;
             card.onclick = () => playMedia(item);
@@ -161,14 +170,15 @@
     function toggleSub(id) {
         const menu = document.getElementById(id);
         const all = document.querySelectorAll('.sub-menu');
-        const isVisible = menu.style.display === 'grid';
+        const isVisible = window.getComputedStyle(menu).display === 'grid';
         all.forEach(m => m.style.display = 'none');
         menu.style.display = isVisible ? 'none' : 'grid';
     }
 
     function filterData(cat, title) {
         document.getElementById('gridTitle').innerText = title;
-        render(database.filter(i => i.cat === cat));
+        const filtered = database.filter(i => i.cat === cat);
+        render(filtered);
         document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
     }
 
@@ -192,7 +202,6 @@
     }
 
     function playMedia(item) {
-        // التحقق مما إذا كان الرابط يحتوي على كلمة embed (يوتيوب)
         if(item.link.includes('embed')) {
             document.getElementById('playerView').style.display = 'block';
             document.getElementById('videoContainer').innerHTML = `<iframe src="${item.link}" width="100%" height="300px" frameborder="0" allowfullscreen></iframe>`;
