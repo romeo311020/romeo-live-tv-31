@@ -3,131 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>𝑹𝑶𝑴𝑬𝑶 𝑳𝑰𝑽𝑬 𝑻𝑽</title>
+    <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --main-bg: #050811;
+            --main-bg: #040714;
             --accent: #e5b80b;
-            --card-bg: #101628;
-            --grad: linear-gradient(135deg, #e5b80b 0%, #b8860b 100%);
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --accent-glow: rgba(229, 184, 11, 0.5);
+            --card-bg: #1a1d29;
+            --glass: rgba(15, 20, 35, 0.8);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--main-bg); color: #fff; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--main-bg); color: #fff; overflow-x: hidden; font-size: 13px; }
 
-        /* Header */
         header {
+            padding: 8px 5%; background: rgba(4, 7, 20, 0.95); backdrop-filter: blur(10px);
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 5%; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(229, 184, 11, 0.2);
         }
-        .logo-box { display: flex; align-items: center; gap: 15px; }
-        .site-logo { width: 42px; height: 42px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; box-shadow: 0 0 15px var(--accent); font-size: 22px; }
-        .logo-text { font-weight: 800; font-size: 1.3rem; color: var(--accent); text-shadow: 0 0 5px rgba(229, 184, 11, 0.3); }
-        .app-btn { background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 25px; color: #fff; text-decoration: none; font-size: 13px; border: 1.5px solid var(--accent); transition: 0.3s; font-weight: 600; }
-        .app-btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 10px var(--accent); }
-
-        /* Search Bar */
-        .search-area { padding: 20px 5%; }
-        .search-wrapper { position: relative; max-width: 600px; margin: 0 auto; }
-        .search-input { width: 100%; background: #161d2f; border: 1px solid #2d3748; padding: 14px 45px 14px 20px; border-radius: 12px; color: #fff; outline: none; transition: 0.3s; }
-        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--accent); }
-
-        /* Hero Menu */
-        .hero-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px 5%; }
-        .main-btn { height: 75px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); font-weight: 800; font-size: 20px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .movies-btn { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); }
-        .series-btn { background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%); }
-        .main-btn:hover { transform: translateY(-5px); filter: brightness(1.2); }
-
-        /* Sub Menu */
-        .sub-menu { display: none; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; padding: 15px 5%; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
-        .sub-item { background: #1a2236; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.3s; }
-        .sub-item:hover { border-color: var(--accent); color: var(--accent); background: #242d45; }
-
-        /* Section Title */
-        .section-title { padding: 25px 5% 15px; font-size: 20px; color: #fff; display: flex; align-items: center; gap: 10px; font-weight: 800; }
-        .section-title::before { content: ''; width: 5px; height: 25px; background: var(--accent); border-radius: 3px; }
+        .logo-text { font-weight: 900; font-size: 1rem; color: #fff; }
+        .logo-text span { color: var(--accent); }
         
-        /* Cards Grid */
-        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 10px 5% 120px; }
-        @media (min-width: 768px) { .cards-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } }
+        .download-app-btn {
+            background: linear-gradient(45deg, var(--accent), #ffea00);
+            color: #000; padding: 5px 12px; border-radius: 15px;
+            font-size: 10px; font-weight: 800; text-decoration: none;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
 
-        .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; position: relative; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .card:hover { transform: scale(1.05); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        .card img { width: 100%; height: 260px; object-fit: cover; transition: 0.3s; }
+        .search-area { padding: 10px 5% 5px; }
+        .search-input { 
+            width: 100%; background: #1a1d29; border: 1px solid rgba(255,255,255,0.1); 
+            padding: 8px 15px; border-radius: 8px; color: #fff; outline: none; font-size: 12px;
+        }
+
+        /* القائمة الرئيسية المحدثة (4 أعمدة لتناسب الأغاني) */
+        .hero-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 5%; }
+        .main-btn { 
+            height: 60px; border-radius: 10px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; cursor: pointer; 
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            font-size: 10px; font-weight: 700; transition: var(--transition);
+        }
+        .main-btn i { font-size: 18px; margin-bottom: 2px; }
+        .main-btn:active { transform: scale(0.95); border-color: var(--accent); }
+
+        /* الأقسام الفرعية */
+        .sub-menu { display: none; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 5px 5%; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .sub-item { background: #1a1d29; padding: 8px; border-radius: 6px; text-align: center; font-size: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); color: #ccc; }
+
+        /* الكروت */
+        .section-title { padding: 15px 5% 5px; font-size: 14px; font-weight: 800; color: var(--accent); }
+        .cards-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; padding: 10px 5% 100px; 
+        }
+        @media (min-width: 768px) { .cards-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
+
+        .card { 
+            background: var(--card-bg); border-radius: 8px; overflow: hidden; 
+            position: relative; transition: var(--transition); border: 1px solid rgba(255,255,255,0.03);
+        }
+        .card img { width: 100%; height: 140px; object-fit: cover; }
         
-        .fav-tag { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; z-index: 5; transition: 0.3s; }
-        .fav-tag.active { color: #ff4757; background: #fff; }
+        /* زر تشغيل للأغاني */
+        .play-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--accent); color: #000; width: 30px; height: 30px;
+            border-radius: 50%; display: none; align-items: center; justify-content: center;
+            font-size: 14px; box-shadow: 0 0 10px var(--accent);
+        }
+        .card.music-card .play-overlay { display: flex; }
 
-        .card-info { position: absolute; bottom: 0; width: 100%; padding: 20px 5px 10px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); text-align: center; font-size: 14px; font-weight: bold; color: #fff; }
+        .card-info { 
+            padding: 5px 4px; background: rgba(0,0,0,0.85); text-align: center; 
+            font-size: 9px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
 
-        /* Player View */
-        .player-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; }
-        .close-btn { position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: var(--accent); color: #000; border-radius: 20px; cursor: pointer; font-weight: 800; z-index: 2100; }
+        /* الشريط السفلي */
+        .bottom-nav { 
+            position: fixed; bottom: 12px; left: 5%; right: 5%; height: 58px;
+            background: var(--glass); backdrop-filter: blur(15px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-radius: 18px; border: 1px solid rgba(229, 184, 11, 0.4); z-index: 1000;
+        }
+        .nav-item { text-align: center; color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; flex: 1; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 2px; }
+        .nav-item span { font-size: 9px; font-weight: 700; }
+        .nav-item.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10, 15, 30, 0.95); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid rgba(229, 184, 11, 0.3); backdrop-filter: blur(10px); }
-        .nav-item { text-align: center; font-size: 11px; color: #888; cursor: pointer; transition: 0.3s; }
-        .nav-item i { font-size: 22px; display: block; color: #fff; margin-bottom: 2px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item.active i { color: var(--accent); }
+        .player-view { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
+        .close-btn { position: absolute; top: 15px; left: 15px; padding: 6px 15px; background: var(--accent); color: #000; border-radius: 20px; cursor: pointer; font-weight: 800; font-size: 11px; z-index: 2100; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-box">
-        <div class="site-logo">R</div>
-        <div class="logo-text">𝑹𝑶𝑴𝑬𝑶 𝑳𝑰𝑽𝑬 𝑻𝑽</div>
-    </div>
-    <a href="https://www.appcreator24.com/app3955137-obzs8n" class="app-btn">تنزيل التطبيق 📲</a>
+    <div class="logo-text">ROMEO <span>LIVE TV</span></div>
+    <a href="https://www.appcreator24.com/app3955137-obzs8n" class="download-app-btn">تنزيل التطبيق</a>
 </header>
 
 <div class="search-area">
-    <div class="search-wrapper">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن فيلم أو مسلسل..." oninput="handleSearch()">
-    </div>
+    <input type="text" id="searchInput" class="search-input" placeholder="بحث في الأفلام، المسلسلات، الأغاني..." oninput="handleSearch()">
 </div>
 
 <div class="hero-menu">
-    <div class="main-btn movies-btn" onclick="toggleSub('m-sub')">🎥 الأفلام</div>
-    <div class="main-btn series-btn" onclick="toggleSub('s-sub')">📺 المسلسلات</div>
+    <div class="main-btn" onclick="toggleSub('m-sub')"><i style="color:#3b82f6">🎥</i><span>الأفلام</span></div>
+    <div class="main-btn" onclick="toggleSub('s-sub')"><i style="color:#a855f7">📺</i><span>المسلسلات</span></div>
+    <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i style="color:#22c55e">⚽</i><span>المباريات</span></div>
+    <!-- القسم الجديد: الأغاني -->
+    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i style="color:#f43f5e">🎵</i><span>الأغاني</span></div>
 </div>
 
 <div id="m-sub" class="sub-menu">
     <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
     <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
-    <div class="sub-item" onclick="alert('سيتم اضافة قريبا')">أفلام أجنبية 🔒</div>
 </div>
 
 <div id="s-sub" class="sub-menu">
-    <div class="sub-item" onclick="filterData('ramadan', 'رمضان 2026')">رمضان 2026</div>
+    <div class="sub-item" onclick="filterData('ramadan', 'مسلسلات رمضان 2026')">رمضان 2026</div>
     <div class="sub-item" onclick="filterData('arabic', 'مسلسلات مصرية')">مسلسلات مصرية</div>
-    <div class="sub-item" onclick="alert('سيتم اضافة قريبا')">مسلسلات أجنبية 🔒</div>
 </div>
 
 <div class="section-title" id="gridTitle">المعروض الآن</div>
 <div class="cards-grid" id="mainGrid"></div>
 
 <div id="playerView" class="player-view">
-    <div class="close-btn" onclick="closePlayer()">إغلاق وتراجع ✕</div>
+    <div class="close-btn" onclick="closePlayer()">إغلاق ✕</div>
     <div id="videoContainer" style="height: 100%; display: flex; align-items: center; justify-content: center;"></div>
 </div>
 
 <div class="bottom-nav">
-    <div class="nav-item active" onclick="location.reload()"><i>🏠</i>الرئيسية</div>
-    <div class="nav-item" onclick="showFavorites()"><i>❤️</i>المفضلة</div>
-    <div class="nav-item" onclick="window.location.href='https://romeo311020.github.io/ROMEO-MATCH/'"><i>⚽</i>المباريات</div>
-    <div class="nav-item" onclick="window.open('https://wa.me/201286716976')"><i>💬</i>اطلب</div>
+    <div class="nav-item active" onclick="location.reload()"><i>🏠</i><span>الرئيسية</span></div>
+    <div class="nav-item" onclick="showFavorites()"><i>❤️</i><span>المفضلة</span></div>
+    <div class="nav-item" onclick="window.location.href='https://romeo311020.github.io/ROMEO-MATCH/'"><i>⚽</i><span>المباريات</span></div>
+    <div class="nav-item" onclick="window.open('https://wa.me/201286716976')"><i>💬</i><span>اطلب</span></div>
 </div>
 
 <script>
-    // تعديل برمجي ليناسب هيكلة الـ JSON الجديدة
     let database = [];
     let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
 
@@ -135,31 +152,23 @@
         try {
             const response = await fetch('data.json');
             const result = await response.json();
-            
-            // هنا التعديل: التأكد من سحب مصفوفة items سواء كانت مباشرة أو داخل كائن
             database = Array.isArray(result) ? result : (result.items || []);
-            
             render(database);
         } catch (e) {
-            console.log("Error loading data.json", e);
-            document.getElementById('gridTitle').innerText = "خطأ في تحميل البيانات!";
+            document.getElementById('gridTitle').innerText = "خطأ في الاتصال";
         }
     }
 
     function render(data) {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = '';
-        if(!data || data.length === 0) {
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; opacity: 0.5;">لا يوجد محتوى هنا حالياً</div>';
-            return;
-        }
         data.forEach(item => {
-            const isFav = favorites.includes(item.id);
+            const isMusic = item.cat === 'music';
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = `card ${isMusic ? 'music-card' : ''}`;
             card.innerHTML = `
-                <div class="fav-tag ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${item.id})">❤</div>
-                <img src="${item.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/260x380?text=No+Image'">
+                <img src="${item.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x200?text=ROMEO'">
+                <div class="play-overlay">▶</div>
                 <div class="card-info">${item.name}</div>
             `;
             card.onclick = () => playMedia(item);
@@ -169,44 +178,41 @@
 
     function toggleSub(id) {
         const menu = document.getElementById(id);
-        const all = document.querySelectorAll('.sub-menu');
-        const isVisible = window.getComputedStyle(menu).display === 'grid';
-        all.forEach(m => m.style.display = 'none');
+        const isVisible = menu.style.display === 'grid';
+        hideAllSubs();
         menu.style.display = isVisible ? 'none' : 'grid';
+    }
+
+    function hideAllSubs() {
+        document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
     }
 
     function filterData(cat, title) {
         document.getElementById('gridTitle').innerText = title;
-        const filtered = database.filter(i => i.cat === cat);
-        render(filtered);
-        document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
+        render(database.filter(i => i.cat === cat));
+        hideAllSubs();
     }
 
     function handleSearch() {
         const q = document.getElementById('searchInput').value.toLowerCase();
-        const res = database.filter(i => i.name.toLowerCase().includes(q));
-        render(res);
-    }
-
-    function toggleFav(e, id) {
-        e.stopPropagation();
-        if(favorites.includes(id)) favorites = favorites.filter(f => f !== id);
-        else favorites.push(id);
-        localStorage.setItem('romeo_favs', JSON.stringify(favorites));
-        e.target.classList.toggle('active');
+        render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
     function showFavorites() {
-        document.getElementById('gridTitle').innerText = "قائمة المفضلات ❤️";
+        document.getElementById('gridTitle').innerText = "المفضلة ❤️";
         render(database.filter(i => favorites.includes(i.id)));
     }
 
     function playMedia(item) {
-        if(item.link.includes('embed')) {
-            document.getElementById('playerView').style.display = 'block';
-            document.getElementById('videoContainer').innerHTML = `<iframe src="${item.link}" width="100%" height="300px" frameborder="0" allowfullscreen></iframe>`;
+        document.getElementById('playerView').style.display = 'block';
+        const container = document.getElementById('videoContainer');
+        
+        // ذكاء التشغيل: إذا كان الرابط يوتيوب أو فيديو خارجي
+        if(item.link.includes('youtube') || item.link.includes('embed')) {
+            container.innerHTML = `<iframe src="${item.link}" width="100%" height="80%" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
         } else {
-            window.location.href = item.link;
+            // تشغيل كملف صوتي أو فيديو مباشر
+            container.innerHTML = `<video src="${item.link}" controls autoplay style="max-width:90%; border-radius:10px;"></video>`;
         }
     }
 
@@ -215,7 +221,6 @@
         document.getElementById('videoContainer').innerHTML = '';
     }
 
-    // بدء التحميل
     loadData();
 </script>
 
