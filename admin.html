@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم | 𝑹𝑶𝑴𝑬𝑶 𝑳𝑰𝑽𝑬 𝑻𝑽</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e5b80b;
+            --bg: #0a0f1e;
+            --card: #161d2f;
+            --text: #ffffff;
+            --danger: #ff4757;
+            --success: #2ed573;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 550px;
+            background: var(--card);
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(229, 184, 11, 0.15);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 26px;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .config-box {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px dashed rgba(229, 184, 11, 0.3);
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px;
+            border-radius: 12px;
+            border: 1px solid #2d3748;
+            background: #0d1224;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 12px rgba(229, 184, 11, 0.2);
+        }
+
+        .btn-push {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #e5b80b 0%, #b8860b 100%);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 900;
+            font-size: 17px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-push:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(229, 184, 11, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .status-banner {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-success { display: block; background: rgba(46, 213, 115, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .status-error { display: block; background: rgba(255, 71, 87, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .status-loading { display: block; background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid #fff; }
+
+        .note {
+            font-size: 11px;
+            color: #5d6d7e;
+            margin-top: 20px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="header">
+        <h1>𝑹𝑶𝑴𝑬𝑶 𝑨𝑫𝑴𝑰𝑵</h1>
+        <p>إضافة أفلام ومسلسلات جديدة إلى السيرفر</p>
+    </div>
+
+    <div class="config-box">
+        <div class="input-group">
+            <label>GitHub Personal Token</label>
+            <input type="password" id="ghToken" placeholder="ghp_XXXXXXXXXXXXXXXXXXXX">
+        </div>
+        <div class="input-group">
+            <label>مسار المستودع (User/Repo)</label>
+            <input type="text" id="ghRepo" placeholder="romeo311020/my-site-repo">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>اسم الفيلم أو المسلسل</label>
+        <input type="text" id="itemName" placeholder="مثال: نسر الصعيد">
+    </div>
+
+    <div class="input-group">
+        <label>رابط الصورة (URL)</label>
+        <input type="text" id="itemImg" placeholder="https://i.postimg.cc/...">
+    </div>
+
+    <div class="input-group">
+        <label>رابط الفيديو أو الصفحة</label>
+        <input type="text" id="itemLink" placeholder="https://romeo311020.github.io/...">
+    </div>
+
+    <div class="input-group">
+        <label>القسم المخصص</label>
+        <select id="itemCat">
+            <option value="egy1">أفلام مصرية 1</option>
+            <option value="egy2">أفلام مصرية 2</option>
+            <option value="ramadan">مسلسلات رمضان 2026</option>
+            <option value="arabic">مسلسلات مصرية</option>
+        </select>
+    </div>
+
+    <button class="btn-push" onclick="submitToDatabase()">نشر المحتوى الآن 🚀</button>
+
+    <div id="statusBox" class="status-banner"></div>
+
+    <p class="note">⚠️ تنبيه: سيتم تحديث ملف <b>data.json</b> مباشرة. <br> تأكد من صحة الروابط قبل النشر.</p>
+</div>
+
+<script>
+    async function submitToDatabase() {
+        const token = document.getElementById('ghToken').value;
+        const repo = document.getElementById('ghRepo').value;
+        const name = document.getElementById('itemName').value;
+        const img = document.getElementById('itemImg').value;
+        const link = document.getElementById('itemLink').value;
+        const cat = document.getElementById('itemCat').value;
+
+        if (!token || !repo || !name || !img || !link) {
+            updateStatus("يرجى إكمال جميع الحقول المطلوبة!", "status-error");
+            return;
+        }
+
+        updateStatus("جاري معالجة البيانات والرفع إلى GitHub...", "status-loading");
+
+        const fileName = "data.json";
+        const apiUrl = `https://api.github.com/contents/${fileName}`;
+
+        try {
+            // الخطوة 1: جلب نسخة الملف الحالية من GitHub
+            const response = await fetch(apiUrl, {
+                headers: { "Authorization": `token ${token}` }
+            });
+
+            if (!response.ok) throw new Error("فشل الوصول للملف. تأكد من الـ Token واسم المستودع.");
+
+            const data = await response.json();
+            const sha = data.sha;
+            
+            // الخطوة 2: فك تشفير المحتوى الحالي وإضافة الجديد
+            let content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            
+            const newEntry = {
+                id: Date.now(),
+                name: name,
+                img: img,
+                link: link,
+                cat: cat
+            };
+            
+            content.push(newEntry);
+
+            // الخطوة 3: تشفير المحتوى الجديد ورفعه (Update)
+            const updatedBody = JSON.stringify({
+                message: `Admin: Added ${name}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+                sha: sha
+            });
+
+            const updateResponse = await fetch(apiUrl, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: updatedBody
+            });
+
+            if (updateResponse.ok) {
+                updateStatus(`✅ تم النشر بنجاح! "${name}" متاح الآن للجميع.`, "status-success");
+                // تنظيف الحقول
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemImg').value = '';
+                document.getElementById('itemLink').value = '';
+            } else {
+                throw new Error("حدث خطأ أثناء محاولة حفظ البيانات.");
+            }
+
+        } catch (error) {
+            updateStatus("❌ خطأ: " + error.message, "status-error");
+        }
+    }
+
+    function updateStatus(msg, className) {
+        const box = document.getElementById('statusBox');
+        box.innerText = msg;
+        box.className = "status-banner " + className;
+        box.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
