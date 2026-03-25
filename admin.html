@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROMEO ADMIN | لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #e5b80b; --bg: #0a0f1e; --card: #161d2f; --text: #ffffff; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .admin-box { width: 100%; max-width: 450px; background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); }
+        h2 { text-align: center; color: var(--primary); margin-bottom: 20px; font-size: 22px; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
+        input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #0d1224; color: #fff; font-size: 14px; box-sizing: border-box; }
+        .btn-submit { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; }
+        #msg { margin-top: 15px; padding: 10px; border-radius: 5px; text-align: center; display: none; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h2>لوحة تحكم روميو لايف</h2>
+    
+    <div class="input-group">
+        <label>GitHub Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_...">
+    </div>
+    
+    <div class="input-group">
+        <label>المستودع (User/Repo)</label>
+        <input type="text" id="ghRepo" value="romeo311020/romeo-live-tv-31">
+    </div>
+
+    <hr style="border: 0.2px solid #333; margin: 20px 0;">
+
+    <div class="input-group"><label>اسم العمل</label><input type="text" id="mName"></div>
+    <div class="input-group"><label>رابط الصورة</label><input type="text" id="mImg"></div>
+    <div class="input-group"><label>رابط المشاهدة</label><input type="text" id="mLink"></div>
+    <div class="input-group">
+        <label>القسم</label>
+        <select id="mCat">
+            <option value="egy1">أفلام مصرية 1</option>
+            <option value="egy2">أفلام مصرية 2</option>
+            <option value="ramadan">رمضان 2026</option>
+        </select>
+    </div>
+
+    <button class="btn-submit" onclick="startPush()">نشر الآن 🚀</button>
+    <div id="msg"></div>
+</div>
+
+<script>
+    async function startPush() {
+        const token = document.getElementById('ghToken').value;
+        const repo = document.getElementById('ghRepo').value;
+        const name = document.getElementById('mName').value;
+        const img = document.getElementById('mImg').value;
+        const link = document.getElementById('mLink').value;
+        const cat = document.getElementById('mCat').value;
+        const msgDiv = document.getElementById('msg');
+
+        if (!token || !name) { alert("أدخل التوكن والاسم أولاً!"); return; }
+
+        msgDiv.style.display = "block";
+        msgDiv.innerText = "جاري الاتصال بالسيرفر...";
+        msgDiv.style.backgroundColor = "#333";
+        msgDiv.style.color = "#fff";
+
+        const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
+
+        try {
+            // 1. الحصول على بيانات الملف
+            const response = await fetch(apiUrl, {
+                headers: { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" }
+            });
+
+            if (!response.ok) throw new Error("التوكن غير صحيح أو الملف غير موجود");
+
+            const fileData = await response.json();
+            const sha = fileData.sha;
+            
+            // 2. فك التشفير مع دعم العربي
+            let currentItems = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            
+            // 3. إضافة العنصر الجديد
+            currentItems.push({ id: Date.now(), name, img, link, cat });
+
+            // 4. رفع التحديث
+            const updateRes = await fetch(apiUrl, {
+                method: "PUT",
+                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: `إضافة: ${name}`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(currentItems, null, 2)))),
+                    sha: sha
+                })
+            });
+
+            if (updateRes.ok) {
+                msgDiv.innerText = "✅ تم النشر بنجاح! حدث الموقع الآن.";
+                msgDiv.style.backgroundColor = "#155724";
+                document.getElementById('mName').value = '';
+            } else {
+                throw new Error();
+            }
+
+        } catch (e) {
+            msgDiv.innerText = "❌ فشل الرفع! تأكد من صلاحية الـ Token (Repo).";
+            msgDiv.style.backgroundColor = "#721c24";
+        }
+    }
+</script>
+
+</body>
+</html>
