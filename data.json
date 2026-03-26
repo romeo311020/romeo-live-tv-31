@@ -1252,6 +1252,13 @@
       "img": "https://i.postimg.cc/28S6DPHc/images-(8).jpg",
       "link": "https://romeo311020.github.io/nsar-al-saed/",
       "cat": "arabic"
+    },
+    {
+      "id": 1774532418788,
+      "name": "فيلم حياة السيد المسيح",
+      "img": "https://img.youtube.com/vi/Okqqib7h7Bw/maxresdefault.jpg",
+      "link": "https://www.youtube.com/embed/Okqqib7h7Bw",
+      "cat": "christian"
     }
   ],
   "categories": [
@@ -1264,6 +1271,16 @@
       "id": "egy2",
       "name": "أفلام مصرية 2",
       "parent": "movies"
+    },
+    {
+      "id": "christian",
+      "name": "أفلام دينية مسيحية",
+      "parent": "movies"
+    },
+    {
+      "id": "arabic",
+      "name": "مسلسلات مصرية",
+      "parent": "series"
     },
     {
       "id": "ramadan",
@@ -1279,21 +1296,6 @@
       "id": "match",
       "name": "ملخصات المباريات",
       "parent": "matches"
-    },
-    {
-      "id": "cat_1774481989717",
-      "name": "مسلسلات مصرية",
-      "parent": "series"
-    },
-    {
-      "id": "cat_1774485130915",
-      "name": "افلام دينيه مسيحيه",
-      "parent": "movies"
-    },
-    {
-      "id": "arabic",
-      "name": "مسلسلات مصرية",
-      "parent": "series"
     }
   ]
 }
