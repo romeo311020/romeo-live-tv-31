@@ -113,17 +113,16 @@
     <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i style="color:#f43f5e">🎵</i><span>الأغاني</span></div>
 </div>
 
-<!-- تم تعديل قسم الأفلام الفرعي هنا -->
-<div id="m-sub" class="sub-menu" style="grid-template-columns: repeat(1, 1fr);">
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%;">
-        <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
-        <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
-    </div>
-    <div class="sub-item" style="margin-top: 6px;" onclick="filterData('christian', 'أفلام دينية مسيحية')">أفلام دينية مسيحية ✝️</div>
+<!-- قسم الأفلام الفرعي -->
+<div id="m-sub" class="sub-menu">
+    <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
+    <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
+    <div class="sub-item" style="grid-column: span 2;" onclick="filterData('christian', 'أفلام دينية مسيحية')">أفلام دينية مسيحية ✝️</div>
 </div>
 
+<!-- قسم المسلسلات الفرعي -->
 <div id="s-sub" class="sub-menu">
-    <div class="sub-item" onclick="filterData('ramadan', 'مسلسلات رمضان 2026')">رمضان 2026</div>
+    <div class="sub-item" onclick="filterData('ramadan', 'رمضان 2026')">رمضان 2026</div>
     <div class="sub-item" onclick="filterData('arabic', 'مسلسلات مصرية')">مسلسلات مصرية</div>
 </div>
 
@@ -150,7 +149,6 @@
         try {
             const response = await fetch('data.json');
             const result = await response.json();
-            // دعم هيكل البيانات الموحد (Array أو Object)
             database = Array.isArray(result) ? result : (result.items || []);
             render(database);
         } catch (e) {
