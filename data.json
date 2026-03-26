@@ -1231,6 +1231,13 @@
       "img": "https://i.ytimg.com/vi/KYFcqSO2orY/sddefault.jpg",
       "link": "https://www.youtube.com/embed/KYFcqSO2orY",
       "cat": "music"
+    },
+    {
+      "id": 1774531083619,
+      "name": "Video 1",
+      "img": "https://img.youtube.com/vi/Okqqib7h7Bw/maxresdefault.jpg",
+      "link": "https://www.youtube.com/embed/Okqqib7h7Bw",
+      "cat": "cat_1774485130915"
     }
   ],
   "categories": [
@@ -1268,6 +1275,11 @@
       "id": "cat_1774485130915",
       "name": "افلام دينيه مسيحيه",
       "parent": "movies"
+    },
+    {
+      "id": "arabic",
+      "name": "مسلسلات مصرية",
+      "parent": "series"
     }
   ]
 }
