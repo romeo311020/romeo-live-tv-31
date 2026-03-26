@@ -93,6 +93,34 @@
 
         .player-view { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
         .close-btn { position: absolute; top: 15px; left: 15px; padding: 6px 15px; background: var(--accent); color: #000; border-radius: 20px; cursor: pointer; font-weight: 800; font-size: 11px; z-index: 2100; }
+
+        /* --- الكود الجديد للزر المنير --- */
+        .glowing-btn-container {
+            padding: 15px 5% 5px; text-align: center;
+        }
+        .glowing-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(90deg, #ffea00, var(--accent), #ffea00);
+            background-size: 200% auto;
+            color: #000; padding: 10px 20px; border-radius: 25px;
+            font-size: 12px; font-weight: 800; text-decoration: none;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transition: var(--transition);
+            animation: glow-pulse 2s infinite, gradient-move 3s linear infinite;
+        }
+        .glowing-btn:active { transform: scale(0.95); box-shadow: 0 0 8px var(--accent-glow); }
+        .glowing-btn i { font-size: 16px; }
+
+        @keyframes glow-pulse {
+            0% { box-shadow: 0 0 10px var(--accent-glow); }
+            50% { box-shadow: 0 0 20px var(--accent-glow); }
+            100% { box-shadow: 0 0 10px var(--accent-glow); }
+        }
+        @keyframes gradient-move {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        /* --- نهاية الكود الجديد --- */
     </style>
 </head>
 <body>
@@ -106,6 +134,12 @@
     <input type="text" id="searchInput" class="search-input" placeholder="بحث في الأفلام، المسلسلات، الأغاني..." oninput="handleSearch()">
 </div>
 
+<div class="glowing-btn-container">
+    <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="glowing-btn">
+        <i style="color:#000">⚽📺</i>
+        <span>شاهد المباريات والقنوات بث مباشر</span>
+    </a>
+</div>
 <div class="hero-menu">
     <div class="main-btn" onclick="toggleSub('m-sub')"><i style="color:#3b82f6">🎥</i><span>الأفلام</span></div>
     <div class="main-btn" onclick="toggleSub('s-sub')"><i style="color:#a855f7">📺</i><span>المسلسلات</span></div>
@@ -113,14 +147,12 @@
     <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i style="color:#f43f5e">🎵</i><span>الأغاني</span></div>
 </div>
 
-<!-- قسم الأفلام الفرعي -->
 <div id="m-sub" class="sub-menu">
     <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
     <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
     <div class="sub-item" style="grid-column: span 2;" onclick="filterData('christian', 'أفلام دينية مسيحية')">أفلام دينية مسيحية ✝️</div>
 </div>
 
-<!-- قسم المسلسلات الفرعي -->
 <div id="s-sub" class="sub-menu">
     <div class="sub-item" onclick="filterData('ramadan', 'رمضان 2026')">رمضان 2026</div>
     <div class="sub-item" onclick="filterData('arabic', 'مسلسلات مصرية')">مسلسلات مصرية</div>
