@@ -39,7 +39,6 @@
             padding: 8px 15px; border-radius: 8px; color: #fff; outline: none; font-size: 12px;
         }
 
-        /* القائمة الرئيسية المحدثة (4 أعمدة لتناسب الأغاني) */
         .hero-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 5%; }
         .main-btn { 
             height: 60px; border-radius: 10px; display: flex; flex-direction: column; 
@@ -50,12 +49,10 @@
         .main-btn i { font-size: 18px; margin-bottom: 2px; }
         .main-btn:active { transform: scale(0.95); border-color: var(--accent); }
 
-        /* الأقسام الفرعية */
         .sub-menu { display: none; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 5px 5%; animation: slideDown 0.3s ease; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         .sub-item { background: #1a1d29; padding: 8px; border-radius: 6px; text-align: center; font-size: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); color: #ccc; }
 
-        /* الكروت */
         .section-title { padding: 15px 5% 5px; font-size: 14px; font-weight: 800; color: var(--accent); }
         .cards-grid { 
             display: grid; 
@@ -70,7 +67,6 @@
         }
         .card img { width: 100%; height: 140px; object-fit: cover; }
         
-        /* زر تشغيل للأغاني */
         .play-overlay {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--accent); color: #000; width: 30px; height: 30px;
@@ -84,7 +80,6 @@
             font-size: 9px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* الشريط السفلي */
         .bottom-nav { 
             position: fixed; bottom: 12px; left: 5%; right: 5%; height: 58px;
             background: var(--glass); backdrop-filter: blur(15px);
@@ -115,13 +110,16 @@
     <div class="main-btn" onclick="toggleSub('m-sub')"><i style="color:#3b82f6">🎥</i><span>الأفلام</span></div>
     <div class="main-btn" onclick="toggleSub('s-sub')"><i style="color:#a855f7">📺</i><span>المسلسلات</span></div>
     <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i style="color:#22c55e">⚽</i><span>المباريات</span></div>
-    <!-- القسم الجديد: الأغاني -->
     <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i style="color:#f43f5e">🎵</i><span>الأغاني</span></div>
 </div>
 
-<div id="m-sub" class="sub-menu">
-    <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
-    <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
+<!-- تم تعديل قسم الأفلام الفرعي هنا -->
+<div id="m-sub" class="sub-menu" style="grid-template-columns: repeat(1, 1fr);">
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%;">
+        <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
+        <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
+    </div>
+    <div class="sub-item" style="margin-top: 6px;" onclick="filterData('christian', 'أفلام دينية مسيحية')">أفلام دينية مسيحية ✝️</div>
 </div>
 
 <div id="s-sub" class="sub-menu">
@@ -152,6 +150,7 @@
         try {
             const response = await fetch('data.json');
             const result = await response.json();
+            // دعم هيكل البيانات الموحد (Array أو Object)
             database = Array.isArray(result) ? result : (result.items || []);
             render(database);
         } catch (e) {
@@ -207,11 +206,9 @@
         document.getElementById('playerView').style.display = 'block';
         const container = document.getElementById('videoContainer');
         
-        // ذكاء التشغيل: إذا كان الرابط يوتيوب أو فيديو خارجي
         if(item.link.includes('youtube') || item.link.includes('embed')) {
             container.innerHTML = `<iframe src="${item.link}" width="100%" height="80%" frameborder="0" allowfullscreen style="border-radius:10px;"></iframe>`;
         } else {
-            // تشغيل كملف صوتي أو فيديو مباشر
             container.innerHTML = `<video src="${item.link}" controls autoplay style="max-width:90%; border-radius:10px;"></video>`;
         }
     }
