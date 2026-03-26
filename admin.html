@@ -112,16 +112,22 @@
             const file = await res.json();
             const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
             
-            // تهيئة البيانات مع دعم الهيكل الجديد والقديم
             db.items = Array.isArray(content) ? content : (content.items || []);
             db.categories = content.categories || [
                 {id:'egy1', name:'أفلام مصرية 1', parent:'movies'},
                 {id:'egy2', name:'أفلام مصرية 2', parent:'movies'},
+                {id:'christian', name:'أفلام دينية مسيحية', parent:'movies'},
+                {id:'arabic', name:'مسلسلات مصرية', parent:'series'}, // القسم الجديد المضاف هنا
                 {id:'ramadan', name:'مسلسلات رمضان', parent:'series'},
                 {id:'music', name:'مكتبة الأغاني', parent:'music'},
                 {id:'match', name:'ملخصات المباريات', parent:'matches'}
             ];
             
+            // التأكد من وجود القسم الجديد للمسلسلات
+            if (!db.categories.find(c => c.id === 'arabic')) {
+                db.categories.push({id:'arabic', name:'مسلسلات مصرية', parent:'series'});
+            }
+
             document.getElementById('screen-login').classList.remove('active-screen');
             document.getElementById('nav').style.display = 'flex';
             showScreen('screen-home');
@@ -251,7 +257,6 @@
             });
             const file = await res.json();
             
-            // حفظ البيانات بالهيكل الموحد
             const finalData = (Array.isArray(db.items) && !db.categories) ? db.items : db;
             
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(finalData, null, 2))));
