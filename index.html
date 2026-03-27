@@ -6,7 +6,7 @@
     <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- الأساسيات (تم الإبقاء على التصميم كما هو مع إصلاح العرض) --- */
+        /* --- الأساسيات الأصلية (بدون تغيير نهائياً) --- */
         :root {
             --main-bg: #040714;
             --accent: #e5b80b;
@@ -17,54 +17,71 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--main-bg); color: #fff; overflow-x: hidden; font-size: 13px; }
+        body { background: var(--main-bg); color: #fff; overflow-x: hidden; font-size: 13px; transition: background 0.5s; }
 
         header {
             padding: 8px 5%; background: rgba(4, 7, 20, 0.95); backdrop-filter: blur(10px);
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(229, 184, 11, 0.2);
         }
-        .logo-text { font-weight: 900; font-size: 1.2rem; color: #fff; }
+        .logo-text { font-weight: 900; font-size: 1rem; color: #fff; }
         .logo-text span { color: var(--accent); }
         
         .download-app-btn {
             background: linear-gradient(45deg, var(--accent), #ffea00);
             color: #000; padding: 5px 12px; border-radius: 15px;
             font-size: 10px; font-weight: 800; text-decoration: none;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .search-area { padding: 10px 5% 5px; }
         .search-input { 
             width: 100%; background: #1a1d29; border: 1px solid rgba(255,255,255,0.1); 
-            padding: 10px 15px; border-radius: 8px; color: #fff; outline: none;
+            padding: 8px 15px; border-radius: 8px; color: #fff; outline: none; font-size: 12px;
         }
+
+        .glowing-btn-container { padding: 15px 5% 5px; text-align: center; }
+        .glowing-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background: linear-gradient(90deg, #ffea00, var(--accent), #ffea00);
+            background-size: 200% auto;
+            color: #000; padding: 10px 20px; border-radius: 25px;
+            font-size: 12px; font-weight: 800; text-decoration: none;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transition: var(--transition);
+            animation: glow-pulse 2s infinite, gradient-move 3s linear infinite;
+        }
+        @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 10px var(--accent-glow); } 50% { box-shadow: 0 0 20px var(--accent-glow); } }
+        @keyframes gradient-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
         .hero-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 5%; }
         .main-btn { 
-            height: 70px; border-radius: 10px; display: flex; flex-direction: column; 
+            height: 60px; border-radius: 10px; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; cursor: pointer; 
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            font-size: 11px; font-weight: 700; transition: var(--transition);
+            font-size: 10px; font-weight: 700; transition: var(--transition);
         }
-        .main-btn i { font-size: 20px; margin-bottom: 4px; }
+        .main-btn i { font-size: 18px; margin-bottom: 2px; }
 
-        .sub-menu { display: none; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 5px 5%; }
-        .sub-item { background: #1a1d29; padding: 10px; border-radius: 6px; text-align: center; font-size: 11px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        .sub-menu { display: none; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 5px 5%; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .sub-item { background: #1a1d29; padding: 8px; border-radius: 6px; text-align: center; font-size: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); color: #ccc; }
 
-        .section-title { padding: 15px 5% 5px; font-size: 16px; font-weight: 800; color: var(--accent); }
-        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 5% 100px; }
-        
+        .section-title { padding: 15px 5% 5px; font-size: 14px; font-weight: 800; color: var(--accent); }
+        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px 5% 100px; }
+        @media (min-width: 768px) { .cards-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
+
         .card { 
-            background: var(--card-bg); border-radius: 10px; overflow: hidden; 
-            transition: var(--transition); border: 1px solid rgba(255,255,255,0.03);
+            background: var(--card-bg); border-radius: 8px; overflow: hidden; 
+            position: relative; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s; border: 1px solid rgba(255,255,255,0.03);
             cursor: pointer;
         }
-        .card img { width: 100%; height: 150px; object-fit: cover; }
-        .card-info { padding: 8px 5px; background: rgba(0,0,0,0.85); text-align: center; font-size: 10px; font-weight: 700; }
+        .card img { width: 100%; height: 140px; object-fit: cover; }
+        .card-info { padding: 5px 4px; background: rgba(0,0,0,0.85); text-align: center; font-size: 9px; font-weight: 700; }
 
-        /* --- واجهة الحلقات والمشغل --- */
-        #episodesView, #playerView {
-            position: fixed; inset: 0; background: var(--main-bg); z-index: 2000; display: none;
+        /* --- واجهة الحلقات --- */
+        #episodesView {
+            position: fixed; inset: 0; background: var(--main-bg); z-index: 1500; display: none;
             flex-direction: column; padding: 20px; overflow-y: auto;
         }
         .ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
@@ -72,21 +89,27 @@
             background: #1a1d29; border: 1px solid var(--accent); padding: 15px; 
             border-radius: 10px; text-align: center; font-weight: 800; cursor: pointer;
         }
-        .video-wrapper { width: 100%; max-width: 1000px; margin: auto; }
-        iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 15px; }
+
+        /* --- المشغل الأصلي مع التحسينات --- */
+        .player-view { 
+            position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .video-wrapper { width: 92%; max-width: 1000px; border-radius: 15px; overflow: hidden; }
+        iframe { width: 100%; aspect-ratio: 16/9; border: none; }
         .back-nav-btn {
-            background: var(--accent); color: #000; padding: 10px 20px; 
-            border-radius: 30px; cursor: pointer; font-weight: 800; align-self: flex-start; margin-bottom: 20px;
+            position: absolute; top: 20px; left: 20px; background: var(--accent);
+            padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 800; color: #000;
         }
 
         .bottom-nav { 
-            position: fixed; bottom: 12px; left: 5%; right: 5%; height: 60px;
+            position: fixed; bottom: 12px; left: 5%; right: 5%; height: 58px;
             background: var(--glass); backdrop-filter: blur(15px);
             display: flex; justify-content: space-around; align-items: center;
-            border-radius: 20px; border: 1px solid rgba(229, 184, 11, 0.4); z-index: 1000;
+            border-radius: 18px; border: 1px solid rgba(229, 184, 11, 0.4); z-index: 1000;
         }
-        .nav-item { text-align: center; color: rgba(255,255,255,0.5); cursor: pointer; flex: 1; font-size: 10px; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 2px; }
+        .nav-item { text-align: center; color: rgba(255,255,255,0.5); cursor: pointer; flex: 1; }
+        .nav-item i { font-size: 20px; display: block; }
         .nav-item.active { color: var(--accent); }
     </style>
 </head>
@@ -94,28 +117,36 @@
 
 <header>
     <div class="logo-text">ROMEO <span>LIVE TV</span></div>
-    <a href="#" class="download-app-btn">تنزيل التطبيق</a>
+    <a href="https://www.appcreator24.com/app3955137-obzs8n" class="download-app-btn">تنزيل التطبيق</a>
 </header>
 
 <div class="search-area">
-    <input type="text" id="searchInput" class="search-input" placeholder="بحث..." oninput="handleSearch()">
+    <input type="text" id="searchInput" class="search-input" placeholder="بحث في الأفلام، المسلسلات، الأغاني..." oninput="handleSearch()">
+</div>
+
+<div class="glowing-btn-container">
+    <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="glowing-btn">
+        <i>⚽📺</i>
+        <span>شاهد المباريات والقنوات بث مباشر</span>
+    </a>
 </div>
 
 <div class="hero-menu">
     <div class="main-btn" onclick="toggleSub('m-sub')"><i>🎥</i><span>الأفلام</span></div>
     <div class="main-btn" onclick="toggleSub('s-sub')"><i>📺</i><span>المسلسلات</span></div>
-    <div class="main-btn" onclick="filterData('matches', 'المباريات')"><i>⚽</i><span>المباريات</span></div>
-    <div class="main-btn" onclick="filterData('music', 'الأغاني')"><i>🎵</i><span>الأغاني</span></div>
+    <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i>⚽</i><span>المباريات</span></div>
+    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>الأغاني</span></div>
 </div>
 
 <div id="m-sub" class="sub-menu">
     <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
     <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
+    <div class="sub-item" style="grid-column: span 2;" onclick="filterData('christian', 'أفلام دينية مسيحية')">أفلام دينية مسيحية ✝️</div>
 </div>
 
 <div id="s-sub" class="sub-menu">
-    <div class="sub-item" onclick="filterData('ramadan', 'مسلسلات رمضان')">مسلسلات رمضان</div>
-    <div class="sub-item" onclick="filterData('arabic', 'مسلسلات عربية')">مسلسلات عربية</div>
+    <div class="sub-item" onclick="filterData('ramadan', 'رمضان 2026')">رمضان 2026</div>
+    <div class="sub-item" onclick="filterData('arabic', 'مسلسلات مصرية')">مسلسلات مصرية</div>
 </div>
 
 <div class="section-title" id="gridTitle">المعروض الآن</div>
@@ -123,36 +154,36 @@
 
 <!-- واجهة الحلقات -->
 <div id="episodesView">
-    <div class="back-nav-btn" onclick="closeView('episodesView')">✕ رجوع للموقع</div>
-    <h2 id="seriesHeader" style="text-align: center; color: var(--accent); margin-bottom: 20px;"></h2>
+    <div class="back-nav-btn" onclick="document.getElementById('episodesView').style.display='none'">✕ رجوع</div>
+    <h2 id="seriesHeader" style="margin-top: 60px; text-align: center; color: var(--accent);"></h2>
     <div class="ep-grid" id="episodesGrid"></div>
 </div>
 
 <!-- المشغل -->
-<div id="playerView">
-    <div class="back-nav-btn" onclick="closeView('playerView')">✕ إغلاق المشغل</div>
+<div id="playerView" class="player-view">
+    <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق</div>
     <div class="video-wrapper" id="videoContainer"></div>
 </div>
 
 <div class="bottom-nav">
     <div class="nav-item active" onclick="location.reload()"><i>🏠</i><span>الرئيسية</span></div>
-    <div class="nav-item" onclick="filterData('fav', 'المفضلة')"><i>❤️</i><span>المفضلة</span></div>
+    <div class="nav-item" onclick="showFavorites()"><i>❤️</i><span>المفضلة</span></div>
     <div class="nav-item" onclick="window.location.href='https://romeo311020.github.io/ROMEO-MATCH/'"><i>⚽</i><span>المباريات</span></div>
+    <div class="nav-item" onclick="window.open('https://wa.me/201286716976')"><i>💬</i><span>اطلب</span></div>
 </div>
 
 <script>
-    let allItems = []; // لتخزين كافة البيانات
+    let database = [];
+    let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
 
     async function loadData() {
         try {
             const response = await fetch('data.json');
             const data = await response.json();
-            // إصلاح الخطأ: استخراج المصفوفة من داخل كائن items
-            allItems = data.items || []; 
-            render(allItems);
-        } catch (e) { 
-            document.getElementById('gridTitle').innerText = "خطأ في تحميل البيانات"; 
-        }
+            // التعديل المطلوب: جلب المصفوفة من داخل كائن items لضمان عمل الكود[span_1](start_span)[span_1](end_span)
+            database = data.items || []; 
+            render(database);
+        } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال"; }
     }
 
     function render(data) {
@@ -175,8 +206,7 @@
         document.getElementById('seriesHeader').innerText = item.name;
         const grid = document.getElementById('episodesGrid');
         grid.innerHTML = '';
-        
-        if(item.episodes && item.episodes.length > 0) {
+        if(item.episodes) {
             item.episodes.forEach(ep => {
                 const div = document.createElement('div');
                 div.className = 'ep-item';
@@ -184,8 +214,6 @@
                 div.onclick = () => openPlayer(ep.link);
                 grid.appendChild(div);
             });
-        } else {
-            grid.innerHTML = '<p style="grid-column: span 2; text-align:center;">لا توجد حلقات مضافة حالياً</p>';
         }
     }
 
@@ -196,9 +224,9 @@
         `;
     }
 
-    function closeView(id) {
-        document.getElementById(id).style.display = 'none';
-        if(id === 'playerView') document.getElementById('videoContainer').innerHTML = '';
+    function closePlayer() {
+        document.getElementById('playerView').style.display = 'none';
+        document.getElementById('videoContainer').innerHTML = '';
     }
 
     function toggleSub(id) {
@@ -208,21 +236,17 @@
         menu.style.display = isVisible ? 'none' : 'grid';
     }
 
-    function hideAllSubs() { 
-        document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none'); 
-    }
+    function hideAllSubs() { document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none'); }
 
     function filterData(cat, title) {
         document.getElementById('gridTitle').innerText = title;
-        const filtered = allItems.filter(i => i.cat === cat);
-        render(filtered);
+        render(database.filter(i => i.cat === cat));
         hideAllSubs();
     }
 
     function handleSearch() {
         const q = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = allItems.filter(i => i.name.toLowerCase().includes(q));
-        render(filtered);
+        render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
     loadData();
