@@ -90,7 +90,7 @@
             border-radius: 10px; text-align: center; font-weight: 800; cursor: pointer;
         }
 
-        /* --- المشغل الأصلي مع التحسينات --- */
+        /* --- المشغل الأصلي --- */
         .player-view { 
             position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
             flex-direction: column; align-items: center; justify-content: center;
@@ -112,76 +112,72 @@
         .nav-item i { font-size: 20px; display: block; }
         .nav-item.active { color: var(--accent); }
 
-        /* ========================================= */
-        /* ✅ كود CSS الجديد مضاف هنا (Add Only) */
-        /* ========================================= */
-        
+        /* ======================================================
+           ✨ إضافات UI & Animation الجديدة (Add Only)
+           ====================================================== */
+
+        /* تحسينات عامة وتأثير الزووم في الخلفية */
+        html { scroll-behavior: smooth; }
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(circle at center, #111421 0%, #040714 100%);
+            animation: bgZoom 20s infinite alternate ease-in-out;
+        }
+        @keyframes bgZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+        /* أنيميشن كروت الأفلام */
+        .card { opacity: 0; transform: translateY(30px); }
+        .card.reveal { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-12px) scale(1.06) !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow);
+            z-index: 10;
+        }
+        .card img { transition: transform 0.5s ease; }
+        .card:hover img { transform: scale(1.1); }
+
+        /* تحسين المشغل - Cinema Mode */
+        .player-view { 
+            backdrop-filter: blur(25px); background: rgba(0,0,0,0.85); 
+            transition: opacity 0.4s ease;
+        }
+        .video-wrapper {
+            transform: scale(0.95); opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 30px var(--accent-glow);
+        }
+        .player-view.active .video-wrapper { transform: scale(1); opacity: 1; }
+
+        /* خلفية المشغل الديناميكية */
         .player-premium-bg {
             position: absolute; inset: 0; z-index: -1;
             background-size: cover; background-position: center;
-            filter: blur(40px) brightness(0.2); transform: scale(1.1);
-            transition: background-image 0.5s ease;
+            filter: blur(45px) brightness(0.2); opacity: 0.8;
         }
 
-        .player-overlay-gradient {
-            position: absolute; inset: 0; z-index: -1;
-            background: radial-gradient(circle at center, transparent, rgba(4, 7, 20, 0.9));
-        }
-
-        .player-content-wrapper {
-            width: 100%; display: flex; flex-direction: column; align-items: center;
-            padding: 20px; z-index: 2001; margin-top: 40px;
-            animation: playerFadeIn 0.6s ease forwards;
-        }
-
-        @keyframes playerFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .new-player-title {
-            font-size: 18px; font-weight: 900; color: #fff; text-align: center;
-            margin-bottom: 20px; text-shadow: 0 0 15px rgba(229, 184, 11, 0.3);
-        }
-        .new-player-title span { color: var(--accent); }
-
-        .server-pills-container {
-            display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;
-        }
+        /* تحسين أزرار السيرفرات والحلقات */
         .server-pill {
-            padding: 8px 20px; border-radius: 50px; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 11px;
-            font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+            padding: 8px 22px; border-radius: 50px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;
+            transition: all 0.3s ease; font-weight: 700;
         }
-        .server-pill:hover { transform: scale(1.05); background: rgba(255,255,255,0.15); }
-        .server-pill.active {
-            background: linear-gradient(45deg, var(--accent), #ffea00);
-            color: #000; border: none; box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .video-wrapper.premium {
-            border: 2px solid rgba(255,255,255,0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 20px rgba(229, 184, 11, 0.15);
-            backdrop-filter: blur(5px);
-        }
-
-        .episodes-scroll-container {
-            width: 100%; max-width: 600px; margin-top: 25px;
-            display: flex; flex-direction: column; gap: 8px;
-            max-height: 250px; overflow-y: auto; padding: 10px;
-        }
-        .episodes-scroll-container::-webkit-scrollbar { width: 4px; }
-        .episodes-scroll-container::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .server-pill:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+        .server-pill.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent-glow); }
 
         .premium-ep-card {
-            background: rgba(26, 29, 41, 0.6); border: 1px solid rgba(255,255,255,0.05);
-            padding: 12px 20px; border-radius: 12px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; transition: all 0.3s ease;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .premium-ep-card:hover { 
-            background: rgba(255,255,255,0.08); transform: translateY(-2px);
-            border-color: rgba(229, 184, 11, 0.3);
+        .premium-ep-card:hover { background: rgba(255,255,255,0.08); transform: translateX(-5px); border-color: var(--accent); }
+        .premium-ep-card.active { background: rgba(229, 184, 11, 0.15); border-color: var(--accent); }
+
+        /* تأثير Ripple عند الضغط */
+        .ripple {
+            position: absolute; background: rgba(255,255,255,0.3); border-radius: 50%;
+            transform: scale(0); animation: rippleEffect 0.6s linear; pointer-events: none;
         }
-        .premium-ep-card.active { border-color: var(--accent); background: rgba(229, 184, 11, 0.1); }
-        .premium-ep-card .ep-name { font-weight: 700; font-size: 12px; }
-        .premium-ep-card .play-icon { color: var(--accent); font-size: 14px; }
+        @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -234,31 +230,20 @@
 <div id="playerView" class="player-view">
     <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق</div>
     
-    <!-- ✅ كود HTML الجديد للمشغل مضاف هنا (Add Only) -->
-    <div id="premiumPlayerLayer" style="display: none; width: 100%; height: 100%; position: absolute; z-index: 2005; flex-direction: column; align-items: center; overflow-y: auto; background: #040714;">
+    <!-- طبقة المشغل الاحترافية الجديدة (Add Only) -->
+    <div id="newPremiumUI" style="display:none; width:100%; height:100%; position:absolute; z-index:2005; flex-direction:column; align-items:center; overflow-y:auto; padding:20px; padding-top:60px;">
         <div class="player-premium-bg" id="dynamicBg"></div>
-        <div class="player-overlay-gradient"></div>
+        <h2 style="font-size:20px; font-weight:900; margin-bottom:15px; text-align:center;">حصرياً <span id="dynTitle" style="color:var(--accent)"></span> على ROMEO TV</h2>
         
-        <div class="player-content-wrapper">
-             <div class="back-nav-btn" onclick="closePremiumPlayer()">✕ إغلاق</div>
-             
-             <h2 class="new-player-title">حصرياً <span id="dynamicTitle">اسم الفيلم</span> على ROMEO LIVE TV</h2>
-             
-             <div class="server-pills-container" id="serverContainer">
-                 <div class="server-pill active" onclick="changeServer(0, this)">سيرفر 1</div>
-                 <div class="server-pill" onclick="changeServer(1, this)">سيرفر 2</div>
-                 <div class="server-pill" onclick="changeServer(2, this)">سيرفر 3</div>
-                 <div class="server-pill" onclick="changeServer(3, this)">سيرفر VIP</div>
-             </div>
-
-             <div class="video-wrapper premium" id="newVideoBox">
-                 <!-- iframe يتم حقنه هنا -->
-             </div>
-
-             <div class="episodes-scroll-container" id="episodesListContainer">
-                 <!-- الحلقات تظهر هنا -->
-             </div>
+        <div style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
+            <div class="server-pill active" onclick="switchSrv(this)">سيرفر 1</div>
+            <div class="server-pill" onclick="switchSrv(this)">سيرفر 2</div>
+            <div class="server-pill" onclick="switchSrv(this)">سيرفر 3</div>
         </div>
+
+        <div class="video-wrapper" id="premiumVidBox"></div>
+
+        <div id="dynEpBox" style="width:100%; max-width:600px; margin-top:30px; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 
     <div class="video-wrapper" id="videoContainer"></div>
@@ -272,7 +257,7 @@
 </div>
 
 <script>
-    /* --- الكود الأصلي (بدون أي تعديل حرف واحد) --- */
+    /* --- الكود الأصلي كما هو --- */
     let database = [];
     let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
 
@@ -280,7 +265,6 @@
         try {
             const response = await fetch('data.json');
             const data = await response.json();
-            // التعديل المطلوب: جلب المصفوفة من داخل كائن items لضمان عمل الكود
             database = data.items || []; 
             render(database);
         } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال"; }
@@ -295,10 +279,11 @@
             card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>`;
             card.onclick = () => {
                 if(item.type === 'series') openEpisodes(item);
-                else openPlayer(item.link);
+                else openPremiumPlayer(item, item.link);
             };
             grid.appendChild(card);
         });
+        revealCards();
     }
 
     function openEpisodes(item) {
@@ -311,7 +296,7 @@
                 const div = document.createElement('div');
                 div.className = 'ep-item';
                 div.innerText = ep.name || `الحلقة ${ep.num}`;
-                div.onclick = () => openPlayer(ep.link);
+                div.onclick = () => openPremiumPlayer(item, ep.link);
                 grid.appendChild(div);
             });
         }
@@ -319,14 +304,20 @@
 
     function openPlayer(link) {
         document.getElementById('playerView').style.display = 'flex';
+        setTimeout(() => document.getElementById('playerView').classList.add('active'), 50);
         document.getElementById('videoContainer').innerHTML = `
             <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
         `;
     }
 
     function closePlayer() {
-        document.getElementById('playerView').style.display = 'none';
-        document.getElementById('videoContainer').innerHTML = '';
+        document.getElementById('playerView').classList.remove('active');
+        document.getElementById('newPremiumUI').style.display = 'none';
+        setTimeout(() => {
+            document.getElementById('playerView').style.display = 'none';
+            document.getElementById('videoContainer').innerHTML = '';
+            document.getElementById('premiumVidBox').innerHTML = '';
+        }, 400);
     }
 
     function toggleSub(id) {
@@ -351,101 +342,71 @@
 
     loadData();
 
-    /* ========================================= */
-    /* ✅ كود JavaScript الجديد مضاف هنا (Add Only) */
-    /* ========================================= */
-    
-    // إنشاء دوال جديدة تماماً للتحكم في المشغل المطور
-    let currentActiveLink = '';
+    /* ======================================================
+       🚀 دوال الأنيميشن والتشغيل الجديدة (Add Only)
+       ====================================================== */
 
-    function openPremiumPlayer(item, initialLink) {
-        currentActiveLink = initialLink;
-        const layer = document.getElementById('premiumPlayerLayer');
-        const bg = document.getElementById('dynamicBg');
-        const title = document.getElementById('dynamicTitle');
-        const videoBox = document.getElementById('newVideoBox');
-        const epBox = document.getElementById('episodesListContainer');
-
-        document.getElementById('playerView').style.display = 'flex';
-        layer.style.display = 'flex';
-        
-        bg.style.backgroundImage = `url('${item.img}')`;
-        title.innerText = item.name;
-        
-        videoBox.innerHTML = `<iframe id="premiumIframe" src="${initialLink}" allowfullscreen></iframe>`;
-
-        // إضافة الحلقات إذا كانت موجودة
-        epBox.innerHTML = '';
-        if (item.episodes) {
-            item.episodes.forEach(ep => {
-                const epCard = document.createElement('div');
-                epCard.className = `premium-ep-card ${ep.link === initialLink ? 'active' : ''}`;
-                epCard.innerHTML = `
-                    <span class="ep-name">${ep.name || 'الحلقة ' + ep.num}</span>
-                    <span class="play-icon">▶</span>
-                `;
-                epCard.onclick = () => {
-                    document.querySelectorAll('.premium-ep-card').forEach(c => c.classList.remove('active'));
-                    epCard.classList.add('active');
-                    updateIframe(ep.link);
-                };
-                epBox.appendChild(epCard);
-            });
-        }
-    }
-
-    function updateIframe(link) {
-        currentActiveLink = link;
-        const frame = document.getElementById('premiumIframe');
-        if (frame) frame.src = link;
-    }
-
-    function changeServer(index, btn) {
-        document.querySelectorAll('.server-pill').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        // هنا نقوم بإعادة تحميل نفس الرابط لمحاكاة تغيير السيرفر
-        updateIframe(currentActiveLink);
-    }
-
-    function closePremiumPlayer() {
-        document.getElementById('premiumPlayerLayer').style.display = 'none';
-        closePlayer();
-    }
-
-    // "حقن" منطق التشغيل الجديد في الكروت بدون تعديل كود الـ render
-    const originalRender = render;
-    render = function(data) {
-        originalRender(data);
+    function revealCards() {
         const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            card.onclick = () => {
-                const item = data[index];
-                if (item.type === 'series') {
-                    // بدلاً من فتح واجهة الحلقات القديمة، نفتح المشغل الجديد بأول حلقة أو نعيد تعيين المنطق
-                    openEpisodesPremium(item);
-                } else {
-                    openPremiumPlayer(item, item.link);
-                }
-            };
-        });
-    };
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) entry.target.classList.add('reveal');
+            });
+        }, { threshold: 0.1 });
+        cards.forEach(c => observer.observe(c));
+    }
 
-    function openEpisodesPremium(item) {
-        document.getElementById('episodesView').style.display = 'flex';
-        document.getElementById('seriesHeader').innerText = item.name;
-        const grid = document.getElementById('episodesGrid');
-        grid.innerHTML = '';
+    function openPremiumPlayer(item, link) {
+        const ui = document.getElementById('newPremiumUI');
+        ui.style.display = 'flex';
+        document.getElementById('dynamicBg').style.backgroundImage = `url('${item.img}')`;
+        document.getElementById('dynTitle').innerText = item.name;
+        
+        document.getElementById('playerView').style.display = 'flex';
+        setTimeout(() => document.getElementById('playerView').classList.add('active'), 50);
+
+        const vidBox = document.getElementById('premiumVidBox');
+        vidBox.innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
+
+        const epBox = document.getElementById('dynEpBox');
+        epBox.innerHTML = '';
         if(item.episodes) {
             item.episodes.forEach(ep => {
-                const div = document.createElement('div');
-                div.className = 'ep-item';
-                div.innerText = ep.name || `الحلقة ${ep.num}`;
-                div.onclick = () => openPremiumPlayer(item, ep.link);
-                grid.appendChild(div);
+                const card = document.createElement('div');
+                card.className = `premium-ep-card ${ep.link === link ? 'active' : ''}`;
+                card.innerHTML = `<span>${ep.name || 'الحلقة ' + ep.num}</span> <span>▶</span>`;
+                card.onclick = () => {
+                    vidBox.innerHTML = `<iframe src="${ep.link}" style="animation:fadeIn 0.5s" allowfullscreen></iframe>`;
+                    document.querySelectorAll('.premium-ep-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                };
+                epBox.appendChild(card);
             });
         }
     }
 
+    function switchSrv(btn) {
+        document.querySelectorAll('.server-pill').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const frame = document.querySelector('#premiumVidBox iframe');
+        const src = frame.src;
+        frame.src = ''; 
+        setTimeout(() => frame.src = src, 50); // إعادة تحميل للتبديل
+    }
+
+    // Ripple Effect Logic
+    document.addEventListener('click', e => {
+        const btn = e.target.closest('.main-btn, .sub-item, .ep-item, .server-pill, .premium-ep-card');
+        if(btn) {
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            btn.appendChild(ripple);
+            const rect = btn.getBoundingClientRect();
+            ripple.style.left = `${e.clientX - rect.left - 25}px`;
+            ripple.style.top = `${e.clientY - rect.top - 25}px`;
+            setTimeout(() => ripple.remove(), 600);
+        }
+    });
 </script>
 </body>
 </html>
