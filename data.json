@@ -143,9 +143,7 @@
       "cat": "ramadan",
       "type": "series",
       "total_episodes": "30",
-      "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Darsh" }
-      ]
+      "episodes": []
     },
     {
       "id": 20,
@@ -155,7 +153,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Sawa-Sawa" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Sawa-Sawa"
+        }
       ]
     },
     {
@@ -166,7 +167,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Ali-clay" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Ali-clay"
+        }
       ]
     },
     {
@@ -177,7 +181,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ras-elaf3a" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ras-elaf3a"
+        }
       ]
     },
     {
@@ -188,7 +195,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Fakhr-El-Delta" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Fakhr-El-Delta"
+        }
       ]
     },
     {
@@ -199,7 +209,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=w-nensa-elli-kan" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=w-nensa-elli-kan"
+        }
       ]
     },
     {
@@ -210,7 +223,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ElMaddah-Ostorat-Al-Nehaya" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ElMaddah-Ostorat-Al-Nehaya"
+        }
       ]
     },
     {
@@ -221,7 +237,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ramez-level-elwa7sh" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ramez-level-elwa7sh"
+        }
       ]
     },
     {
@@ -232,7 +251,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=El-King" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=El-King"
+        }
       ]
     },
     {
@@ -243,7 +265,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=El-Set-Monalisa" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=El-Set-Monalisa"
+        }
       ]
     },
     {
@@ -254,7 +279,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Fan-Al-Harb" }
+        {
+          "num": "1",
+          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=Fan-Al-Harb"
+        }
       ]
     },
     {
@@ -345,7 +373,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://romeo311020.github.io/nsar-al-saed/" }
+        {
+          "num": "1",
+          "link": "https://romeo311020.github.io/nsar-al-saed/"
+        }
       ]
     },
     {
@@ -356,7 +387,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://romeo311020.github.io/Baba-Al-Majal-/" }
+        {
+          "num": "1",
+          "link": "https://romeo311020.github.io/Baba-Al-Majal-/"
+        }
       ]
     },
     {
@@ -1463,7 +1497,10 @@
       "type": "series",
       "total_episodes": "30",
       "episodes": [
-        { "num": "1", "link": "https://romeo311020.github.io/nsar-al-saed/" }
+        {
+          "num": "1",
+          "link": "https://romeo311020.github.io/nsar-al-saed/"
+        }
       ]
     },
     {
@@ -1484,12 +1521,40 @@
     }
   ],
   "categories": [
-    { "id": "egy1", "name": "أفلام مصرية 1", "parent": "movies" },
-    { "id": "egy2", "name": "أفلام مصرية 2", "parent": "movies" },
-    { "id": "christian", "name": "أفلام دينية مسيحية", "parent": "movies" },
-    { "id": "arabic", "name": "مسلسلات مصرية", "parent": "series" },
-    { "id": "ramadan", "name": "مسلسلات رمضان", "parent": "series" },
-    { "id": "music", "name": "مكتبة الأغاني", "parent": "music" },
-    { "id": "match", "name": "ملخصات المباريات", "parent": "matches" }
+    {
+      "id": "egy1",
+      "name": "أفلام مصرية 1",
+      "parent": "movies"
+    },
+    {
+      "id": "egy2",
+      "name": "أفلام مصرية 2",
+      "parent": "movies"
+    },
+    {
+      "id": "christian",
+      "name": "أفلام دينية مسيحية",
+      "parent": "movies"
+    },
+    {
+      "id": "arabic",
+      "name": "مسلسلات مصرية",
+      "parent": "series"
+    },
+    {
+      "id": "ramadan",
+      "name": "مسلسلات رمضان",
+      "parent": "series"
+    },
+    {
+      "id": "music",
+      "name": "مكتبة الأغاني",
+      "parent": "music"
+    },
+    {
+      "id": "match",
+      "name": "ملخصات المباريات",
+      "parent": "matches"
+    }
   ]
 }
