@@ -90,7 +90,7 @@
             border-radius: 10px; text-align: center; font-weight: 800; cursor: pointer;
         }
 
-        /* --- المشغل الأصلي --- */
+        /* --- المشغل الأصلي مع التحسينات --- */
         .player-view { 
             position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
             flex-direction: column; align-items: center; justify-content: center;
@@ -111,73 +111,6 @@
         .nav-item { text-align: center; color: rgba(255,255,255,0.5); cursor: pointer; flex: 1; }
         .nav-item i { font-size: 20px; display: block; }
         .nav-item.active { color: var(--accent); }
-
-        /* ======================================================
-           ✨ إضافات UI & Animation الجديدة (Add Only)
-           ====================================================== */
-
-        /* تحسينات عامة وتأثير الزووم في الخلفية */
-        html { scroll-behavior: smooth; }
-        body::before {
-            content: ''; position: fixed; inset: 0; z-index: -2;
-            background: radial-gradient(circle at center, #111421 0%, #040714 100%);
-            animation: bgZoom 20s infinite alternate ease-in-out;
-        }
-        @keyframes bgZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
-
-        /* أنيميشن كروت الأفلام */
-        .card { opacity: 0; transform: translateY(30px); }
-        .card.reveal { opacity: 1; transform: translateY(0); }
-        .card:hover {
-            transform: translateY(-12px) scale(1.06) !important;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow);
-            z-index: 10;
-        }
-        .card img { transition: transform 0.5s ease; }
-        .card:hover img { transform: scale(1.1); }
-
-        /* تحسين المشغل - Cinema Mode */
-        .player-view { 
-            backdrop-filter: blur(25px); background: rgba(0,0,0,0.85); 
-            transition: opacity 0.4s ease;
-        }
-        .video-wrapper {
-            transform: scale(0.95); opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 30px var(--accent-glow);
-        }
-        .player-view.active .video-wrapper { transform: scale(1); opacity: 1; }
-
-        /* خلفية المشغل الديناميكية */
-        .player-premium-bg {
-            position: absolute; inset: 0; z-index: -1;
-            background-size: cover; background-position: center;
-            filter: blur(45px) brightness(0.2); opacity: 0.8;
-        }
-
-        /* تحسين أزرار السيرفرات والحلقات */
-        .server-pill {
-            padding: 8px 22px; border-radius: 50px; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;
-            transition: all 0.3s ease; font-weight: 700;
-        }
-        .server-pill:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
-        .server-pill.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent-glow); }
-
-        .premium-ep-card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            padding: 12px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .premium-ep-card:hover { background: rgba(255,255,255,0.08); transform: translateX(-5px); border-color: var(--accent); }
-        .premium-ep-card.active { background: rgba(229, 184, 11, 0.15); border-color: var(--accent); }
-
-        /* تأثير Ripple عند الضغط */
-        .ripple {
-            position: absolute; background: rgba(255,255,255,0.3); border-radius: 50%;
-            transform: scale(0); animation: rippleEffect 0.6s linear; pointer-events: none;
-        }
-        @keyframes rippleEffect { to { transform: scale(4); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -229,23 +162,6 @@
 <!-- المشغل -->
 <div id="playerView" class="player-view">
     <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق</div>
-    
-    <!-- طبقة المشغل الاحترافية الجديدة (Add Only) -->
-    <div id="newPremiumUI" style="display:none; width:100%; height:100%; position:absolute; z-index:2005; flex-direction:column; align-items:center; overflow-y:auto; padding:20px; padding-top:60px;">
-        <div class="player-premium-bg" id="dynamicBg"></div>
-        <h2 style="font-size:20px; font-weight:900; margin-bottom:15px; text-align:center;">حصرياً <span id="dynTitle" style="color:var(--accent)"></span> على ROMEO TV</h2>
-        
-        <div style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-            <div class="server-pill active" onclick="switchSrv(this)">سيرفر 1</div>
-            <div class="server-pill" onclick="switchSrv(this)">سيرفر 2</div>
-            <div class="server-pill" onclick="switchSrv(this)">سيرفر 3</div>
-        </div>
-
-        <div class="video-wrapper" id="premiumVidBox"></div>
-
-        <div id="dynEpBox" style="width:100%; max-width:600px; margin-top:30px; display:flex; flex-direction:column; gap:10px;"></div>
-    </div>
-
     <div class="video-wrapper" id="videoContainer"></div>
 </div>
 
@@ -257,7 +173,6 @@
 </div>
 
 <script>
-    /* --- الكود الأصلي كما هو --- */
     let database = [];
     let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
 
@@ -265,6 +180,7 @@
         try {
             const response = await fetch('data.json');
             const data = await response.json();
+            // التعديل المطلوب: جلب المصفوفة من داخل كائن items لضمان عمل الكود[span_1](start_span)[span_1](end_span)
             database = data.items || []; 
             render(database);
         } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال"; }
@@ -279,11 +195,10 @@
             card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>`;
             card.onclick = () => {
                 if(item.type === 'series') openEpisodes(item);
-                else openPremiumPlayer(item, item.link);
+                else openPlayer(item.link);
             };
             grid.appendChild(card);
         });
-        revealCards();
     }
 
     function openEpisodes(item) {
@@ -296,7 +211,7 @@
                 const div = document.createElement('div');
                 div.className = 'ep-item';
                 div.innerText = ep.name || `الحلقة ${ep.num}`;
-                div.onclick = () => openPremiumPlayer(item, ep.link);
+                div.onclick = () => openPlayer(ep.link);
                 grid.appendChild(div);
             });
         }
@@ -304,20 +219,14 @@
 
     function openPlayer(link) {
         document.getElementById('playerView').style.display = 'flex';
-        setTimeout(() => document.getElementById('playerView').classList.add('active'), 50);
         document.getElementById('videoContainer').innerHTML = `
             <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
         `;
     }
 
     function closePlayer() {
-        document.getElementById('playerView').classList.remove('active');
-        document.getElementById('newPremiumUI').style.display = 'none';
-        setTimeout(() => {
-            document.getElementById('playerView').style.display = 'none';
-            document.getElementById('videoContainer').innerHTML = '';
-            document.getElementById('premiumVidBox').innerHTML = '';
-        }, 400);
+        document.getElementById('playerView').style.display = 'none';
+        document.getElementById('videoContainer').innerHTML = '';
     }
 
     function toggleSub(id) {
@@ -341,72 +250,6 @@
     }
 
     loadData();
-
-    /* ======================================================
-       🚀 دوال الأنيميشن والتشغيل الجديدة (Add Only)
-       ====================================================== */
-
-    function revealCards() {
-        const cards = document.querySelectorAll('.card');
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) entry.target.classList.add('reveal');
-            });
-        }, { threshold: 0.1 });
-        cards.forEach(c => observer.observe(c));
-    }
-
-    function openPremiumPlayer(item, link) {
-        const ui = document.getElementById('newPremiumUI');
-        ui.style.display = 'flex';
-        document.getElementById('dynamicBg').style.backgroundImage = `url('${item.img}')`;
-        document.getElementById('dynTitle').innerText = item.name;
-        
-        document.getElementById('playerView').style.display = 'flex';
-        setTimeout(() => document.getElementById('playerView').classList.add('active'), 50);
-
-        const vidBox = document.getElementById('premiumVidBox');
-        vidBox.innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
-
-        const epBox = document.getElementById('dynEpBox');
-        epBox.innerHTML = '';
-        if(item.episodes) {
-            item.episodes.forEach(ep => {
-                const card = document.createElement('div');
-                card.className = `premium-ep-card ${ep.link === link ? 'active' : ''}`;
-                card.innerHTML = `<span>${ep.name || 'الحلقة ' + ep.num}</span> <span>▶</span>`;
-                card.onclick = () => {
-                    vidBox.innerHTML = `<iframe src="${ep.link}" style="animation:fadeIn 0.5s" allowfullscreen></iframe>`;
-                    document.querySelectorAll('.premium-ep-card').forEach(c => c.classList.remove('active'));
-                    card.classList.add('active');
-                };
-                epBox.appendChild(card);
-            });
-        }
-    }
-
-    function switchSrv(btn) {
-        document.querySelectorAll('.server-pill').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        const frame = document.querySelector('#premiumVidBox iframe');
-        const src = frame.src;
-        frame.src = ''; 
-        setTimeout(() => frame.src = src, 50); // إعادة تحميل للتبديل
-    }
-
-    // Ripple Effect Logic
-    document.addEventListener('click', e => {
-        const btn = e.target.closest('.main-btn, .sub-item, .ep-item, .server-pill, .premium-ep-card');
-        if(btn) {
-            const ripple = document.createElement('span');
-            ripple.className = 'ripple';
-            btn.appendChild(ripple);
-            const rect = btn.getBoundingClientRect();
-            ripple.style.left = `${e.clientX - rect.left - 25}px`;
-            ripple.style.top = `${e.clientY - rect.top - 25}px`;
-            setTimeout(() => ripple.remove(), 600);
-        }
-    });
 </script>
 </body>
 </html>
