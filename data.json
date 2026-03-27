@@ -533,12 +533,7 @@
       "cat": "ramadan",
       "type": "series",
       "total_episodes": "30",
-      "episodes": [
-        {
-          "num": "1",
-          "link": "https://vid.mycima.cc/categories-cimawbas.php?cat=ramez-level-elwa7sh"
-        }
-      ]
+      "episodes": []
     },
     {
       "id": 27,
