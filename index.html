@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* --- الأساسيات الأصلية (بدون تغيير نهائياً) --- */
         :root {
@@ -79,7 +80,7 @@
         .card img { width: 100%; height: 140px; object-fit: cover; }
         .card-info { padding: 5px 4px; background: rgba(0,0,0,0.85); text-align: center; font-size: 9px; font-weight: 700; }
 
-        /* --- واجهة الحلقات --- */
+        /* --- واجهة الحلقات (التصميم الأصلي) --- */
         #episodesView {
             position: fixed; inset: 0; background: var(--main-bg); z-index: 1500; display: none;
             flex-direction: column; padding: 20px; overflow-y: auto;
@@ -90,52 +91,100 @@
             border-radius: 10px; text-align: center; font-weight: 800; cursor: pointer;
         }
 
-        /* --- المشغل المطور (التعديلات هنا) --- */
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        /* ✨ التعديلات الاحترافية لصفحة المشغل (Player View) ✨ */
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
         .player-view { 
             position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
-            flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 80px; overflow-y: auto;
+            flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden;
+            padding-bottom: 50px;
         }
+
+        /* 1. الخلفية الضبابية */
+        .player-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            filter: blur(40px) brightness(0.3);
+            transform: scale(1.1);
+            z-index: -1;
+            transition: opacity 1s ease;
+        }
+
+        /* 2. العنوان الاحترافي */
+        .player-header {
+            width: 100%; padding: 60px 20px 20px; text-align: center;
+            animation: fadeInDown 0.8s ease;
+        }
+        .player-header h1 {
+            font-size: 1.4rem; font-weight: 900;
+            background: linear-gradient(to bottom, #fff, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* 3. حاوية الفيديو المتطورة */
         .video-wrapper { 
-            width: 95%; max-width: 1000px; border-radius: 15px; overflow: hidden; 
-            box-shadow: 0 0 30px rgba(0,0,0,0.5); position: relative;
-            background: #000;
+            width: 95%; max-width: 900px; border-radius: 20px; 
+            overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px var(--accent-glow);
+            position: relative; transform: scale(0.9); opacity: 0;
+            animation: playerEntry 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+            background: #000; margin-bottom: 25px;
         }
-        iframe { width: 100%; aspect-ratio: 16/9; border: none; transition: opacity 0.5s ease; }
-        
-        /* تأثير الانتقال واللودر */
-        .iframe-loading { opacity: 0; }
-        .player-loader {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            display: none; color: var(--accent); font-size: 20px; z-index: 5;
+        @keyframes playerEntry { to { transform: scale(1); opacity: 1; } }
+
+        /* 4. أزرار السيرفرات */
+        .server-container {
+            display: flex; justify-content: center; gap: 10px;
+            width: 95%; max-width: 900px; margin-bottom: 30px; flex-wrap: wrap;
         }
-
-        .player-info-area { width: 95%; max-width: 1000px; margin-top: 15px; text-align: right; }
-        .player-title-text { font-size: 14px; font-weight: 800; margin-bottom: 15px; color: #fff; }
-        .player-title-text span { color: var(--accent); }
-
-        /* أزرار السيرفرات */
-        .servers-container {
-            display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 15px;
-            scrollbar-width: none; -ms-overflow-style: none;
-        }
-        .servers-container::-webkit-scrollbar { display: none; }
-
         .server-btn {
-            background: #1a1d29; color: #fff; border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 700;
-            white-space: nowrap; transition: var(--transition); font-size: 12px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 10px 18px; border-radius: 12px;
+            cursor: pointer; font-weight: 700; transition: var(--transition);
+            display: flex; align-items: center; gap: 8px; font-size: 11px;
         }
-        .server-btn:hover { transform: scale(1.05); border-color: var(--accent); color: var(--accent); }
-        .server-btn.active { 
+        .server-btn i { font-size: 14px; }
+        .server-btn:active { transform: scale(0.9); }
+        .server-btn.active {
             background: var(--accent); color: #000; border-color: var(--accent);
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
+        /* 5. قائمة الحلقات داخل المشغل */
+        .episodes-list-container {
+            width: 95%; max-width: 900px; text-align: right;
+            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;
+        }
+        .episodes-list-container h3 { margin-bottom: 15px; color: var(--accent); }
+        .episodes-vertical-list {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .ep-row {
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: var(--transition); border-right: 4px solid transparent;
+        }
+        .ep-row:hover { background: rgba(255,255,255,0.08); }
+        .ep-row.active {
+            background: rgba(229, 184, 11, 0.1); border-right-color: var(--accent);
+        }
+        .ep-row .play-icon { color: var(--accent); opacity: 0; transition: 0.3s; }
+        .ep-row.active .play-icon, .ep-row:hover .play-icon { opacity: 1; }
+
+        /* 6. اللودر (Loader) */
+        .player-loader {
+            position: absolute; inset: 0; background: #000;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10; display: none;
+        }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .back-nav-btn {
-            position: absolute; top: 20px; right: 20px; background: var(--accent);
-            padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 800; color: #000;
-            z-index: 2001;
+            position: absolute; top: 15px; right: 20px; background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 15px; border-radius: 50px; cursor: pointer; font-weight: 800; z-index: 2500;
         }
 
         .bottom-nav { 
@@ -188,25 +237,37 @@
 <div class="section-title" id="gridTitle">المعروض الآن</div>
 <div class="cards-grid" id="mainGrid"></div>
 
+<!-- واجهة الحلقات الأصلية (موجودة كاحتياط ولكن سيتم استخدام المشغل الجديد) -->
 <div id="episodesView">
     <div class="back-nav-btn" onclick="document.getElementById('episodesView').style.display='none'">✕ رجوع</div>
     <h2 id="seriesHeader" style="margin-top: 60px; text-align: center; color: var(--accent);"></h2>
     <div class="ep-grid" id="episodesGrid"></div>
 </div>
 
-<!-- المشغل المحدث -->
+<!-- 🎬 المشغل الاحترافي المحدث 🎬 -->
 <div id="playerView" class="player-view">
-    <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق</div>
+    <div class="player-bg" id="playerBg"></div>
+    <div class="back-nav-btn" onclick="closePlayer()">✕ رجوع</div>
     
-    <div class="video-wrapper">
-        <div id="playerLoader" class="player-loader">جاري التحميل...</div>
-        <div id="videoContainer"></div>
+    <div class="player-header">
+        <h1 id="playerMainTitle">حصرياً على ROMEO LIVE TV</h1>
     </div>
 
-    <div class="player-info-area">
-        <div class="player-title-text" id="currentPlayingTitle">حصرياً على <span>ROMEO LIVE TV</span></div>
-        <div class="servers-container" id="serversList">
-            <!-- تظهر الأزرار هنا ديناميكياً -->
+    <div class="video-wrapper" id="videoContainerMain">
+        <div class="player-loader" id="playerLoader"><div class="spinner"></div></div>
+        <iframe id="mainIframe" src="" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
+    </div>
+
+    <!-- أزرار السيرفرات -->
+    <div class="server-container" id="serverList">
+        <!-- سيتم توليدها برمجياً -->
+    </div>
+
+    <!-- قائمة الحلقات أسفل المشغل -->
+    <div class="episodes-list-container" id="playerEpisodesContainer" style="display: none;">
+        <h3>قائمة الحلقات</h3>
+        <div class="episodes-vertical-list" id="playerVerticalEpisodes">
+            <!-- سيتم توليد الحلقات برمجياً -->
         </div>
     </div>
 </div>
@@ -220,7 +281,7 @@
 
 <script>
     let database = [];
-    let currentItemName = "";
+    let currentItem = null;
 
     async function loadData() {
         try {
@@ -239,106 +300,114 @@
             card.className = 'card';
             card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>`;
             card.onclick = () => {
-                if(item.type === 'series') openEpisodes(item);
-                else openPlayer(item);
+                currentItem = item;
+                if(item.type === 'series') {
+                   // في المسلسلات نفتح المشغل مع أول حلقة تلقائياً
+                   openProfessionalPlayer(item.episodes[0].link, item.name, item.img, true);
+                } else {
+                   openProfessionalPlayer(item.link, item.name, item.img, false);
+                }
             };
             grid.appendChild(card);
         });
     }
 
-    function openEpisodes(item) {
-        document.getElementById('episodesView').style.display = 'flex';
-        document.getElementById('seriesHeader').innerText = item.name;
-        const grid = document.getElementById('episodesGrid');
-        grid.innerHTML = '';
-        if(item.episodes) {
-            item.episodes.forEach(ep => {
-                const div = document.createElement('div');
-                div.className = 'ep-item';
-                div.innerText = ep.name || `الحلقة ${ep.num}`;
-                // نمرر كائن الحلقة كأنه item للمشغل
-                div.onclick = () => openPlayer({ name: `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`, link: ep.link, servers: ep.servers });
-                grid.appendChild(div);
-            });
-        }
-    }
-
-    // الدالة المحدثة لتشغيل الفيديو ودعم السيرفرات
-    function openPlayer(item) {
+    // المنطق الجديد لتشغيل المشغل الاحترافي
+    function openProfessionalPlayer(link, title, image, isSeries) {
         const playerView = document.getElementById('playerView');
-        const serversList = document.getElementById('serversList');
-        const titleArea = document.getElementById('currentPlayingTitle');
+        const iframe = document.getElementById('mainIframe');
+        const bg = document.getElementById('playerBg');
+        const titleElement = document.getElementById('playerMainTitle');
         
-        currentItemName = item.name;
         playerView.style.display = 'flex';
-        titleArea.innerHTML = `حصرياً <span>(${item.name})</span> على ROMEO LIVE TV`;
+        bg.style.backgroundImage = `url(${image})`;
+        titleElement.innerText = `حصرياً ${title} على ROMEO LIVE TV`;
         
-        serversList.innerHTML = ''; // تنظيف الأزرار السابقة
+        // تغيير الرابط مع تأثير Fade
+        changeServer(link);
 
-        // التحقق من وجود سيرفرات متعددة
-        if (item.servers && Array.isArray(item.servers) && item.servers.length > 0) {
-            // استعادة آخر سيرفر تم اختياره لهذا المحتوى
-            const savedServer = localStorage.getItem(`last_srv_${item.name}`) || 0;
-            
-            item.servers.forEach((srv, index) => {
-                const btn = document.createElement('button');
-                btn.className = `server-btn ${index == savedServer ? 'active' : ''}`;
-                btn.innerText = `سيرفر ${index + 1}`;
-                btn.onclick = () => switchServer(srv, index, btn);
-                serversList.appendChild(btn);
-            });
-            
-            // تشغيل السيرفر المحفوظ أو الأول
-            loadIframe(item.servers[savedServer]);
+        // توليد السيرفرات
+        setupServers(link);
+
+        // إذا كان مسلسل، نعرض قائمة الحلقات
+        const epContainer = document.getElementById('playerEpisodesContainer');
+        if(isSeries && currentItem.episodes) {
+            epContainer.style.display = 'block';
+            renderVerticalEpisodes();
         } else {
-            // تشغيل الرابط الفردي كالمعتاد
-            loadIframe(item.link);
+            epContainer.style.display = 'none';
         }
     }
 
-    // دالة تغيير السيرفر مع الأنيميشن
-    function switchServer(link, index, btnElement) {
-        const allBtns = document.querySelectorAll('.server-btn');
-        const iframe = document.querySelector('#videoContainer iframe');
+    function setupServers(baseLink) {
+        const serverList = document.getElementById('serverList');
+        serverList.innerHTML = '';
+        
+        // تنظيف الرابط الأساسي من أي سيرفر قديم لإضافة السيرفر الجديد
+        let cleanLink = baseLink.split('?')[0];
+
+        for(let i=1; i<=4; i++) {
+            const btn = document.createElement('button');
+            btn.className = `server-btn ${i === 1 ? 'active' : ''}`;
+            btn.innerHTML = `<i class="fas fa-server"></i> Server ${i}`;
+            btn.onclick = function() {
+                // إزالة Active من الكل
+                document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // تغيير الرابط
+                const newServerLink = `${cleanLink}?server=${i}`;
+                changeServer(newServerLink);
+            };
+            serverList.appendChild(btn);
+        }
+    }
+
+    function changeServer(link) {
+        const iframe = document.getElementById('mainIframe');
         const loader = document.getElementById('playerLoader');
-
-        // تحديث حالة الأزرار
-        allBtns.forEach(b => b.classList.remove('active'));
-        btnElement.classList.add('active');
-
-        // حفظ الاختيار
-        localStorage.setItem(`last_srv_${currentItemName}`, index);
-
-        // أنيميشن الخروج
-        if(iframe) iframe.classList.add('iframe-loading');
-        loader.style.display = 'block';
+        
+        loader.style.display = 'flex';
+        iframe.style.opacity = '0';
+        iframe.style.transform = 'scale(0.95)';
 
         setTimeout(() => {
-            loadIframe(link);
+            iframe.src = link;
+            iframe.onload = () => {
+                loader.style.display = 'none';
+                iframe.style.opacity = '1';
+                iframe.style.transform = 'scale(1)';
+            };
         }, 300);
     }
 
-    // دالة بناء الـ Iframe
-    function loadIframe(link) {
-        const container = document.getElementById('videoContainer');
-        const loader = document.getElementById('playerLoader');
+    function renderVerticalEpisodes() {
+        const container = document.getElementById('playerVerticalEpisodes');
+        container.innerHTML = '';
         
-        container.innerHTML = `
-            <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" onload="onIframeLoad(this)"></iframe>
-        `;
-    }
-
-    // عند اكتمال تحميل الـ Iframe
-    function onIframeLoad(iframe) {
-        const loader = document.getElementById('playerLoader');
-        iframe.classList.remove('iframe-loading');
-        loader.style.display = 'none';
+        currentItem.episodes.forEach((ep, index) => {
+            const row = document.createElement('div');
+            row.className = `ep-row ${index === 0 ? 'active' : ''}`;
+            row.innerHTML = `
+                <span>${ep.name || 'الحلقة ' + ep.num}</span>
+                <i class="fas fa-play-circle play-icon"></i>
+            `;
+            row.onclick = function() {
+                document.querySelectorAll('.ep-row').forEach(r => r.classList.remove('active'));
+                this.classList.add('active');
+                changeServer(ep.link);
+                // إعادة ضبط السيرفرات لهذه الحلقة
+                setupServers(ep.link);
+                // سكرول للأعلى للمشغل
+                document.getElementById('playerView').scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            container.appendChild(row);
+        });
     }
 
     function closePlayer() {
         document.getElementById('playerView').style.display = 'none';
-        document.getElementById('videoContainer').innerHTML = '';
-        document.getElementById('serversList').innerHTML = '';
+        document.getElementById('mainIframe').src = '';
     }
 
     function toggleSub(id) {
