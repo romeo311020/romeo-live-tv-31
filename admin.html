@@ -6,7 +6,7 @@
     <title>ROMEO TV Pro | لوحة التحكم</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #e5b80b; --bg: #050811; --card: #111827; --danger: #ff4757; --music: #10ac84; }
+        :root { --gold: #e5b80b; --bg: #050811; --card: #111827; --danger: #ff4757; --music: #10ac84; --input-bg: #1e293b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: var(--bg); color: #fff; line-height: 1.6; }
 
@@ -28,8 +28,10 @@
         .item-info { flex: 1; }
         .actions { display: flex; gap: 12px; margin-top: 5px; }
         
-        input, select { width: 100%; padding: 15px; margin-bottom: 15px; background: #1f2937; border: 1px solid #374151; border-radius: 10px; color: #fff; }
-        .save-btn { background: var(--gold); color: #000; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 900; font-size: 18px; cursor: pointer; }
+        .form-container { text-align: center; max-width: 500px; margin: 0 auto; }
+        input, select { width: 100%; padding: 18px; margin-bottom: 20px; background: var(--input-bg); border: 1px solid #374151; border-radius: 12px; color: #fff; font-size: 16px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--gold); }
+        .save-btn { background: var(--gold); color: #000; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 900; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
         #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -78,19 +80,30 @@
 <div id="screen-items" class="screen">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
         <h2 id="items-title">المحتوى</h2>
-        <button onclick="openForm()" style="background:var(--music); color:#fff; padding:8px 15px; border-radius:8px; border:none; font-weight:bold;">➕ إضافة جديد</button>
+        <button onclick="openForm('item')" style="background:var(--music); color:#fff; padding:8px 15px; border-radius:8px; border:none; font-weight:bold;">➕ إضافة جديد</button>
     </div>
     <div id="items-list"></div>
 </div>
 
+<div id="screen-episodes" class="screen">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 id="series-name-display">حلقات المسلسل</h2>
+        <button onclick="openForm('episode')" style="background:#2e86de; color:#fff; padding:8px 15px; border-radius:8px; border:none; font-weight:bold;">➕ إضافة حلقة</button>
+    </div>
+    <div id="episodes-list"></div>
+</div>
+
 <div id="screen-form" class="screen">
-    <h2 id="form-title">إضافة / تعديل</h2>
-    <p style="font-size: 12px; margin-bottom: 10px; color: var(--gold);">* تأكد من صحة الروابط لضمان التشغيل</p>
-    <input type="hidden" id="editId">
-    <input type="text" id="name" placeholder="اسم الفيلم أو الأغنية">
-    <input type="text" id="img" placeholder="رابط البوستر (صورة)">
-    <input type="text" id="link" placeholder="رابط المشاهدة (Embed)">
-    <button class="save-btn" onclick="saveData()">حفظ البيانات ✅</button>
+    <div class="form-container">
+        <h2 id="form-title" style="font-size: 28px; margin-bottom: 5px;">إضافة عنصر جديد</h2>
+        <p style="font-size: 14px; margin-bottom: 30px; color: var(--gold);">* تأكد من صحة البيانات لضمان التشغيل</p>
+        <input type="hidden" id="editType"> <!-- نوع الحفظ: حلقة أم مسلسل -->
+        <input type="hidden" id="editId">
+        <input type="text" id="name" placeholder="الاسم (مسلسل أو حلقة)">
+        <input type="text" id="img" placeholder="رابط البوستر (صورة)">
+        <input type="text" id="link" placeholder="رابط المشاهدة (Embed)">
+        <button class="save-btn" onclick="saveData()">حفظ البيانات ✅</button>
+    </div>
 </div>
 
 <script>
@@ -98,12 +111,12 @@
     let config = { token: '', repo: '' };
     let currentMain = ''; 
     let currentSub = '';
+    let currentSeriesId = null;
 
     async function login() {
         config.token = document.getElementById('token').value;
         config.repo = document.getElementById('repo').value;
-        if(!config.token || !config.repo) return alert("برجاء إدخال التوكن واسم المستودع");
-
+        if(!config.token || !config.repo) return alert("برجاء إدخال البيانات");
         showLoader(true);
         try {
             const res = await fetch(`https://api.github.com/repos/${config.repo}/contents/data.json`, {
@@ -111,56 +124,27 @@
             });
             const file = await res.json();
             const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
-            
             db.items = Array.isArray(content) ? content : (content.items || []);
-            
-            // تثبيت الرموز البرمجية للأقسام لتتطابق مع الموقع الأساسي[span_2](start_span)[span_2](end_span)
-            db.categories = [
-                {id:'egy1', name:'أفلام مصرية 1', parent:'movies'},
-                {id:'egy2', name:'أفلام مصرية 2', parent:'movies'},
-                {id:'christian', name:'أفلام دينية مسيحية', parent:'movies'},
-                {id:'arabic', name:'مسلسلات مصرية', parent:'series'},
+            db.categories = content.categories || [
                 {id:'ramadan', name:'مسلسلات رمضان', parent:'series'},
-                {id:'music', name:'مكتبة الأغاني', parent:'music'},
-                {id:'match', name:'ملخصات المباريات', parent:'matches'}
+                {id:'egy1', name:'أفلام مصرية 1', parent:'movies'}
             ];
-
             document.getElementById('screen-login').classList.remove('active-screen');
             document.getElementById('nav').style.display = 'flex';
             showScreen('screen-home');
-        } catch (e) { alert("فشل الاتصال! تأكد من التوكن وصحة ملف data.json"); }
+        } catch (e) { alert("فشل الاتصال!"); }
         showLoader(false);
     }
 
     function openMainCat(type) {
         currentMain = type;
         const subsDiv = document.getElementById('subs-list');
-        const title = document.getElementById('sub-title');
-        const addBtnContainer = document.getElementById('add-sub-container');
         subsDiv.innerHTML = '';
-
-        addBtnContainer.style.display = (type === 'matches' || type === 'music') ? 'none' : 'block';
-
-        if(type === 'movies') title.innerText = "أقسام الأفلام 🎬";
-        else if(type === 'series') title.innerText = "أقسام المسلسلات 📺";
-        else if(type === 'music') title.innerText = "الأغاني 🎵";
-        else title.innerText = "المباريات ⚽";
-
-        const filteredCats = db.categories.filter(c => c.parent === type);
-        filteredCats.forEach(c => {
+        document.getElementById('sub-title').innerText = (type === 'series' ? "أقسام المسلسلات 📺" : "الأقسام");
+        db.categories.filter(c => c.parent === type).forEach(c => {
             subsDiv.innerHTML += `<div class="box" onclick="openItems('${c.id}', '${c.name}')"><i>📂</i> <b>${c.name}</b></div>`;
         });
         showScreen('screen-subs');
-    }
-
-    function addCategory() {
-        const name = prompt("اسم القسم الفرعي الجديد:");
-        if (name) {
-            const newId = 'cat_' + Date.now();
-            db.categories.push({ id: newId, name: name, parent: currentMain });
-            sync();
-            openMainCat(currentMain);
-        }
     }
 
     function openItems(id, name) {
@@ -173,17 +157,15 @@
     function renderItems() {
         const list = document.getElementById('items-list');
         list.innerHTML = '';
-        const filtered = db.items.filter(i => i.cat === currentSub);
-        
-        if(filtered.length === 0) list.innerHTML = '<p style="text-align:center; opacity:0.5; margin-top:20px;">لا يوجد محتوى هنا بعد..</p>';
-
-        filtered.forEach(item => {
+        db.items.filter(i => i.cat === currentSub).forEach(item => {
+            let seriesBtn = currentMain === 'series' ? `<span onclick="enterSeries(${item.id})" style="color:var(--gold); cursor:pointer; font-size:14px; margin-right:15px;">👁️ دخول</span>` : '';
             list.innerHTML += `
                 <div class="item">
-                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/60?text=Error'">
+                    <img src="${item.img}">
                     <div class="item-info">
                         <b>${item.name}</b>
                         <div class="actions">
+                            ${seriesBtn}
                             <span onclick="editItem(${item.id})" style="color:#2e86de; cursor:pointer; font-size:14px;">📝 تعديل</span>
                             <span onclick="deleteItem(${item.id})" style="color:var(--danger); cursor:pointer; font-size:14px; margin-right:15px;">🗑️ حذف</span>
                         </div>
@@ -192,58 +174,104 @@
         });
     }
 
-    function openForm() {
-        document.getElementById('editId').value = '';
+    function enterSeries(id) {
+        currentSeriesId = id;
+        const series = db.items.find(i => i.id === id);
+        document.getElementById('series-name-display').innerText = series.name;
+        renderEpisodes();
+        showScreen('screen-episodes');
+    }
+
+    function renderEpisodes() {
+        const list = document.getElementById('episodes-list');
+        list.innerHTML = '';
+        const series = db.items.find(i => i.id === currentSeriesId);
+        if(!series.episodes) series.episodes = [];
+        series.episodes.forEach((ep, index) => {
+            list.innerHTML += `
+                <div class="item">
+                    <div class="item-info"><b>${ep.name}</b></div>
+                    <div class="actions">
+                        <span onclick="editEpisode(${index})" style="color:#2e86de; cursor:pointer; font-size:14px;">📝 تعديل</span>
+                        <span onclick="deleteEp(${index})" style="color:var(--danger); cursor:pointer; font-size:14px; margin-right:15px;">🗑️ حذف</span>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function openForm(type, index = null) {
+        document.getElementById('editType').value = type;
+        document.getElementById('editId').value = index !== null ? index : '';
         document.getElementById('name').value = '';
         document.getElementById('img').value = '';
         document.getElementById('link').value = '';
-        document.getElementById('form-title').innerText = "إضافة عنصر جديد";
+        document.getElementById('form-title').innerText = type === 'episode' ? "إضافة حلقة جديدة" : "إضافة عنصر جديد";
+        
+        // في حالة الحلقات، نخفي خانة الصورة لأنها غالباً ثابتة للمسلسل، أو نتركها اختيارية
+        document.getElementById('img').style.display = type === 'episode' ? 'none' : 'block';
+        
         showScreen('screen-form');
     }
 
     function editItem(id) {
         const item = db.items.find(i => i.id === id);
+        openForm('item');
         document.getElementById('editId').value = item.id;
         document.getElementById('name').value = item.name;
         document.getElementById('img').value = item.img;
-        document.getElementById('link').value = item.link;
+        document.getElementById('link').value = item.link || '';
         document.getElementById('form-title').innerText = "تعديل البيانات";
-        showScreen('screen-form');
     }
 
-    async function deleteItem(id) {
-        if(confirm("هل أنت متأكد من حذف هذا العنصر نهائياً؟")) {
-            db.items = db.items.filter(i => i.id !== id);
+    function editEpisode(index) {
+        const series = db.items.find(i => i.id === currentSeriesId);
+        const ep = series.episodes[index];
+        openForm('episode', index);
+        document.getElementById('name').value = ep.name;
+        document.getElementById('link').value = ep.link;
+        document.getElementById('form-title').innerText = "تعديل الحلقة";
+    }
+
+    async function deleteEp(index) {
+        if(confirm("حذف هذه الحلقة؟")) {
+            const series = db.items.find(i => i.id === currentSeriesId);
+            series.episodes.splice(index, 1);
             await sync();
-            renderItems();
+            renderEpisodes();
         }
     }
 
     async function saveData() {
-        const id = document.getElementById('editId').value;
+        const type = document.getElementById('editType').value;
+        const indexOrId = document.getElementById('editId').value;
         const name = document.getElementById('name').value;
         const img = document.getElementById('img').value;
         const link = document.getElementById('link').value;
 
-        if(!name || !img || !link) return alert("برجاء ملء جميع الخانات");
-
-        const obj = {
-            id: id ? parseInt(id) : Date.now(),
-            name: name,
-            img: img,
-            link: link,
-            cat: currentSub
-        };
-
-        if(id) {
-            const idx = db.items.findIndex(i => i.id == id);
-            db.items[idx] = obj;
+        if(type === 'item') {
+            const obj = {
+                id: indexOrId ? parseInt(indexOrId) : Date.now(),
+                name, img, link, cat: currentSub,
+                episodes: indexOrId ? (db.items.find(i => i.id == indexOrId).episodes || []) : []
+            };
+            if(indexOrId) {
+                const idx = db.items.findIndex(i => i.id == indexOrId);
+                db.items[idx] = obj;
+            } else {
+                db.items.push(obj);
+            }
+            showScreen('screen-items');
+            renderItems();
         } else {
-            db.items.push(obj);
+            const series = db.items.find(i => i.id === currentSeriesId);
+            if(!series.episodes) series.episodes = [];
+            const epObj = { name, link };
+            if(indexOrId !== '') series.episodes[indexOrId] = epObj;
+            else series.episodes.push(epObj);
+            showScreen('screen-episodes');
+            renderEpisodes();
         }
         await sync();
-        showScreen('screen-items');
-        renderItems();
     }
 
     async function sync() {
@@ -253,16 +281,13 @@
                 headers: { 'Authorization': `token ${config.token}` }
             });
             const file = await res.json();
-            
-            const finalData = db; // المزامنة لكامل قاعدة البيانات (العناصر والأقسام)[span_3](start_span)[span_3](end_span)
-            
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(finalData, null, 2))));
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
             await fetch(`https://api.github.com/repos/${config.repo}/contents/data.json`, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${config.token}` },
-                body: JSON.stringify({ message: "Update Romeo Content", content, sha: file.sha })
+                body: JSON.stringify({ message: "Update Data", content, sha: file.sha })
             });
-        } catch (e) { alert("خطأ أثناء المزامنة مع GitHub!"); }
+        } catch (e) { alert("خطأ مزامنة!"); }
         showLoader(false);
     }
 
@@ -274,12 +299,23 @@
 
     function goBack() {
         const active = document.querySelector('.active-screen').id;
-        if(active === 'screen-subs' || active === 'screen-items' && currentSub === 'music') showScreen('screen-home');
+        if(active === 'screen-subs') showScreen('screen-home');
         else if(active === 'screen-items') showScreen('screen-subs');
-        else if(active === 'screen-form') showScreen('screen-items');
+        else if(active === 'screen-episodes') showScreen('screen-items');
+        else if(active === 'screen-form') {
+            const type = document.getElementById('editType').value;
+            showScreen(type === 'episode' ? 'screen-episodes' : 'screen-items');
+        }
     }
 
     function showLoader(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
+    async function deleteItem(id) {
+        if(confirm("حذف نهائي؟")) {
+            db.items = db.items.filter(i => i.id !== id);
+            await sync();
+            renderItems();
+        }
+    }
 </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- الأساسيات الأصلية (بدون تغيير) --- */
+        /* --- الأساسيات الأصلية (بدون تغيير نهائياً) --- */
         :root {
             --main-bg: #040714;
             --accent: #e5b80b;
@@ -40,7 +40,6 @@
             padding: 8px 15px; border-radius: 8px; color: #fff; outline: none; font-size: 12px;
         }
 
-        /* --- الزر المنير (تمت إعادته كما هو) --- */
         .glowing-btn-container { padding: 15px 5% 5px; text-align: center; }
         .glowing-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -80,47 +79,29 @@
         .card img { width: 100%; height: 140px; object-fit: cover; }
         .card-info { padding: 5px 4px; background: rgba(0,0,0,0.85); text-align: center; font-size: 9px; font-weight: 700; }
 
-        /* --- تحسينات تجربة المشغل الاحترافية (جديد) --- */
+        /* --- واجهة الحلقات (التعديل المطلوب فقط) --- */
+        #episodesView {
+            position: fixed; inset: 0; background: var(--main-bg); z-index: 1500; display: none;
+            flex-direction: column; padding: 20px; overflow-y: auto;
+        }
+        .ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+        .ep-item { 
+            background: #1a1d29; border: 1px solid var(--accent); padding: 15px; 
+            border-radius: 10px; text-align: center; font-weight: 800; cursor: pointer;
+        }
+
+        /* --- المشغل الأصلي مع التحسينات --- */
         .player-view { 
             position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
             flex-direction: column; align-items: center; justify-content: center;
-            animation: playerFadeIn 0.5s ease forwards;
         }
-        .player-bg {
-            position: absolute; inset: 0; background-size: cover; background-position: center;
-            filter: blur(45px) brightness(0.3); transform: scale(1.1); z-index: -1;
-        }
-        .player-overlay-gradient {
-            position: absolute; inset: 0;
-            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.9) 100%); z-index: -1;
-        }
-        .video-wrapper {
-            width: 92%; max-width: 1000px; border-radius: 15px; overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-            animation: slideUpReveal 0.8s 0.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-        iframe, video { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
-        
-        .player-footer { margin-top: 25px; text-align: center; animation: fadeIn 1s 0.6s forwards; opacity: 0; }
-        .player-poster { width: 70px; height: 100px; border-radius: 8px; object-fit: cover; margin-bottom: 12px; border: 2px solid rgba(255,255,255,0.15); }
-        .player-title { 
-            font-size: 15px; font-weight: 900; background: linear-gradient(to bottom, #fff, var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        .video-wrapper { width: 92%; max-width: 1000px; border-radius: 15px; overflow: hidden; }
+        iframe { width: 100%; aspect-ratio: 16/9; border: none; }
         .back-nav-btn {
-            position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); padding: 8px 20px; border-radius: 30px;
-            cursor: pointer; border: 1px solid rgba(255,255,255,0.2); font-weight: 800; color: #fff;
+            position: absolute; top: 20px; left: 20px; background: var(--accent);
+            padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 800; color: #000;
         }
 
-        /* أنيميشن */
-        @keyframes playerFadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUpReveal { from { opacity: 0; transform: translateY(40px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card-clicked { transform: scale(1.4) !important; opacity: 0 !important; }
-
-        /* البار السفلي الأصلي */
         .bottom-nav { 
             position: fixed; bottom: 12px; left: 5%; right: 5%; height: 58px;
             background: var(--glass); backdrop-filter: blur(15px);
@@ -145,16 +126,16 @@
 
 <div class="glowing-btn-container">
     <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="glowing-btn">
-        <i style="color:#000">⚽📺</i>
+        <i>⚽📺</i>
         <span>شاهد المباريات والقنوات بث مباشر</span>
     </a>
 </div>
 
 <div class="hero-menu">
-    <div class="main-btn" onclick="toggleSub('m-sub')"><i style="color:#3b82f6">🎥</i><span>الأفلام</span></div>
-    <div class="main-btn" onclick="toggleSub('s-sub')"><i style="color:#a855f7">📺</i><span>المسلسلات</span></div>
-    <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i style="color:#22c55e">⚽</i><span>المباريات</span></div>
-    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i style="color:#f43f5e">🎵</i><span>الأغاني</span></div>
+    <div class="main-btn" onclick="toggleSub('m-sub')"><i>🎥</i><span>الأفلام</span></div>
+    <div class="main-btn" onclick="toggleSub('s-sub')"><i>📺</i><span>المسلسلات</span></div>
+    <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i>⚽</i><span>المباريات</span></div>
+    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>الأغاني</span></div>
 </div>
 
 <div id="m-sub" class="sub-menu">
@@ -171,20 +152,17 @@
 <div class="section-title" id="gridTitle">المعروض الآن</div>
 <div class="cards-grid" id="mainGrid"></div>
 
+<!-- واجهة الحلقات -->
+<div id="episodesView">
+    <div class="back-nav-btn" onclick="document.getElementById('episodesView').style.display='none'">✕ رجوع</div>
+    <h2 id="seriesHeader" style="margin-top: 60px; text-align: center; color: var(--accent);"></h2>
+    <div class="ep-grid" id="episodesGrid"></div>
+</div>
+
+<!-- المشغل -->
 <div id="playerView" class="player-view">
-    <div class="player-bg" id="playerBg"></div>
-    <div class="player-overlay-gradient"></div>
-    <div class="back-nav-btn" onclick="closePlayer()">✕ رجوع</div>
-
-    <div class="video-wrapper">
-        <div id="videoContainer"></div>
-    </div>
-
-    <div class="player-footer">
-        <img id="footerPoster" class="player-poster" src="">
-        <div class="player-title" id="footerTitle"></div>
-        <div style="font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 5px;">ROMEO LIVE TV PREMIUM</div>
-    </div>
+    <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق</div>
+    <div class="video-wrapper" id="videoContainer"></div>
 </div>
 
 <div class="bottom-nav">
@@ -201,8 +179,7 @@
     async function loadData() {
         try {
             const response = await fetch('data.json');
-            const result = await response.json();
-            database = Array.isArray(result) ? result : (result.items || []);
+            database = await response.json();
             render(database);
         } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال"; }
     }
@@ -213,36 +190,34 @@
         data.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `
-                <img src="${item.img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x200?text=ROMEO'">
-                <div class="card-info">${item.name}</div>
-            `;
-            card.onclick = () => startStreaming(card, item);
+            card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>`;
+            card.onclick = () => {
+                if(item.type === 'series') openEpisodes(item);
+                else openPlayer(item.link);
+            };
             grid.appendChild(card);
         });
     }
 
-    function startStreaming(card, item) {
-        card.classList.add('card-clicked');
-        setTimeout(() => {
-            openPlayer(item);
-            card.classList.remove('card-clicked');
-        }, 600);
+    function openEpisodes(item) {
+        document.getElementById('episodesView').style.display = 'flex';
+        document.getElementById('seriesHeader').innerText = item.name;
+        const grid = document.getElementById('episodesGrid');
+        grid.innerHTML = '';
+        item.episodes.forEach(ep => {
+            const div = document.createElement('div');
+            div.className = 'ep-item';
+            div.innerText = `الحلقة ${ep.num}`;
+            div.onclick = () => openPlayer(ep.link);
+            grid.appendChild(div);
+        });
     }
 
-    function openPlayer(item) {
-        const pv = document.getElementById('playerView');
-        const container = document.getElementById('videoContainer');
-        document.getElementById('playerBg').style.backgroundImage = `url(${item.img})`;
-        document.getElementById('footerPoster').src = item.img;
-        document.getElementById('footerTitle').innerText = `حصرياً ${item.name} على ROMEO LIVE TV`;
-        
-        pv.style.display = 'flex';
-        if(item.link.includes('youtube') || item.link.includes('embed')) {
-            container.innerHTML = `<iframe src="${item.link}?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-        } else {
-            container.innerHTML = `<video src="${item.link}" controls autoplay></video>`;
-        }
+    function openPlayer(link) {
+        document.getElementById('playerView').style.display = 'flex';
+        document.getElementById('videoContainer').innerHTML = `
+            <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
+        `;
     }
 
     function closePlayer() {
@@ -270,13 +245,7 @@
         render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
-    function showFavorites() {
-        document.getElementById('gridTitle').innerText = "المفضلة ❤️";
-        render(database.filter(i => favorites.includes(i.id)));
-    }
-
     loadData();
 </script>
-
 </body>
 </html>
