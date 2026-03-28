@@ -1,505 +1,151 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROMEO LIVE TV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* --- الأساسيات الأصلية (بدون تغيير) --- */
-        :root {
-            --main-bg: #040714;
-            --accent: #e5b80b;
-            --accent-glow: rgba(229, 184, 11, 0.5);
-            --card-bg: #1a1d29;
-            --glass: rgba(15, 20, 35, 0.8);
-            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+<meta charset="UTF-8">
+<title>ROMEO LIVE TV</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--main-bg); color: #fff; overflow-x: hidden; font-size: 13px; transition: background 0.5s; scroll-behavior: smooth; }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family: Arial, sans-serif;
+  background: linear-gradient(130deg,#0a0f26,#1b243b,#0d1124);
+  background-size:400% 400%;
+  animation: bgShift 15s ease infinite;
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  text-align:center;
+  overflow:hidden;
+}
+@keyframes bgShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+.particle{position:absolute;width:4px;height:4px;background:white;border-radius:50%;opacity:0.6;box-shadow:0 0 6px #00bfff;animation:moveParticle linear infinite;}
+@keyframes moveParticle{0%{transform: translate(0,0);}100%{transform: translate(50px, -100vh);}}
 
-        header {
-            padding: 12px 5%; background: rgba(4, 7, 20, 0.8); backdrop-filter: blur(20px);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .logo-text { font-weight: 900; font-size: 1.2rem; color: #fff; letter-spacing: 1px; }
-        .logo-text span { color: var(--accent); }
-        
-        .download-app-btn {
-            background: linear-gradient(45deg, var(--accent), #ffea00);
-            color: #000; padding: 6px 15px; border-radius: 20px;
-            font-size: 11px; font-weight: 800; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(229, 184, 11, 0.3);
-            transition: var(--transition);
-        }
-        .download-app-btn:active { transform: scale(0.9); }
+.container{width:100%;max-width:380px;background:rgba(0,0,0,0.45);padding:25px 18px;border-radius:15px;box-shadow:0 0 25px rgba(0,0,0,0.6);backdrop-filter:blur(7px);position:relative;z-index:1;}
+.logo{width:110px;height:110px;margin:0 auto 15px auto;background:radial-gradient(circle,#ffcc00,#b38f00);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:32px;font-weight:bold;color:#0a0f26;animation: logoGlow 2s infinite alternate;}
+@keyframes logoGlow{0%{box-shadow:0 0 10px #ffcc00;}50%{box-shadow:0 0 20px #ffcc00;}100%{box-shadow:0 0 10px #ffcc00;}}
+h1{font-size:30px;margin-bottom:12px;color:#ffcf41;}
+.desc{font-size:17px;margin-bottom:20px;color:#e0e0e0;}
+.btn{display:flex;align-items:center;justify-content:center;padding:14px;margin-top:12px;font-size:19px;text-decoration:none;width:100%;border-radius:8px;transition:0.3s;color:#fff;cursor:pointer;}
+.btn:hover{ transform:scale(1.05); }
+.btn-login{ background:linear-gradient(90deg,#4e6ef2,#2c3ce6); }
+.btn-music{ background:linear-gradient(90deg,#b45dee,#7b31d4); }
+.btn-download{ background:linear-gradient(90deg,#26b5ff,#0c80c9); }
+.footer{font-size:13px;margin-top:18px;color:#ccc;}
+.whatsapp{position:fixed;bottom:25px;right:25px;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;justify-content:center;align-items:center;z-index:2;}
+.whatsapp img{ width:32px; }
 
-        /* --- تحسين البحث --- */
-        .search-area { padding: 15px 5% 5px; }
-        .search-input { 
-            width: 100%; background: #161922; border: 1px solid rgba(255,255,255,0.08); 
-            padding: 12px 20px; border-radius: 12px; color: #fff; outline: none; font-size: 13px;
-            transition: var(--transition);
-        }
-        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(229, 184, 11, 0.1); }
-
-        .glowing-btn-container { padding: 15px 5% 5px; text-align: center; }
-        .glowing-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            background: linear-gradient(90deg, #ffea00, var(--accent), #ffea00);
-            background-size: 200% auto;
-            color: #000; padding: 12px 25px; border-radius: 30px;
-            font-size: 13px; font-weight: 800; text-decoration: none;
-            box-shadow: 0 0 20px var(--accent-glow);
-            animation: glow-pulse 2s infinite, gradient-move 3s linear infinite;
-        }
-
-        @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 15px var(--accent-glow); } 50% { box-shadow: 0 0 30px var(--accent-glow); } }
-        @keyframes gradient-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-        .hero-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px 5%; }
-        .main-btn { 
-            height: 70px; border-radius: 12px; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; cursor: pointer; 
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            font-size: 11px; font-weight: 700; transition: var(--transition);
-        }
-        .main-btn:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); border-color: var(--accent); }
-        .main-btn i { font-size: 22px; margin-bottom: 4px; }
-
-        .sub-menu { display: none; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 5px 5%; animation: slideDown 0.4s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .sub-item { background: #1a1d29; padding: 12px; border-radius: 8px; text-align: center; font-size: 11px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); color: #fff; transition: var(--transition); }
-        .sub-item:hover { border-color: var(--accent); background: #252936; }
-
-        .section-title { padding: 20px 5% 10px; font-size: 16px; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 10px; }
-        .section-title::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 10px; }
-
-        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 10px 5% 120px; }
-        @media (min-width: 768px) { .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } }
-
-        /* --- تحسين الكروت (Cards) --- */
-        .card { 
-            background: var(--card-bg); border-radius: 12px; overflow: hidden; 
-            position: relative; transition: var(--transition); border: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer; transform-origin: center;
-        }
-        .card:hover { transform: scale(1.05); z-index: 2; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: var(--accent); }
-        .card img { width: 100%; height: 180px; object-fit: cover; transition: 0.5s; }
-        .card:hover img { filter: brightness(0.7); }
-        .card-info { padding: 8px 5px; background: linear-gradient(to top, #000, transparent); position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 10px; font-weight: 700; }
-
-        /* --- تحسين واجهة الحلقات (Episodes View) --- */
-        #episodesView {
-            position: fixed; inset: 0; background: var(--main-bg); z-index: 1500; display: none;
-            flex-direction: column; padding: 20px; overflow-y: auto; animation: slideUp 0.5s ease;
-        }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .ep-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
-        .ep-item { 
-            background: #1a1d29; border: 1px solid rgba(255,255,255,0.1); padding: 18px; 
-            border-radius: 12px; text-align: center; font-weight: 800; cursor: pointer; transition: var(--transition);
-        }
-        .ep-item:hover { background: var(--accent); color: #000; transform: scale(0.98); }
-
-        /* --- واجهة المشغل الاحترافية (Professional Player View) --- */
-        .player-view { 
-            position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
-            flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 50px;
-        }
-        
-        /* تأثير الخلفية الضبابية للمشغل */
-        .player-bg-blur {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            filter: blur(40px) brightness(0.3); opacity: 0.6; z-index: -1;
-            transform: scale(1.1); animation: bgMove 20s infinite alternate;
-        }
-        @keyframes bgMove { from { transform: scale(1.1) translateX(-10px); } to { transform: scale(1.2) translateX(10px); } }
-
-        .video-wrapper { 
-            width: 95%; max-width: 1000px; border-radius: 15px; overflow: hidden; 
-            margin-top: 80px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(229, 184, 11, 0.2);
-            animation: playerOpen 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        @keyframes playerOpen { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        iframe { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
-
-        .player-details { width: 95%; max-width: 1000px; margin-top: 25px; text-align: right; }
-        .player-title { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 10px; }
-        .player-title span { color: var(--accent); background: rgba(229, 184, 11, 0.1); padding: 2px 10px; border-radius: 5px; font-size: 12px; margin-right: 10px; vertical-align: middle; }
-        
-        /* قائمة الحلقات الأفقية تحت المشغل */
-        .player-episodes-slider {
-            width: 100%; display: flex; overflow-x: auto; gap: 10px; padding: 15px 0;
-            scrollbar-width: none; -ms-overflow-style: none;
-        }
-        .player-episodes-slider::-webkit-scrollbar { display: none; }
-        .mini-ep-card {
-            min-width: 100px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px 10px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.3s;
-        }
-        .mini-ep-card.active { border-color: var(--accent); background: rgba(229, 184, 11, 0.2); color: var(--accent); }
-        .mini-ep-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
-
-        .back-nav-btn {
-            position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-            padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 800; color: #fff; z-index: 2100;
-            transition: 0.3s; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .back-nav-btn:hover { background: var(--accent); color: #000; }
-
-        .bottom-nav { 
-            position: fixed; bottom: 15px; left: 5%; right: 5%; height: 65px;
-            background: rgba(15, 20, 35, 0.85); backdrop-filter: blur(20px);
-            display: flex; justify-content: space-around; align-items: center;
-            border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .nav-item { text-align: center; color: rgba(255,255,255,0.4); cursor: pointer; flex: 1; transition: 0.3s; position: relative; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 2px; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item.active::after { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; background: var(--accent); border-radius: 5px; box-shadow: 0 0 10px var(--accent); }
-
-        /* Skeleton Loading */
-        .skeleton { background: linear-gradient(90deg, #1a1d29 25%, #252936 50%, #1a1d29 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* --- إضافات ROMEO الجديدة لتحريك زر الإغلاق (Add Only) --- */
-        #playerView .back-nav-btn {
-            /* إخفاء الزر القديم من مكانه العلوي */
-            display: none !important;
-        }
-
-        .romeo-new-close-btn {
-            /* تنسيق الزر الجديد في الأسفل */
-            background: #1a1d29; border: 1px solid rgba(255,255,255,0.1); color: #fff;
-            padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 14px;
-            font-weight: bold; margin-top: 20px; transition: 0.3s; width: 100%; text-align: center;
-        }
-        .romeo-new-close-btn:hover { background: #ff0000; border-color: #ff0000; }
-
-        .romeo-exclusive-banner {
-            width: 100%; text-align: center; padding: 15px;
-            background: rgba(229, 184, 11, 0.05); border-radius: 12px; margin-bottom: 15px;
-        }
-        .romeo-exclusive-banner h2 { font-size: 16px; font-weight: 800; color: #fff; }
-        .romeo-exclusive-banner span { color: var(--accent); }
-        
-        .romeo-server-container {
-            display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;
-        }
-        .romeo-server-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; white-space: nowrap;
-        }
-        .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
-        
-    </style>
+/* إعلان الفيديو */
+#adPopup{position:fixed;top:0; left:0;width:100%; height:100%;background:rgba(0,0,0,0.95);display:none;justify-content:center;align-items:center;z-index:999;}
+.ad-box{position:relative;width:90%;max-width:450px;border-radius:15px;overflow:hidden;box-shadow:0 15px 50px rgba(0,0,0,0.8);border:2px solid #ffcf41;}
+.ad-box video{width:100%; display:block; border-radius:15px; box-shadow:0 5px 25px rgba(255,255,255,0.2);}
+#skipTimer{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.7);color:#ffcf41;padding:8px 16px;border-radius:12px;font-weight:bold;font-size:18px;
+  text-shadow:0 0 8px #ffcf41;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+@keyframes glow{0%{text-shadow:0 0 5px #ffcf41;}100%{text-shadow:0 0 15px #ffcf41;}}
+#skipBtn{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  padding:8px 20px;background:#ffcf41;color:#0a0f26;font-weight:bold;border:none;border-radius:50px;cursor:pointer;font-size:18px;
+  display:none;
+  box-shadow:0 0 15px #ffcf41;
+  transition:0.3s;
+}
+#skipBtn:hover{transform:scale(1.1);box-shadow:0 0 25px #ffcf41,0 0 35px #ffcf41;}
+#soundBtn{
+  position:absolute;top:50px;left:50%;transform:translateX(-50%);
+  padding:6px 14px;background:#0a0f26;color:#ffcf41;font-weight:bold;border:none;border-radius:50px;cursor:pointer;font-size:16px;
+  display:block;
+  box-shadow:0 0 10px #ffcf41;
+  transition:0.3s;
+}
+#soundBtn:hover{transform:scale(1.1);box-shadow:0 0 20px #ffcf41;}
+</style>
 </head>
+
 <body>
+<div id="particles"></div>
 
-<header>
-    <div class="logo-text">ROMEO <span>LIVE TV</span></div>
-    <a href="https://www.appcreator24.com/app3955137-obzs8n" class="download-app-btn">تنزيل التطبيق</a>
-</header>
+<div class="container">
+  <div class="logo">R</div>
+  <h1>ROMEO LIVE TV</h1>
+  <div class="desc">مرحباً بك في عالم ROMEO LIVE TV</div>
 
-<div class="search-area">
-    <input type="text" id="searchInput" class="search-input" placeholder="بحث عن أفلام، مسلسلات، عروض..." oninput="handleSearch()">
+  <div class="btn btn-login" onclick="showAd('https://romeo311020.github.io/ROMEO-LIVE-TV-New-/')">دخول الموقع</div>
+  <a href="https://romeo311020.github.io/romeo-music-" class="btn btn-music">الأغاني 🔥</a>
+  <a href="https://romeo311020.github.io/ROMEO-LIVE-TV.-apk1/" class="btn btn-download">تحميل التطبيق 📱</a>
+  <div class="footer">Powered by ROMEO LIVE TV</div>
 </div>
 
-<div class="glowing-btn-container">
-    <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="glowing-btn">
-        <i>⚽</i>
-        <span>شاهد المباريات والقنوات بث مباشر</span>
-    </a>
-</div>
+<a class="whatsapp" href="https://api.whatsapp.com/send?phone=201286716976" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+</a>
 
-<div class="hero-menu">
-    <div class="main-btn" onclick="toggleSub('m-sub')"><i>🎥</i><span>الأفلام</span></div>
-    <div class="main-btn" onclick="toggleSub('s-sub')"><i>📺</i><span>المسلسلات</span></div>
-    <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i>⚽</i><span>المباريات</span></div>
-    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>الأغاني</span></div>
-</div>
-
-<div id="m-sub" class="sub-menu">
-    <div class="sub-item" onclick="filterData('egy1', 'أفلام مصرية 1')">أفلام مصرية 1</div>
-    <div class="sub-item" onclick="filterData('egy2', 'أفلام مصرية 2')">أفلام مصرية 2</div>
-    <div class="sub-item" style="grid-column: span 2;" onclick="filterData('christian', 'أفلام دينية مسيحية')">أفلام دينية مسيحية ✝️</div>
-</div>
-
-<div id="s-sub" class="sub-menu">
-    <div class="sub-item" onclick="filterData('ramadan', 'رمضان 2026')">رمضان 2026</div>
-    <div class="sub-item" onclick="filterData('arabic', 'مسلسلات مصرية')">مسلسلات مصرية</div>
-</div>
-
-<div class="section-title" id="gridTitle">المعروض الآن</div>
-<div class="cards-grid" id="mainGrid">
-    <div class="card skeleton" style="height:180px"></div>
-    <div class="card skeleton" style="height:180px"></div>
-    <div class="card skeleton" style="height:180px"></div>
-</div>
-
-<div id="episodesView">
-    <div class="back-nav-btn" onclick="document.getElementById('episodesView').style.display='none'">✕ رجوع</div>
-    <h2 id="seriesHeader" style="margin-top: 80px; text-align: center; color: var(--accent); font-size: 24px;"></h2>
-    <div class="ep-grid" id="episodesGrid"></div>
-</div>
-
-<div id="playerView" class="player-view">
-    <div class="player-bg-blur" id="playerBlur"></div>
-    <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق العرض</div>
-    
-    
-<div id="videoContainerWrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-        <div id="romeoExclusiveBanner" class="romeo-exclusive-banner" style="width: 95%; max-width: 1000px; display: none;">
-            <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
-        </div>
-        <div class="video-wrapper" id="videoContainer" style="margin-top: 0;"></div>
-    </div>
-    
-    <div class="player-details">
-        
-<div id="romeoServerList" class="romeo-server-container">
-            <button class="romeo-server-btn active">سيرفر 1</button>
-            <button class="romeo-server-btn">سيرفر 2</button>
-            <button class="romeo-server-btn">سيرفر الاحتياطي</button>
-        </div>
-
-        <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
-            <button class="sub-item" onclick="window.open('https://wa.me/201286716976')">💬 أبلغ عن مشكلة</button>
-        </div>
-        
-        <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
-        <div class="player-episodes-slider" id="playerEpSlider"></div>
-        
-        
-<button class="romeo-new-close-btn" onclick="closePlayer()">✕ إغلاق العرض الآن</button>
-    </div>
-</div>
-
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="location.reload()"><i>🏠</i><span>الرئيسية</span></div>
-    <div class="nav-item" onclick="showFavorites()"><i>❤️</i><span>المفضلة</span></div>
-    <div class="nav-item" onclick="window.location.href='https://romeo311020.github.io/ROMEO-MATCH/'"><i>⚽</i><span>المباريات</span></div>
-    <div class="nav-item" onclick="window.open('https://wa.me/201286716976')"><i>💬</i><span>اطلب</span></div>
+<!-- إعلان الفيديو -->
+<div id="adPopup">
+  <div class="ad-box">
+    <video id="adVideo" autoplay playsinline>
+      <source src="https://raw.githubusercontent.com/romeo311020/romeo-live-tv-31/e1e58aa151973e1cdf083810606414fe7bed2e0b/ad.mp4" type="video/mp4">
+    </video>
+    <div id="skipTimer">5</div>
+    <button id="skipBtn" onclick="closeAd()">تخطي الإعلان ✖</button>
+    <button id="soundBtn" onclick="toggleSound()">🔊 كتم/تشغيل الصوت</button>
+  </div>
 </div>
 
 <script>
-    let database = [];
-    let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
+// Particles
+const particleContainer=document.getElementById('particles');
+for(let i=0;i<50;i++){
+  const p=document.createElement('div');
+  p.classList.add('particle');
+  p.style.top=Math.random()*window.innerHeight+'px';
+  p.style.left=Math.random()*window.innerWidth+'px';
+  p.style.animationDuration=(8+Math.random()*12)+'s';
+  particleContainer.appendChild(p);
+}
 
-    async function loadData() {
-        try {
-            const response = await fetch('data.json');
-            const data = await response.json();
-            database = data.items || []; 
-            setTimeout(() => render(database), 500); // تأخير بسيط لمحاكاة التحميل الفاخر
-        } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال بالسيرفر"; }
+// إعلان الفيديو مع عد تنازلي
+let targetLink="",countdown=5,countdownInterval;
+function showAd(link){
+  targetLink=link;
+  countdown=5;
+  document.getElementById("adPopup").style.display="flex";
+  document.getElementById("skipTimer").textContent=countdown;
+  document.getElementById("skipBtn").style.display="none";
+
+  countdownInterval=setInterval(()=>{
+    countdown--;
+    if(countdown>0){
+      document.getElementById("skipTimer").textContent=countdown;
+    } else {
+      clearInterval(countdownInterval);
+      document.getElementById("skipTimer").style.display="none";
+      document.getElementById("skipBtn").style.display="block";
     }
+  },1000);
+}
 
-    function render(data) {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = '';
-        if(data.length === 0) {
-            grid.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 50px; opacity: 0.5;">لا توجد نتائج تطابق بحثك..</div>`;
-            return;
-        }
-        data.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.style.animation = `slideUp 0.5s ease forwards ${index * 0.05}s`;
-            card.innerHTML = `<img src="${item.img}" loading="lazy"><div class="card-info">${item.name}</div>`;
-            card.onclick = () => {
-                if(item.type === 'series') openEpisodes(item);
-                else openPlayer(item.link, item.name, item.img);
-            };
-            grid.appendChild(card);
-        });
-    }
+function closeAd(){
+  document.getElementById("adPopup").style.display="none";
+  window.location.href=targetLink;
+}
 
-    function openEpisodes(item) {
-        const ev = document.getElementById('episodesView');
-        ev.style.display = 'flex';
-        document.getElementById('seriesHeader').innerText = item.name;
-        const grid = document.getElementById('episodesGrid');
-        grid.innerHTML = '';
-        if(item.episodes) {
-            item.episodes.forEach((ep, idx) => {
-                const div = document.createElement('div');
-                div.className = 'ep-item';
-                div.style.animation = `slideDown 0.4s ease forwards ${idx * 0.05}s`;
-                div.innerText = ep.name || `الحلقة ${ep.num}`;
-                div.onclick = () => {
-                    ev.style.display = 'none';
-                    openPlayer(ep.link, `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`, item.img, item.episodes);
-                };
-                grid.appendChild(div);
-            });
-        }
-    }
+// تشغيل/كتم الصوت
+const adVideo = document.getElementById("adVideo");
+function toggleSound(){
+  adVideo.muted = !adVideo.muted;
+  document.getElementById("soundBtn").textContent = adVideo.muted ? "🔇 كتم" : "🔊 تشغيل الصوت";
+}
 
-    // تطوير المشغل ليدعم حلقات المسلسل بالداخل
-    function openPlayer(link, name, img, episodes = null) {
-        const pv = document.getElementById('playerView');
-        pv.style.display = 'flex';
-        pv.scrollTop = 0;
-        document.body.style.overflow = 'hidden';
-        
-        document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
-        document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
-        
-        document.getElementById('videoContainer').innerHTML = `
-            <div class="skeleton" style="aspect-ratio:16/9; position:absolute; width:100%; z-index:-1;"></div>
-            <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
-        `;
-
-        // إذا كان مسلسلاً، اعرض الحلقات بالأسفل
-        const slider = document.getElementById('playerEpSlider');
-        const sliderTitle = document.getElementById('epSliderTitle');
-        slider.innerHTML = '';
-        
-        if(episodes && episodes.length > 0) {
-            sliderTitle.style.display = 'block';
-            episodes.forEach(ep => {
-                const epCard = document.createElement('div');
-                epCard.className = `mini-ep-card ${link === ep.link ? 'active' : ''}`;
-                epCard.innerText = ep.name || `الحلقة ${ep.num}`;
-                epCard.onclick = () => openPlayer(ep.link, name, img, episodes);
-                slider.appendChild(epCard);
-            });
-        } else {
-            sliderTitle.style.display = 'none';
-        }
-    }
-
-    function closePlayer() {
-        document.getElementById('playerView').style.display = 'none';
-        document.getElementById('videoContainer').innerHTML = '';
-        document.body.style.overflow = 'auto';
-    }
-
-    function toggleSub(id) {
-        const menu = document.getElementById(id);
-        const isVisible = menu.style.display === 'grid';
-        hideAllSubs();
-        if (!isVisible) {
-            menu.style.display = 'grid';
-        }
-    }
-
-    function hideAllSubs() { document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none'); }
-
-    function filterData(cat, title) {
-        document.getElementById('gridTitle').innerText = title;
-        window.scrollTo({top: 0, behavior: 'smooth'});
-        render(database.filter(i => i.cat === cat));
-        hideAllSubs();
-    }
-
-    function handleSearch() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        render(database.filter(i => i.name.toLowerCase().includes(q)));
-    }
-
-    // إضافة تأثير التمرير للـ Header
-    window.onscroll = () => {
-        const header = document.querySelector('header');
-        if (window.scrollY > 50) header.style.background = "rgba(4, 7, 20, 0.95)";
-        else header.style.background = "rgba(4, 7, 20, 0.8)";
-    };
-
-    loadData();
-
-    /* --- كود JavaScript إضافي لتحديث المحتوى الجديد (Add Only) --- */
-    function romeoNewScriptControl() {
-        // نسخ اسم الفيلم للبانر العلوي
-        const originalOpenPlayer = window.openPlayer;
-        window.openPlayer = function(link, name, img, episodes = null) {
-            originalOpenPlayer(link, name, img, episodes);
-            
-            // إضافة كود جديد لتحديث البانر
-            const banner = document.getElementById('romeoExclusiveBanner');
-            const filmNameSpan = document.getElementById('romeoFilmName');
-            if (banner && filmNameSpan) {
-                filmNameSpan.innerText = name;
-                banner.style.display = 'block';
-            }
-        };
-
-        // تفعيل أزرار السيرفرات الجديدة
-        const serverBtns = document.querySelectorAll('.romeo-server-btn');
-        serverBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                serverBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                // هنا يمكن إضافة كود تغيير رابط السيرفر مستقبلاً
-                alert('جاري التبديل إلى ' + this.innerText);
-            });
-        });
-    }
-    romeoNewScriptControl();
+// يغلق الإعلان تلقائياً بعد انتهاء الفيديو
+adVideo.onended=function(){ closeAd(); };
 </script>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 سكربت قراءة السيرفرات التلقائي (Add Only) 🆕 -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<script>
-/**
- * هذا الكود يراقب فتح المشغل ويبحث عن السيرفرات المتاحة في ملف JSON 
- * (link, link2, link3) ويقوم بتحديث الأزرار لتشغيل الروابط فوراً.
- */
-(function romeoServerLinker() {
-    function updateServers() {
-        const player = document.getElementById('playerView');
-        if (player.style.display === 'none') return;
-
-        const currentName = document.getElementById('playerContentTitle').innerText.replace('حصرياً', '').trim();
-        let targetItem = null;
-
-        // البحث في قاعدة البيانات
-        database.forEach(item => {
-            if (item.type === 'series' && item.episodes) {
-                item.episodes.forEach(ep => {
-                    const epName = `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`;
-                    if (epName === currentName) targetItem = ep;
-                });
-            } else if (item.name === currentName) {
-                targetItem = item;
-            }
-        });
-
-        if (!targetItem) return;
-
-        // ربط الأزرار بالروابط
-        const btns = document.querySelectorAll('.romeo-server-btn');
-        const links = [targetItem.link, targetItem.link2, targetItem.link3];
-        const iframe = document.querySelector('#videoContainer iframe');
-
-        btns.forEach((btn, index) => {
-            if (links[index] && links[index] !== "") {
-                btn.style.display = 'inline-block';
-                btn.onclick = function() {
-                    btns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    if(iframe) iframe.src = links[index];
-                };
-            } else {
-                btn.style.display = 'none'; // إخفاء الزر إذا لم يوجد رابط للسيرفر
-            }
-        });
-    }
-
-    // تشغيل الفحص عند كل عملية نقر لضمان تحديث الأزرار عند فتح أي فيديو
-    document.addEventListener('click', () => setTimeout(updateServers, 400));
-})();
-</script>
-
 </body>
 </html>
