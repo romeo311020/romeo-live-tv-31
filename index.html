@@ -169,23 +169,35 @@
         .skeleton { background: linear-gradient(90deg, #1a1d29 25%, #252936 50%, #1a1d29 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* --- إضافات ROMEO الجديدة (CSS إضافي فقط) --- */
-        .exclusive-banner {
+        /* --- إضافات ROMEO الجديدة لتحريك زر الإغلاق (Add Only) --- */
+        #playerView .back-nav-btn {
+            /* إخفاء الزر القديم من مكانه العلوي */
+            display: none !important;
+        }
+
+        .romeo-new-close-btn {
+            /* تنسيق الزر الجديد في الأسفل */
+            background: #1a1d29; border: 1px solid rgba(255,255,255,0.1); color: #fff;
+            padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 14px;
+            font-weight: bold; margin-top: 20px; transition: 0.3s; width: 100%; text-align: center;
+        }
+        .romeo-new-close-btn:hover { background: #ff0000; border-color: #ff0000; }
+
+        .romeo-exclusive-banner {
             width: 100%; text-align: center; padding: 15px;
-            background: linear-gradient(90deg, transparent, rgba(229,184,11,0.1), transparent);
-            border-bottom: 1px solid rgba(229,184,11,0.2); margin-bottom: 10px;
+            background: rgba(229, 184, 11, 0.05); border-radius: 12px; margin-bottom: 15px;
         }
-        .exclusive-banner h2 { font-size: 16px; font-weight: 800; color: #fff; }
-        .exclusive-banner .film-name { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .romeo-exclusive-banner h2 { font-size: 16px; font-weight: 800; color: #fff; }
+        .romeo-exclusive-banner span { color: var(--accent); }
         
-        .server-container {
-            display: flex; gap: 8px; margin: 15px 0; overflow-x: auto; padding-bottom: 5px;
+        .romeo-server-container {
+            display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;
         }
-        .server-btn {
-            background: #161922; border: 1px solid rgba(255,255,255,0.1); color: #fff;
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; white-space: nowrap; transition: 0.3s;
+        .romeo-server-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; white-space: nowrap;
         }
-        .server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
+        .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
         
     </style>
 </head>
@@ -239,33 +251,36 @@
 </div>
 
 <div id="playerView" class="player-view">
-    <!-- إضافة الجملة الحصرية فوق المشغل -->
-    <div id="exclusiveHeader" class="exclusive-banner">
-        <h2>حصرياً <span id="dynamicFilmName" class="film-name">...</span> على ROMEO LIVE TV</h2>
-    </div>
-
     <div class="player-bg-blur" id="playerBlur"></div>
     <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق العرض</div>
     
-    <div class="video-wrapper" id="videoContainer"></div>
     
-    <!-- إضافة السيرفرات تحت المشغل -->
+<div id="videoContainerWrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        <div id="romeoExclusiveBanner" class="romeo-exclusive-banner" style="width: 95%; max-width: 1000px; display: none;">
+            <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
+        </div>
+        <div class="video-wrapper" id="videoContainer" style="margin-top: 0;"></div>
+    </div>
+    
     <div class="player-details">
-        <div id="serverList" class="server-container">
-            <button class="server-btn active">سيرفر 1</button>
-            <button class="server-btn">سيرفر 2</button>
-            <button class="server-btn">سيرفر الاحتياطي</button>
+        
+<div id="romeoServerList" class="romeo-server-container">
+            <button class="romeo-server-btn active">سيرفر 1</button>
+            <button class="romeo-server-btn">سيرفر 2</button>
+            <button class="romeo-server-btn">سيرفر الاحتياطي</button>
         </div>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-        
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
             <button class="sub-item" onclick="window.open('https://wa.me/201286716976')">💬 أبلغ عن مشكلة</button>
         </div>
         
-        <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">قائمة الحلقات (تغيير سريع):</h3>
+        <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
         <div class="player-episodes-slider" id="playerEpSlider"></div>
+        
+        
+<button class="romeo-new-close-btn" onclick="closePlayer()">✕ إغلاق العرض الآن</button>
     </div>
 </div>
 
@@ -277,7 +292,6 @@
 </div>
 
 <script>
-    /* --- الكود الأصلي بالكامل (بدون تغيير) --- */
     let database = [];
     let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
 
@@ -286,7 +300,7 @@
             const response = await fetch('data.json');
             const data = await response.json();
             database = data.items || []; 
-            setTimeout(() => render(database), 500); 
+            setTimeout(() => render(database), 500); // تأخير بسيط لمحاكاة التحميل الفاخر
         } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال بالسيرفر"; }
     }
 
@@ -331,6 +345,7 @@
         }
     }
 
+    // تطوير المشغل ليدعم حلقات المسلسل بالداخل
     function openPlayer(link, name, img, episodes = null) {
         const pv = document.getElementById('playerView');
         pv.style.display = 'flex';
@@ -340,16 +355,12 @@
         document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
         document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
         
-        /* إضافة تحديث الاسم في الهيدر الجديد */
-        if(document.getElementById('dynamicFilmName')) {
-            document.getElementById('dynamicFilmName').innerText = name;
-        }
-
         document.getElementById('videoContainer').innerHTML = `
             <div class="skeleton" style="aspect-ratio:16/9; position:absolute; width:100%; z-index:-1;"></div>
             <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
         `;
 
+        // إذا كان مسلسلاً، اعرض الحلقات بالأسفل
         const slider = document.getElementById('playerEpSlider');
         const sliderTitle = document.getElementById('epSliderTitle');
         slider.innerHTML = '';
@@ -397,6 +408,7 @@
         render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
+    // إضافة تأثير التمرير للـ Header
     window.onscroll = () => {
         const header = document.querySelector('header');
         if (window.scrollY > 50) header.style.background = "rgba(4, 7, 20, 0.95)";
@@ -405,87 +417,87 @@
 
     loadData();
 
-    /* --- دوال إضافية جديدة لدعم السيرفرات (Add Only) --- */
-    function romeoNewServerControl() {
-        const btns = document.querySelectorAll('.server-btn');
-        btns.forEach(btn => {
+    /* --- كود JavaScript إضافي لتحديث المحتوى الجديد (Add Only) --- */
+    function romeoNewScriptControl() {
+        // نسخ اسم الفيلم للبانر العلوي
+        const originalOpenPlayer = window.openPlayer;
+        window.openPlayer = function(link, name, img, episodes = null) {
+            originalOpenPlayer(link, name, img, episodes);
+            
+            // إضافة كود جديد لتحديث البانر
+            const banner = document.getElementById('romeoExclusiveBanner');
+            const filmNameSpan = document.getElementById('romeoFilmName');
+            if (banner && filmNameSpan) {
+                filmNameSpan.innerText = name;
+                banner.style.display = 'block';
+            }
+        };
+
+        // تفعيل أزرار السيرفرات الجديدة
+        const serverBtns = document.querySelectorAll('.romeo-server-btn');
+        serverBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                btns.forEach(b => b.classList.remove('active'));
+                serverBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                // هنا يمكن إضافة منطق تغيير الرابط إذا وجد في الداتا
+                // هنا يمكن إضافة كود تغيير رابط السيرفر مستقبلاً
+                alert('جاري التبديل إلى ' + this.innerText);
             });
         });
     }
-    romeoNewServerControl();
+    romeoNewScriptControl();
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافات الجديدة (Add Only) - يتم ربطها تلقائياً بالوظائف الحالية 🆕 -->
+<!-- 🆕 سكربت قراءة السيرفرات التلقائي (Add Only) 🆕 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
 <script>
 /**
- * دالة روميو الذكية: 
- * تقوم بمراقبة التغييرات في واجهة المشغل لربط السيرفرات بالبيانات الحقيقية 
- * دون تعديل الكود الأصلي.
+ * هذا الكود يراقب فتح المشغل ويبحث عن السيرفرات المتاحة في ملف JSON 
+ * (link, link2, link3) ويقوم بتحديث الأزرار لتشغيل الروابط فوراً.
  */
-(function() {
-    // مراقبة الداتا والبحث عن العنصر الذي يتم تشغيله حالياً
-    function injectRomeoServersLogic() {
-        // العثور على العنصر المشغل حالياً من خلال العنوان المكتوب في الصفحة
-        const currentTitleElement = document.getElementById('playerContentTitle');
-        if (!currentTitleElement || document.getElementById('playerView').style.display === 'none') return;
+(function romeoServerLinker() {
+    function updateServers() {
+        const player = document.getElementById('playerView');
+        if (player.style.display === 'none') return;
 
-        const fullName = currentTitleElement.innerText.replace('حصرياً', '').trim();
-        
-        // البحث في الداتا عن هذا العنصر (سواء كان فيلم أو حلقة مسلسل)
-        let activeItem = null;
+        const currentName = document.getElementById('playerContentTitle').innerText.replace('حصرياً', '').trim();
+        let targetItem = null;
 
+        // البحث في قاعدة البيانات
         database.forEach(item => {
-            if (item.type === 'series') {
+            if (item.type === 'series' && item.episodes) {
                 item.episodes.forEach(ep => {
                     const epName = `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`;
-                    if (epName === fullName) activeItem = ep;
+                    if (epName === currentName) targetItem = ep;
                 });
-            } else {
-                if (item.name === fullName) activeItem = item;
+            } else if (item.name === currentName) {
+                targetItem = item;
             }
         });
 
-        if (!activeItem) return;
+        if (!targetItem) return;
 
-        // تحديث أزرار السيرفرات بناءً على الروابط المتاحة في activeItem
-        const serverContainer = document.getElementById('serverList');
-        serverContainer.innerHTML = ''; // تنظيف الأزرار القديمة
+        // ربط الأزرار بالروابط
+        const btns = document.querySelectorAll('.romeo-server-btn');
+        const links = [targetItem.link, targetItem.link2, targetItem.link3];
+        const iframe = document.querySelector('#videoContainer iframe');
 
-        const availableServers = [
-            { id: 1, label: "سيرفر 1", link: activeItem.link },
-            { id: 2, label: "سيرفر 2", link: activeItem.link2 },
-            { id: 3, label: "سيرفر الاحتياطي", link: activeItem.link3 }
-        ];
-
-        availableServers.forEach(srv => {
-            if (srv.link && srv.link !== "") {
-                const btn = document.createElement('button');
-                btn.className = 'server-btn';
-                if (document.querySelector('#videoContainer iframe').src === srv.link) {
-                    btn.classList.add('active');
-                }
-                btn.innerText = srv.label;
+        btns.forEach((btn, index) => {
+            if (links[index] && links[index] !== "") {
+                btn.style.display = 'inline-block';
                 btn.onclick = function() {
-                    document.querySelector('#videoContainer iframe').src = srv.link;
-                    document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
+                    btns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    if(iframe) iframe.src = links[index];
                 };
-                serverContainer.appendChild(btn);
+            } else {
+                btn.style.display = 'none'; // إخفاء الزر إذا لم يوجد رابط للسيرفر
             }
         });
     }
 
-    // تشغيل الدالة تلقائياً عند النقر في أي مكان (لضمان التقاط حدث فتح المشغل)
-    document.addEventListener('click', function() {
-        setTimeout(injectRomeoServersLogic, 300);
-    });
+    // تشغيل الفحص عند كل عملية نقر لضمان تحديث الأزرار عند فتح أي فيديو
+    document.addEventListener('click', () => setTimeout(updateServers, 400));
 })();
 </script>
 
