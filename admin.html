@@ -331,5 +331,129 @@
         }
     }
 </script>
+
+<!-- ======================================================== -->
+<!-- الكود الجديد المضاف (إضافة حقول السيرفرات وإصلاح زر الرجوع) -->
+<!-- ======================================================== -->
+
+<script>
+    // 1. إضافة حقول السيرفرات الجديدة في الفورم ديناميكياً عند تحميل الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
+        const formContainer = document.querySelector('#screen-form .form-container');
+        const saveBtn = formContainer.querySelector('.save-btn');
+        
+        // إنشاء الحقول الجديدة
+        const input2 = document.createElement('input');
+        input2.type = 'text';
+        input2.id = 'link2';
+        input2.placeholder = 'رابط سيرفر 2 (إختياري)';
+        
+        const input3 = document.createElement('input');
+        input3.type = 'text';
+        input3.id = 'link3';
+        input3.placeholder = 'رابط سيرفر 3 (إختياري)';
+        
+        // إضافتهم قبل زر الحفظ
+        formContainer.insertBefore(input2, saveBtn);
+        formContainer.insertBefore(input3, saveBtn);
+
+        // تعديل وظيفة زر الحفظ لتستخدم الدالة الجديدة المضافة بالأسفل
+        saveBtn.setAttribute('onclick', 'saveDataNew()');
+    });
+
+    // 2. دالة حفظ جديدة تدعم السيرفرات الثلاثة (بدون تعديل الدالة القديمة)
+    async function saveDataNew() {
+        const type = document.getElementById('editType').value;
+        const indexOrId = document.getElementById('editId').value;
+        const name = document.getElementById('name').value;
+        const img = document.getElementById('img').value;
+        const link = document.getElementById('link').value;
+        const link2 = document.getElementById('link2').value;
+        const link3 = document.getElementById('link3').value;
+
+        if(type === 'item') {
+            const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
+            const obj = {
+                id: indexOrId ? parseInt(indexOrId) : Date.now(),
+                name, 
+                img, 
+                link,
+                link2: link2 || "",
+                link3: link3 || "",
+                cat: currentSub,
+                type: currentMain === 'series' ? 'series' : 'movie',
+                episodes: existingItem ? (existingItem.episodes || []) : []
+            };
+            if(indexOrId) {
+                const idx = db.items.findIndex(i => i.id == indexOrId);
+                db.items[idx] = obj;
+            } else {
+                db.items.push(obj);
+            }
+            showScreen('screen-items');
+            renderItems();
+        } else {
+            const series = db.items.find(i => i.id === currentSeriesId);
+            if(!series.episodes) series.episodes = [];
+            
+            const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
+            const epObj = { 
+                num: epNum, 
+                name: name, 
+                link: link,
+                link2: link2 || "",
+                link3: link3 || ""
+            };
+
+            if(indexOrId !== '') series.episodes[indexOrId] = epObj;
+            else series.episodes.push(epObj);
+            
+            showScreen('screen-episodes');
+            renderEpisodes();
+        }
+        await sync();
+    }
+
+    // 3. إصلاح زر الرجوع (Fix goBack)
+    // الكود القديم فيه خطأ في أسماء الـ IDs (كان مكتوب 'home' بدلاً من 'screen-home')
+    // سنقوم بإعادة تعريف الوظيفة لإصلاح المسارات
+    function goBackFixed() {
+        const active = document.querySelector('.active-screen').id;
+        if(active === 'screen-subs') showScreen('screen-home');
+        else if(active === 'screen-items') showScreen('screen-subs');
+        else if(active === 'screen-episodes') showScreen('screen-items');
+        else if(active === 'screen-form') {
+            const type = document.getElementById('editType').value;
+            showScreen(type === 'episode' ? 'screen-episodes' : 'screen-items');
+        }
+    }
+    // تغيير وظيفة الزر في الهيدر لتستخدم النسخة المصلحة
+    document.getElementById('backBtn').onclick = goBackFixed;
+
+    // 4. تحديث وظائف التعديل لتمسح وتضع بيانات السيرفرات الجديدة
+    const oldEditItem = editItem;
+    editItem = function(id) {
+        oldEditItem(id);
+        const item = db.items.find(i => i.id === id);
+        document.getElementById('link2').value = item.link2 || '';
+        document.getElementById('link3').value = item.link3 || '';
+    };
+
+    const oldEditEpisode = editEpisode;
+    editEpisode = function(index) {
+        oldEditEpisode(index);
+        const series = db.items.find(i => i.id === currentSeriesId);
+        const ep = series.episodes[index];
+        document.getElementById('link2').value = ep.link2 || '';
+        document.getElementById('link3').value = ep.link3 || '';
+    };
+
+    const oldOpenForm = openForm;
+    openForm = function(type, index = null) {
+        oldOpenForm(type, index);
+        document.getElementById('link2').value = '';
+        document.getElementById('link3').value = '';
+    }
+</script>
 </body>
 </html>
