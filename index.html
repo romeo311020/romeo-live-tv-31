@@ -417,13 +417,16 @@
     romeoNewServerControl();
 </script>
 
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 🆕 الإصلاح الجديد المضاف (Add Only) لضمان عمل فيديو الدعاية 🆕 -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+
 <style>
-    /* ستايل فيديو الدعاية ليكون بملء الشاشة تماماً فوق المشغل */
     #romeoPromoContainer {
         position: fixed;
         inset: 0;
         background: #000;
-        z-index: 3000;
+        z-index: 9999; /* أعلى قيمة لضمان الظهور */
         display: none;
         align-items: center;
         justify-content: center;
@@ -431,59 +434,76 @@
     #romeoPromoVideo {
         width: 100vw;
         height: 100vh;
-        object-fit: fill; /* ليملأ الشاشة طولاً وعرضاً */
+        object-fit: fill;
     }
 </style>
 
 <div id="romeoPromoContainer">
-    <video id="romeoPromoVideo" playsinline muted>
+    <video id="romeoPromoVideo" playsinline webkit-playsinline>
+        <!-- الرابط المباشر الصحيح للمشغل -->
         <source src="https://lh3.googleusercontent.com/u/0/d/1pbBqCyWmFXeSagFLQz1Aa_4IMSjope0G=tiny-download" type="video/mp4">
     </video>
 </div>
 
 <script>
-    // دالة جديدة تماماً للتحكم في عرض الدعاية قبل الدالة الأصلية
-    function romeoAdMaster(finalLink, finalName, finalImg, finalEpisodes) {
+    // وظيفة جديدة لإصلاح التشغيل
+    function romeoAdFixer(finalLink, finalName, finalImg, finalEpisodes) {
         const promoBox = document.getElementById('romeoPromoContainer');
         const promoVid = document.getElementById('romeoPromoVideo');
         
-        // إظهار حاوية الفيديو
+        // إظهار الحاوية
         promoBox.style.display = 'flex';
         
-        // تشغيل فيديو الدعاية (مع تفعيل الصوت برمجياً)
-        promoVid.muted = false;
-        promoVid.play().catch(e => {
-            console.log("Autoplay blocked, trying muted");
-            promoVid.muted = true;
-            promoVid.play();
-        });
+        // إعادة تحميل الفيديو للتأكد من الرابط
+        promoVid.load();
+        
+        // محاولة التشغيل مع كتم الصوت أولاً لتجنب حظر المتصفح
+        promoVid.muted = true;
+        
+        let playPromise = promoVid.play();
 
-        // عند انتهاء الفيديو تلقائياً
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // بدأ التشغيل بنجاح، الآن نلغي كتم الصوت
+                promoVid.muted = false;
+            }).catch(error => {
+                // فشل التشغيل التلقائي بسبب سياسة المتصفح، سنظهره صامتاً
+                console.log("Autoplay check: Muted only");
+                promoVid.play();
+            });
+        }
+
+        // عند انتهاء الفيديو
         promoVid.onended = function() {
             promoBox.style.display = 'none';
-            // استدعاء الدالة الأصلية الموجودة في كودك بدون أي تعديل عليها
-            window.openPlayerOriginal(finalLink, finalName, finalImg, finalEpisodes);
-        };
-    }
-
-    // إضافة وظيفة "النقر" الجديدة لجميع الكروت دون تغيير الكود القديم
-    function injectRomeoAd() {
-        const interval = setInterval(() => {
-            if (typeof window.openPlayer === 'function' && !window.openPlayerOriginal) {
-                // حفظ النسخة الأصلية من الدالة
-                window.openPlayerOriginal = window.openPlayer;
-                
-                // استبدال الدالة بدالة الدعاية
-                window.openPlayer = function(l, n, i, e) {
-                    romeoAdMaster(l, n, i, e);
-                };
-                clearInterval(interval);
+            if (window.openPlayerOriginal) {
+                window.openPlayerOriginal(finalLink, finalName, finalImg, finalEpisodes);
             }
-        }, 500);
+        };
+        
+        // حالة طوارئ: إذا فشل الفيديو تماماً في التحميل بعد 5 ثوانٍ، افتح الفيلم
+        setTimeout(() => {
+            if (promoBox.style.display === 'flex' && promoVid.currentTime === 0) {
+                 promoBox.style.display = 'none';
+                 window.openPlayerOriginal(finalLink, finalName, finalImg, finalEpisodes);
+            }
+        }, 5000);
     }
 
-    // تشغيل نظام حقن الإعلان
-    injectRomeoAd();
+    // ربط النظام الجديد
+    function injectRomeoNewLogic() {
+        const checker = setInterval(() => {
+            if (typeof window.openPlayer === 'function' && !window.openPlayerOriginal) {
+                window.openPlayerOriginal = window.openPlayer;
+                window.openPlayer = function(l, n, i, e) {
+                    romeoAdFixer(l, n, i, e);
+                };
+                clearInterval(checker);
+            }
+        }, 300);
+    }
+
+    injectRomeoNewLogic();
 </script>
 </body>
 </html>
