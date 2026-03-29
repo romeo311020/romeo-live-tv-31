@@ -255,7 +255,7 @@
                 img, 
                 link, 
                 cat: currentSub,
-                type: currentMain === 'series' ? 'series' : 'movie', 
+                type: currentMain === 'series' ? 'series' : 'movie',
                 episodes: indexOrId ? (db.items.find(i => i.id == indexOrId).episodes || []) : []
             };
             if(indexOrId) {
@@ -330,51 +330,35 @@
     }
 </script>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافات الجديدة: خانة رابط التحميل ونوع المحتوى (Add Only) 🆕 -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
 <script>
-    // 1. إضافة الحقول الجديدة ديناميكياً عند تحميل الصفحة في الفورم
-    (function romeoAddDownloadFields() {
+    window.addEventListener('DOMContentLoaded', () => {
         const formContainer = document.querySelector('#screen-form .form-container');
         const saveBtn = formContainer.querySelector('.save-btn');
+        
+        const input2 = document.createElement('input');
+        input2.type = 'text';
+        input2.id = 'link2';
+        input2.placeholder = 'رابط سيرفر 2 (إختياري)';
+        
+        const input3 = document.createElement('input');
+        input3.type = 'text';
+        input3.id = 'link3';
+        input3.placeholder = 'رابط سيرفر 3 (إختياري)';
+        
+        formContainer.insertBefore(input2, saveBtn);
+        formContainer.insertBefore(input3, saveBtn);
 
-        // إنشاء حقل اختيار نوع المحتوى
-        const selectType = document.createElement('select');
-        selectType.id = 'downloadContentType';
-        selectType.innerHTML = `
-            <option value="movie">نوع المحتوى: فيلم</option>
-            <option value="episode">نوع المحتوى: حلقة</option>
-            <option value="music">نوع المحتوى: أغنية</option>
-            <option value="other">نوع المحتوى: آخر</option>
-        `;
+        saveBtn.setAttribute('onclick', 'saveDataNew()');
+    });
 
-        // إنشاء حقل رابط التحميل
-        const inputDownload = document.createElement('input');
-        inputDownload.type = 'text';
-        inputDownload.id = 'downloadUrl';
-        inputDownload.placeholder = 'رابط التحميل المباشر (Download URL)';
-
-        // إدراج الحقول قبل زر الحفظ
-        formContainer.insertBefore(selectType, saveBtn);
-        formContainer.insertBefore(inputDownload, saveBtn);
-
-        // تغيير وظيفة زر الحفظ لاستخدام الدالة الجديدة المحدثة
-        saveBtn.setAttribute('onclick', 'saveDataWithDownload()');
-    })();
-
-    // 2. دالة حفظ جديدة تدعم بيانات التحميل (بدون تعديل الدالة القديمة)
-    async function saveDataWithDownload() {
+    async function saveDataNew() {
         const type = document.getElementById('editType').value;
         const indexOrId = document.getElementById('editId').value;
         const name = document.getElementById('name').value;
         const img = document.getElementById('img').value;
         const link = document.getElementById('link').value;
-        
-        // جلب بيانات الحقول الجديدة
-        const downloadUrl = document.getElementById('downloadUrl').value;
-        const contentType = document.getElementById('downloadContentType').value;
+        const link2 = document.getElementById('link2').value;
+        const link3 = document.getElementById('link3').value;
 
         if(type === 'item') {
             const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
@@ -382,9 +366,9 @@
                 id: indexOrId ? parseInt(indexOrId) : Date.now(),
                 name, 
                 img, 
-                link, 
-                download_url: downloadUrl || "", // الحقل الجديد
-                content_type: contentType,       // الحقل الجديد
+                link,
+                link2: link2 || "",
+                link3: link3 || "",
                 cat: currentSub,
                 type: currentMain === 'series' ? 'series' : 'movie',
                 episodes: existingItem ? (existingItem.episodes || []) : []
@@ -406,8 +390,8 @@
                 num: epNum, 
                 name: name, 
                 link: link,
-                download_url: downloadUrl || "", // الحقل الجديد
-                content_type: contentType        // الحقل الجديد
+                link2: link2 || "",
+                link3: link3 || ""
             };
 
             if(indexOrId !== '') series.episodes[indexOrId] = epObj;
@@ -419,31 +403,134 @@
         await sync();
     }
 
-    // 3. تحديث وظائف التعديل لتعبئة الحقول الجديدة بالبيانات الموجودة
-    const originalEditItem = editItem;
+    function goBackFixed() {
+        const active = document.querySelector('.active-screen').id;
+        if(active === 'screen-subs') showScreen('screen-home');
+        else if(active === 'screen-items') showScreen('screen-subs');
+        else if(active === 'screen-episodes') showScreen('screen-items');
+        else if(active === 'screen-form') {
+            const type = document.getElementById('editType').value;
+            showScreen(type === 'episode' ? 'screen-episodes' : 'screen-items');
+        }
+    }
+    document.getElementById('backBtn').onclick = goBackFixed;
+
+    const oldEditItem = editItem;
     editItem = function(id) {
-        originalEditItem(id);
+        oldEditItem(id);
         const item = db.items.find(i => i.id === id);
-        document.getElementById('downloadUrl').value = item.download_url || '';
-        document.getElementById('downloadContentType').value = item.content_type || 'movie';
+        document.getElementById('link2').value = item.link2 || '';
+        document.getElementById('link3').value = item.link3 || '';
     };
 
-    const originalEditEpisode = editEpisode;
+    const oldEditEpisode = editEpisode;
     editEpisode = function(index) {
-        originalEditEpisode(index);
+        oldEditEpisode(index);
         const series = db.items.find(i => i.id === currentSeriesId);
         const ep = series.episodes[index];
-        document.getElementById('downloadUrl').value = ep.download_url || '';
-        document.getElementById('downloadContentType').value = ep.content_type || 'episode';
+        document.getElementById('link2').value = ep.link2 || '';
+        document.getElementById('link3').value = ep.link3 || '';
     };
 
-    const originalOpenForm = openForm;
+    const oldOpenForm = openForm;
     openForm = function(type, index = null) {
-        originalOpenForm(type, index);
-        document.getElementById('downloadUrl').value = '';
-        // تعيين النوع الافتراضي بناء على سياق الإضافة
-        document.getElementById('downloadContentType').value = type === 'episode' ? 'episode' : 'movie';
-    };
+        oldOpenForm(type, index);
+        document.getElementById('link2').value = '';
+        document.getElementById('link3').value = '';
+    }
+</script>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 🆕 الإضافة الجديدة: رابط التحميل فقط 🆕 -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+
+<script>
+    (function addDownloadFeature() {
+        // 1. إضافة خانة إدخال رابط التحميل في شاشة الفورم
+        const container = document.querySelector('#screen-form .form-container');
+        const saveBtn = container.querySelector('.save-btn');
+        
+        const dlInput = document.createElement('input');
+        dlInput.id = 'download_url';
+        dlInput.placeholder = 'رابط التحميل المباشر (إختياري)';
+        
+        // وضع الخانة قبل زر الحفظ مباشرة
+        container.insertBefore(dlInput, saveBtn);
+
+        // 2. تحديث وظيفة الحفظ النهائية لدعم حقل التحميل
+        // نقوم بتبديل وظيفة saveDataNew بوظيفة تدعم الحقل الإضافي
+        window.saveDataFinal = async function() {
+            const type = document.getElementById('editType').value;
+            const indexOrId = document.getElementById('editId').value;
+            const name = document.getElementById('name').value;
+            const img = document.getElementById('img').value;
+            const link = document.getElementById('link').value;
+            const link2 = document.getElementById('link2').value;
+            const link3 = document.getElementById('link3').value;
+            const downloadUrl = document.getElementById('download_url').value;
+
+            if(type === 'item') {
+                const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
+                const obj = {
+                    id: indexOrId ? parseInt(indexOrId) : Date.now(),
+                    name, img, link,
+                    link2: link2 || "",
+                    link3: link3 || "",
+                    download_url: downloadUrl || "",
+                    cat: currentSub,
+                    type: currentMain === 'series' ? 'series' : 'movie',
+                    episodes: existingItem ? (existingItem.episodes || []) : []
+                };
+                if(indexOrId) {
+                    const idx = db.items.findIndex(i => i.id == indexOrId);
+                    db.items[idx] = obj;
+                } else {
+                    db.items.push(obj);
+                }
+                showScreen('screen-items');
+                renderItems();
+            } else {
+                const series = db.items.find(i => i.id === currentSeriesId);
+                if(!series.episodes) series.episodes = [];
+                const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
+                const epObj = { 
+                    num: epNum, name: name, link: link,
+                    link2: link2 || "",
+                    link3: link3 || "",
+                    download_url: downloadUrl || ""
+                };
+                if(indexOrId !== '') series.episodes[indexOrId] = epObj;
+                else series.episodes.push(epObj);
+                showScreen('screen-episodes');
+                renderEpisodes();
+            }
+            await sync();
+        };
+
+        saveBtn.setAttribute('onclick', 'saveDataFinal()');
+
+        // 3. ربط حقل التحميل بعمليات التعديل (فتح البيانات القديمة)
+        const currentEditItem = editItem;
+        editItem = function(id) {
+            currentEditItem(id);
+            const item = db.items.find(i => i.id === id);
+            document.getElementById('download_url').value = item.download_url || '';
+        };
+
+        const currentEditEp = editEpisode;
+        editEpisode = function(index) {
+            currentEditEp(index);
+            const series = db.items.find(i => i.id === currentSeriesId);
+            const ep = series.episodes[index];
+            document.getElementById('download_url').value = ep.download_url || '';
+        };
+
+        const currentOpenForm = openForm;
+        openForm = function(type, index = null) {
+            currentOpenForm(type, index);
+            document.getElementById('download_url').value = '';
+        };
+    })();
 </script>
 
 </body>
