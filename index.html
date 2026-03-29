@@ -36,7 +36,6 @@
         }
         .download-app-btn:active { transform: scale(0.9); }
 
-        /* --- تحسين البحث --- */
         .search-area { padding: 15px 5% 5px; }
         .search-input { 
             width: 100%; background: #161922; border: 1px solid rgba(255,255,255,0.08); 
@@ -80,7 +79,6 @@
         .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 10px 5% 120px; }
         @media (min-width: 768px) { .cards-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } }
 
-        /* --- تحسين الكروت (Cards) --- */
         .card { 
             background: var(--card-bg); border-radius: 12px; overflow: hidden; 
             position: relative; transition: var(--transition); border: 1px solid rgba(255,255,255,0.05);
@@ -91,7 +89,6 @@
         .card:hover img { filter: brightness(0.7); }
         .card-info { padding: 8px 5px; background: linear-gradient(to top, #000, transparent); position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 10px; font-weight: 700; }
 
-        /* --- تحسين واجهة الحلقات (Episodes View) --- */
         #episodesView {
             position: fixed; inset: 0; background: var(--main-bg); z-index: 1500; display: none;
             flex-direction: column; padding: 20px; overflow-y: auto; animation: slideUp 0.5s ease;
@@ -105,13 +102,11 @@
         }
         .ep-item:hover { background: var(--accent); color: #000; transform: scale(0.98); }
 
-        /* --- واجهة المشغل الاحترافية (Professional Player View) --- */
         .player-view { 
             position: fixed; inset: 0; background: #000; z-index: 2000; display: none;
             flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 50px;
         }
         
-        /* تأثير الخلفية الضبابية للمشغل */
         .player-bg-blur {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
@@ -133,7 +128,6 @@
         .player-title { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 10px; }
         .player-title span { color: var(--accent); background: rgba(229, 184, 11, 0.1); padding: 2px 10px; border-radius: 5px; font-size: 12px; margin-right: 10px; vertical-align: middle; }
         
-        /* قائمة الحلقات الأفقية تحت المشغل */
         .player-episodes-slider {
             width: 100%; display: flex; overflow-x: auto; gap: 10px; padding: 15px 0;
             scrollbar-width: none; -ms-overflow-style: none;
@@ -165,18 +159,12 @@
         .nav-item.active { color: var(--accent); }
         .nav-item.active::after { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; background: var(--accent); border-radius: 5px; box-shadow: 0 0 10px var(--accent); }
 
-        /* Skeleton Loading */
         .skeleton { background: linear-gradient(90deg, #1a1d29 25%, #252936 50%, #1a1d29 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* --- إضافات ROMEO الجديدة لتحريك زر الإغلاق (Add Only) --- */
-        #playerView .back-nav-btn {
-            /* إخفاء الزر القديم من مكانه العلوي */
-            display: none !important;
-        }
+        #playerView .back-nav-btn { display: none !important; }
 
         .romeo-new-close-btn {
-            /* تنسيق الزر الجديد في الأسفل */
             background: #1a1d29; border: 1px solid rgba(255,255,255,0.1); color: #fff;
             padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 14px;
             font-weight: bold; margin-top: 20px; transition: 0.3s; width: 100%; text-align: center;
@@ -198,6 +186,36 @@
             padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; white-space: nowrap;
         }
         .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
+
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        /* 🆕 الكود الجديد: تنسيق زر التحميل الذهبي (Add Only) 🆕 */
+        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+        .dynamic-download-btn {
+            display: none; /* مخفي افتراضياً */
+            width: 100%;
+            background: linear-gradient(135deg, #b8860b 0%, #8b6508 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            text-decoration: none;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.2);
+            cursor: pointer;
+        }
+        .dynamic-download-btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
+        }
+        .dynamic-download-btn i {
+            margin-left: 8px;
+            font-size: 18px;
+        }
         
     </style>
 </head>
@@ -254,8 +272,7 @@
     <div class="player-bg-blur" id="playerBlur"></div>
     <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق العرض</div>
     
-    
-<div id="videoContainerWrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+    <div id="videoContainerWrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
         <div id="romeoExclusiveBanner" class="romeo-exclusive-banner" style="width: 95%; max-width: 1000px; display: none;">
             <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
         </div>
@@ -264,11 +281,18 @@
     
     <div class="player-details">
         
-<div id="romeoServerList" class="romeo-server-container">
+        <div id="romeoServerList" class="romeo-server-container">
             <button class="romeo-server-btn active">سيرفر 1</button>
             <button class="romeo-server-btn">سيرفر 2</button>
             <button class="romeo-server-btn">سيرفر الاحتياطي</button>
         </div>
+
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <!-- 🆕 الكود الجديد: عنصر زر التحميل (Add Only) 🆕 -->
+        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+        <a id="dynamicDownloadBtn" class="dynamic-download-btn" href="#" target="_blank">
+            <span id="downloadBtnText">تحميل</span>
+        </a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -279,8 +303,7 @@
         <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
         <div class="player-episodes-slider" id="playerEpSlider"></div>
         
-        
-<button class="romeo-new-close-btn" onclick="closePlayer()">✕ إغلاق العرض الآن</button>
+        <button class="romeo-new-close-btn" onclick="closePlayer()">✕ إغلاق العرض الآن</button>
     </div>
 </div>
 
@@ -300,7 +323,7 @@
             const response = await fetch('data.json');
             const data = await response.json();
             database = data.items || []; 
-            setTimeout(() => render(database), 500); // تأخير بسيط لمحاكاة التحميل الفاخر
+            setTimeout(() => render(database), 500);
         } catch (e) { document.getElementById('gridTitle').innerText = "خطأ في الاتصال بالسيرفر"; }
     }
 
@@ -345,7 +368,6 @@
         }
     }
 
-    // تطوير المشغل ليدعم حلقات المسلسل بالداخل
     function openPlayer(link, name, img, episodes = null) {
         const pv = document.getElementById('playerView');
         pv.style.display = 'flex';
@@ -360,7 +382,6 @@
             <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
         `;
 
-        // إذا كان مسلسلاً، اعرض الحلقات بالأسفل
         const slider = document.getElementById('playerEpSlider');
         const sliderTitle = document.getElementById('epSliderTitle');
         slider.innerHTML = '';
@@ -408,7 +429,6 @@
         render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
-    // إضافة تأثير التمرير للـ Header
     window.onscroll = () => {
         const header = document.querySelector('header');
         if (window.scrollY > 50) header.style.background = "rgba(4, 7, 20, 0.95)";
@@ -417,14 +437,11 @@
 
     loadData();
 
-    /* --- كود JavaScript إضافي لتحديث المحتوى الجديد (Add Only) --- */
     function romeoNewScriptControl() {
-        // نسخ اسم الفيلم للبانر العلوي
         const originalOpenPlayer = window.openPlayer;
         window.openPlayer = function(link, name, img, episodes = null) {
             originalOpenPlayer(link, name, img, episodes);
             
-            // إضافة كود جديد لتحديث البانر
             const banner = document.getElementById('romeoExclusiveBanner');
             const filmNameSpan = document.getElementById('romeoFilmName');
             if (banner && filmNameSpan) {
@@ -433,13 +450,11 @@
             }
         };
 
-        // تفعيل أزرار السيرفرات الجديدة
         const serverBtns = document.querySelectorAll('.romeo-server-btn');
         serverBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 serverBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                // هنا يمكن إضافة كود تغيير رابط السيرفر مستقبلاً
                 alert('جاري التبديل إلى ' + this.innerText);
             });
         });
@@ -448,56 +463,57 @@
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 سكربت قراءة السيرفرات التلقائي (Add Only) 🆕 -->
+<!-- 🆕 سكربت التحكم في زر التحميل الديناميكي (Add Only) 🆕 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <script>
-/**
- * هذا الكود يراقب فتح المشغل ويبحث عن السيرفرات المتاحة في ملف JSON 
- * (link, link2, link3) ويقوم بتحديث الأزرار لتشغيل الروابط فوراً.
- */
-(function romeoServerLinker() {
-    function updateServers() {
+(function romeoDownloadManager() {
+    function updateDownloadButton() {
         const player = document.getElementById('playerView');
         if (player.style.display === 'none') return;
 
-        const currentName = document.getElementById('playerContentTitle').innerText.replace('حصرياً', '').trim();
-        let targetItem = null;
+        // الحصول على اسم المحتوى المعروض حالياً في المشغل
+        const currentDisplayName = document.getElementById('playerContentTitle').innerText.replace('حصرياً', '').trim();
+        const downloadBtn = document.getElementById('dynamicDownloadBtn');
+        const btnText = document.getElementById('downloadBtnText');
+        
+        let activeData = null;
 
-        // البحث في قاعدة البيانات
+        // البحث في قاعدة البيانات عن المحتوى الحالي لجلب رابط التحميل ونوعه
         database.forEach(item => {
             if (item.type === 'series' && item.episodes) {
                 item.episodes.forEach(ep => {
-                    const epName = `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`;
-                    if (epName === currentName) targetItem = ep;
+                    const fullEpName = `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`;
+                    if (fullEpName === currentDisplayName) {
+                        activeData = ep;
+                        activeData.content_type = 'episode'; // تحديد النوع حلقة
+                    }
                 });
-            } else if (item.name === currentName) {
-                targetItem = item;
+            } else if (item.name === currentDisplayName) {
+                activeData = item;
+                activeData.content_type = 'movie'; // تحديد النوع فيلم
             }
         });
 
-        if (!targetItem) return;
-
-        // ربط الأزرار بالروابط
-        const btns = document.querySelectorAll('.romeo-server-btn');
-        const links = [targetItem.link, targetItem.link2, targetItem.link3];
-        const iframe = document.querySelector('#videoContainer iframe');
-
-        btns.forEach((btn, index) => {
-            if (links[index] && links[index] !== "") {
-                btn.style.display = 'inline-block';
-                btn.onclick = function() {
-                    btns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    if(iframe) iframe.src = links[index];
-                };
+        // منطق الإظهار والإخفاء
+        if (activeData && activeData.download_url && activeData.download_url !== "") {
+            downloadBtn.style.display = 'block';
+            downloadBtn.href = activeData.download_url;
+            
+            // تغيير النص بناءً على النوع
+            if (activeData.content_type === 'movie') {
+                btnText.innerHTML = '📥 تحميل الفيلم';
             } else {
-                btn.style.display = 'none'; // إخفاء الزر إذا لم يوجد رابط للسيرفر
+                btnText.innerHTML = '📥 تحميل الحلقة';
             }
-        });
+        } else {
+            downloadBtn.style.display = 'none';
+        }
     }
 
-    // تشغيل الفحص عند كل عملية نقر لضمان تحديث الأزرار عند فتح أي فيديو
-    document.addEventListener('click', () => setTimeout(updateServers, 400));
+    // ربط التحديث عند النقر في الموقع (لضمان التقاط حدث فتح المشغل)
+    document.addEventListener('click', () => {
+        setTimeout(updateDownloadButton, 500);
+    });
 })();
 </script>
 
