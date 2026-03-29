@@ -463,57 +463,90 @@
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 سكربت التحكم في زر التحميل الديناميكي (Add Only) 🆕 -->
+<!-- 🆕 سكربت المزامنة وحل مشكلة السيرفرات المتعددة (Add Only) 🆕 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <script>
-(function romeoDownloadManager() {
-    function updateDownloadButton() {
-        const player = document.getElementById('playerView');
-        if (player.style.display === 'none') return;
+/**
+ * هذا الكود يضاف في نهاية الملف ليقوم بعمل "إعادة تعريف" ذكية للدوال 
+ * لربط السيرفرات link, link2, link3 من الـ JSON دون تعديل الكود القديم.
+ */
+(function romeoSyncUpdate() {
+    // 1. تحديث دالة الـ render الأصلية لتدعم تمرير الكائن بالكامل
+    const oldRender = window.render;
+    window.render = function(data) {
+        const grid = document.getElementById('mainGrid');
+        grid.innerHTML = '';
+        if(data.length === 0) {
+            grid.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 50px; opacity: 0.5;">لا توجد نتائج تطابق بحثك..</div>`;
+            return;
+        }
+        data.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.animation = `slideUp 0.5s ease forwards ${index * 0.05}s`;
+            card.innerHTML = `<img src="${item.img}" loading="lazy"><div class="card-info">${item.name}</div>`;
+            card.onclick = () => {
+                if(item.type === 'series') openEpisodes(item);
+                else openPlayerFull(item); // دالة جديدة للسيرفرات
+            };
+            grid.appendChild(card);
+        });
+    };
 
-        // الحصول على اسم المحتوى المعروض حالياً في المشغل
-        const currentDisplayName = document.getElementById('playerContentTitle').innerText.replace('حصرياً', '').trim();
-        const downloadBtn = document.getElementById('dynamicDownloadBtn');
-        const btnText = document.getElementById('downloadBtnText');
+    // 2. تحديث دالة الحلقات لتدعم السيرفرات لكل حلقة
+    window.openEpisodes = function(item) {
+        const ev = document.getElementById('episodesView');
+        ev.style.display = 'flex';
+        document.getElementById('seriesHeader').innerText = item.name;
+        const grid = document.getElementById('episodesGrid');
+        grid.innerHTML = '';
+        if(item.episodes) {
+            item.episodes.forEach((ep, idx) => {
+                const div = document.createElement('div');
+                div.className = 'ep-item';
+                div.innerText = ep.name || `الحلقة ${ep.num}`;
+                div.onclick = () => {
+                    ev.style.display = 'none';
+                    openPlayerFull(item, ep); // دالة جديدة للسيرفرات
+                };
+                grid.appendChild(div);
+            });
+        }
+    };
+
+    // 3. الدالة الجديدة تماماً لإدارة السيرفرات
+    window.openPlayerFull = function(item, episode = null) {
+        const pv = document.getElementById('playerView');
+        pv.style.display = 'flex';
         
-        let activeData = null;
+        // جلب البيانات الأساسية
+        const currentData = episode ? episode : item;
+        const title = episode ? `${item.name} - ${episode.name || 'الحلقة ' + episode.num}` : item.name;
+        
+        // استدعاء دالة التشغيل الأصلية لفتح الواجهة
+        window.openPlayer(currentData.link, title, item.img, item.type === 'series' ? item.episodes : null);
 
-        // البحث في قاعدة البيانات عن المحتوى الحالي لجلب رابط التحميل ونوعه
-        database.forEach(item => {
-            if (item.type === 'series' && item.episodes) {
-                item.episodes.forEach(ep => {
-                    const fullEpName = `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`;
-                    if (fullEpName === currentDisplayName) {
-                        activeData = ep;
-                        activeData.content_type = 'episode'; // تحديد النوع حلقة
-                    }
-                });
-            } else if (item.name === currentDisplayName) {
-                activeData = item;
-                activeData.content_type = 'movie'; // تحديد النوع فيلم
+        // تحديث أزرار السيرفرات بناءً على البيانات القادمة من JSON
+        const serverBtns = document.querySelectorAll('.romeo-server-btn');
+        const links = [currentData.link, currentData.link2, currentData.link3];
+        const iframe = document.querySelector('#videoContainer iframe');
+
+        serverBtns.forEach((btn, index) => {
+            if (links[index] && links[index].trim() !== "") {
+                btn.style.display = 'inline-block';
+                btn.classList.remove('active');
+                if(index === 0) btn.classList.add('active');
+
+                btn.onclick = function() {
+                    serverBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    if(iframe) iframe.src = links[index];
+                };
+            } else {
+                btn.style.display = 'none';
             }
         });
-
-        // منطق الإظهار والإخفاء
-        if (activeData && activeData.download_url && activeData.download_url !== "") {
-            downloadBtn.style.display = 'block';
-            downloadBtn.href = activeData.download_url;
-            
-            // تغيير النص بناءً على النوع
-            if (activeData.content_type === 'movie') {
-                btnText.innerHTML = '📥 تحميل الفيلم';
-            } else {
-                btnText.innerHTML = '📥 تحميل الحلقة';
-            }
-        } else {
-            downloadBtn.style.display = 'none';
-        }
-    }
-
-    // ربط التحديث عند النقر في الموقع (لضمان التقاط حدث فتح المشغل)
-    document.addEventListener('click', () => {
-        setTimeout(updateDownloadButton, 500);
-    });
+    };
 })();
 </script>
 
