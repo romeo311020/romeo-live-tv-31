@@ -432,5 +432,92 @@
 })();
 </script>
 
-</body>
-</html>
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 🚀 الإضافة الجديدة النهائية: البانر العلوي، حل مشكلة التحميل، وشريط التحميل 🚀 -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+
+<style>
+    /* تنسيق البانر العلوي الجديد */
+    .romeo-v3-header-banner {
+        width: 95%; max-width: 1000px; text-align: center;
+        margin: 100px auto 10px; padding: 15px; border-radius: 15px;
+        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    .romeo-v3-header-banner p {
+        font-size: 14px; font-weight: 600; color: #f0f0f0; letter-spacing: 0.5px;
+        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+    .romeo-v3-header-banner .gold-text {
+        color: #b8860b; font-weight: 900; font-size: 18px; display: block; margin: 5px 0;
+    }
+
+    /* تنسيق المسافة وشريط التحميل */
+    .romeo-spacer-20 { margin-top: 25px !important; }
+    
+    .romeo-loader-track {
+        width: 100%; height: 4px; background: rgba(255,255,255,0.1);
+        border-radius: 10px; margin-top: 15px; overflow: hidden; position: relative;
+    }
+    .romeo-loader-fill {
+        width: 0%; height: 100%; background: var(--accent);
+        box-shadow: 0 0 10px var(--accent); transition: width 3s linear;
+    }
+</style>
+
+<script>
+(function romeoFinalEnhancements() {
+    window.addEventListener('load', () => {
+        const videoWrapper = document.getElementById('videoContainer');
+        const serverContainer = document.getElementById('romeoServerList');
+        const downloadBtn = document.getElementById('romeoDownloadBtn');
+
+        // 1. إضافة البانر العلوي قبل الفيديو
+        const banner = document.createElement('div');
+        banner.className = 'romeo-v3-header-banner';
+        banner.id = 'dynamicRomeoBanner';
+        banner.innerHTML = `<p>حصرياً <span class="gold-text" id="romeoTargetName">...</span> على ROMEO LIVE TV</p>`;
+        videoWrapper.parentNode.insertBefore(banner, videoWrapper);
+
+        // 2. إضافة شريط التحميل تحت الفيديو
+        const loader = document.createElement('div');
+        loader.className = 'romeo-loader-track';
+        loader.innerHTML = `<div class="romeo-loader-fill" id="romeoFillBar"></div>`;
+        videoWrapper.parentNode.insertBefore(loader, videoWrapper.nextSibling);
+
+        // 3. إضافة المسافة لزر التحميل
+        downloadBtn.classList.add('romeo-spacer-20');
+
+        // 4. دالة ذكية لإدارة التحديثات بدون لمس الأكواد الأصلية
+        const originalOpenFull = window.openPlayerFull;
+        window.openPlayerFull = function(item, episode = null) {
+            // تشغيل الوظائف القديمة أولاً لضمان عدم الكسر
+            originalOpenFull(item, episode);
+
+            // تحديث البانر العلوي
+            const finalName = episode ? `${item.name} - ${episode.name}` : item.name;
+            document.getElementById('romeoTargetName').innerText = finalName;
+
+            // إعادة تشغيل شريط التحميل
+            const bar = document.getElementById('romeoFillBar');
+            bar.style.width = '0%';
+            setTimeout(() => { bar.style.width = '100%'; }, 100);
+
+            // حل مشكلة تحميل السيرفر الثاني (Force Embed)
+            const srv2 = document.getElementById('srv2');
+            const iframe = document.getElementById('mainIframe');
+            
+            if (srv2 && srv2.style.display !== 'none') {
+                const originalSrv2Click = srv2.onclick;
+                srv2.onclick = function() {
+                    originalSrv2Click();
+                    // تأكيد أن الرابط يفتح كـ Embed وليس Direct Download
+                    if (iframe.src.includes('drive.google.com')) {
+                        iframe.src = iframe.src.replace('/view', '/preview');
+                    }
+                };
+            }
+        };
+    });
+})();
+</script>
