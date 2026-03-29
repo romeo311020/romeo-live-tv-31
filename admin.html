@@ -441,25 +441,28 @@
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافة الجديدة: رابط التحميل فقط 🆕 -->
+<!-- 🆕 الإضافة الموحدة لحل مشكلة عدم حفظ رابط التحميل 🆕 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 
 <script>
-    (function addDownloadFeature() {
-        // 1. إضافة خانة إدخال رابط التحميل في شاشة الفورم
+(function romioPowerSync() {
+    window.addEventListener('load', () => {
         const container = document.querySelector('#screen-form .form-container');
         const saveBtn = container.querySelector('.save-btn');
         
-        const dlInput = document.createElement('input');
-        dlInput.id = 'download_url';
-        dlInput.placeholder = 'رابط التحميل المباشر (إختياري)';
-        
-        // وضع الخانة قبل زر الحفظ مباشرة
-        container.insertBefore(dlInput, saveBtn);
+        // 1. تنظيف أي حقول مكررة وإضافتها بشكل سليم وموحد
+        container.querySelectorAll('#link2, #link3, #download_url').forEach(el => el.remove());
 
-        // 2. تحديث وظيفة الحفظ النهائية لدعم حقل التحميل
-        // نقوم بتبديل وظيفة saveDataNew بوظيفة تدعم الحقل الإضافي
-        window.saveDataFinal = async function() {
+        const f2 = document.createElement('input'); f2.id = 'link2'; f2.placeholder = 'رابط سيرفر 2 (إختياري)';
+        const f3 = document.createElement('input'); f3.id = 'link3'; f3.placeholder = 'رابط سيرفر 3 (إختياري)';
+        const fDL = document.createElement('input'); fDL.id = 'download_url'; fDL.placeholder = 'رابط التحميل المباشر (إختياري)';
+        
+        container.insertBefore(f2, saveBtn);
+        container.insertBefore(f3, saveBtn);
+        container.insertBefore(fDL, saveBtn);
+
+        // 2. دالة حفظ شاملة لضمان إرسال كافة البيانات لـ GitHub
+        window.saveDataUltimate = async function() {
             const type = document.getElementById('editType').value;
             const indexOrId = document.getElementById('editId').value;
             const name = document.getElementById('name').value;
@@ -473,7 +476,9 @@
                 const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
                 const obj = {
                     id: indexOrId ? parseInt(indexOrId) : Date.now(),
-                    name, img, link,
+                    name: name,
+                    img: img,
+                    link: link,
                     link2: link2 || "",
                     link3: link3 || "",
                     download_url: downloadUrl || "",
@@ -494,7 +499,9 @@
                 if(!series.episodes) series.episodes = [];
                 const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
                 const epObj = { 
-                    num: epNum, name: name, link: link,
+                    num: epNum, 
+                    name: name, 
+                    link: link,
                     link2: link2 || "",
                     link3: link3 || "",
                     download_url: downloadUrl || ""
@@ -504,33 +511,41 @@
                 showScreen('screen-episodes');
                 renderEpisodes();
             }
-            await sync();
+            await sync(); // المزامنة النهائية
         };
 
-        saveBtn.setAttribute('onclick', 'saveDataFinal()');
+        // تفعيل دالة الحفظ الجديدة على الزر
+        saveBtn.setAttribute('onclick', 'saveDataUltimate()');
 
-        // 3. ربط حقل التحميل بعمليات التعديل (فتح البيانات القديمة)
-        const currentEditItem = editItem;
-        editItem = function(id) {
-            currentEditItem(id);
+        // 3. تحديث دوال التعديل لفتح البيانات المسجلة مسبقاً بما فيها رابط التحميل
+        const lastEditItem = window.editItem;
+        window.editItem = function(id) {
+            lastEditItem(id);
             const item = db.items.find(i => i.id === id);
+            document.getElementById('link2').value = item.link2 || '';
+            document.getElementById('link3').value = item.link3 || '';
             document.getElementById('download_url').value = item.download_url || '';
         };
 
-        const currentEditEp = editEpisode;
-        editEpisode = function(index) {
-            currentEditEp(index);
+        const lastEditEp = window.editEpisode;
+        window.editEpisode = function(index) {
+            lastEditEp(index);
             const series = db.items.find(i => i.id === currentSeriesId);
             const ep = series.episodes[index];
+            document.getElementById('link2').value = ep.link2 || '';
+            document.getElementById('link3').value = ep.link3 || '';
             document.getElementById('download_url').value = ep.download_url || '';
         };
 
-        const currentOpenForm = openForm;
-        openForm = function(type, index = null) {
-            currentOpenForm(type, index);
+        const lastOpenForm = window.openForm;
+        window.openForm = function(type, index = null) {
+            lastOpenForm(type, index);
+            document.getElementById('link2').value = '';
+            document.getElementById('link3').value = '';
             document.getElementById('download_url').value = '';
         };
-    })();
+    });
+})();
 </script>
 
 </body>
