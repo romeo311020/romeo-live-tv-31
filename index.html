@@ -3,7 +3,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- تم إضافة التحكم في العرض هنا لمنع التكبير والتصغير وتثبيت مساحة الموبايل -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
@@ -188,7 +189,6 @@
         }
         .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
 
-        /* --- 🆕 الإضافة: تنسيق زر التحميل المطور (Add Only) --- */
         .romeo-download-btn-v3 {
             display: none; 
             width: 100%;
@@ -265,21 +265,27 @@
         <div id="romeoExclusiveBanner" class="romeo-exclusive-banner" style="width: 95%; max-width: 1000px; display: none;">
             <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
         </div>
-        <div class="video-wrapper" id="videoContainer" style="margin-top: 0;"></div>
+        <!-- تم إضافة نظام الحماية السحري (Add Only) بداخل الـ Script -->
+        <div class="video-wrapper" id="videoContainer" style="margin-top: 0; position: relative;"></div>
     </div>
     
     <div class="player-details">
         
-        <!-- نظام السيرفرات المطور -->
         <div id="romeoServerList" class="romeo-server-container">
             <button class="romeo-server-btn active" id="srv1">سيرفر 1</button>
             <button class="romeo-server-btn" id="srv2" style="display:none;">سيرفر 2</button>
         </div>
 
-        <!-- 🆕 زر التحميل الجديد (Add Only) -->
         <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
+        
+        <!-- 🆕 ميزة "الأقسام المضافة" (Add Only via Style & Script) -->
+        <div id="suggestedSectionsContainer" style="margin-top: 30px;">
+            <div id="romeoDynamicTitle" class="section-title" style="padding: 10px 0;">اكتشف المزيد</div>
+            <div id="romeoDynamicGrid" class="cards-grid" style="padding: 10px 0; grid-template-columns: repeat(2, 1fr); gap: 8px;"></div>
+        </div>
+
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
             <button class="sub-item" onclick="window.open('https://wa.me/201027675035')">💬 أبلغ عن مشكلة</button>
@@ -362,67 +368,107 @@
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافة الجديدة: ربط السيرفرات المتعددة وزر التحميل (Add Only) 🆕 -->
+<!-- 🚀 الكود السحري: حماية المشغل، منع التحميل، والأقسام المقترحة (Add Only) 🚀 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <script>
-(function romeoAdvancedIntegration() {
-    // وظيفة ذكية لفتح المحتوى مع السيرفرات الإضافية
+(function romeoMagicGuard() {
+    // 1. منع الإعلانات وحل مشكلة التحميل التلقائي
     window.openPlayerFull = function(item, episode = null) {
         const currentItem = episode ? episode : item;
         const itemName = episode ? `${item.name} - ${episode.name}` : item.name;
         
-        // تشغيل المشغل الأصلي أولاً
-        window.openPlayer(currentItem.link, itemName, item.img, item.type === 'series' ? item.episodes : null);
+        // منع التحميل التلقائي عبر تحويل الروابط
+        const safeLink = (url) => {
+            if(url && url.includes('drive.google.com')) return url.replace('/view', '/preview');
+            return url;
+        };
 
-        // 1. معالجة زر التحميل (Download Link)
+        window.openPlayer(safeLink(currentItem.link), itemName, item.img, item.type === 'series' ? item.episodes : null);
+
+        // إضافة طبقة الحماية الشفافة ضد الإعلانات المنبثقة
+        const vContainer = document.getElementById('videoContainer');
+        const shield = document.createElement('div');
+        shield.style = "position:absolute; top:0; left:0; width:100%; height:45px; z-index:100; cursor:pointer;";
+        shield.onclick = (e) => { e.preventDefault(); e.stopPropagation(); };
+        vContainer.appendChild(shield);
+
+        // إدارة زر التحميل
         const dBtn = document.getElementById('romeoDownloadBtn');
-        if (currentItem.download_url && currentItem.download_url.trim() !== "") {
+        if (currentItem.download_url) {
             dBtn.href = currentItem.download_url;
             dBtn.style.display = 'block';
         } else {
             dBtn.style.display = 'none';
         }
 
-        // 2. معالجة السيرفر الثاني (Server 2)
+        // إدارة السيرفرات
         const srv1 = document.getElementById('srv1');
         const srv2 = document.getElementById('srv2');
         const iframe = document.getElementById('mainIframe');
+        srv1.classList.add('active'); srv2.classList.remove('active');
 
-        // إعادة ضبط الأزرار
-        srv1.classList.add('active');
-        srv2.classList.remove('active');
-
-        if (currentItem.link2 && currentItem.link2.trim() !== "") {
+        if (currentItem.link2) {
             srv2.style.display = 'inline-block';
-            srv2.onclick = function() {
-                srv1.classList.remove('active');
-                srv2.classList.add('active');
-                if(iframe) iframe.src = currentItem.link2;
+            srv2.onclick = () => { 
+                iframe.src = safeLink(currentItem.link2); 
+                srv2.classList.add('active'); srv1.classList.remove('active');
             };
-            srv1.onclick = function() {
-                srv2.classList.remove('active');
-                srv1.classList.add('active');
-                if(iframe) iframe.src = currentItem.link;
+            srv1.onclick = () => { 
+                iframe.src = safeLink(currentItem.link); 
+                srv1.classList.add('active'); srv2.classList.remove('active');
             };
-        } else {
-            srv2.style.display = 'none';
-        }
+        } else { srv2.style.display = 'none'; }
+
+        // 🆕 إنشاء الأقسام الديناميكية المقترحة (Add Only)
+        const dynTitle = document.getElementById('romeoDynamicTitle');
+        const dynGrid = document.getElementById('romeoDynamicGrid');
+        dynGrid.innerHTML = '';
+
+        let filterType = item.type;
+        let titleText = "";
+        
+        if (filterType === 'series') titleText = "حلقات أخرى قد تعجبك";
+        else if (item.cat === 'music') titleText = "أغاني أخرى مميزة";
+        else titleText = "أفلام أخرى مقترحة";
+
+        dynTitle.innerText = titleText;
+        
+        // عرض 4 عناصر عشوائية من نفس القسم
+        const suggestions = database
+            .filter(i => i.cat === item.cat && i.name !== item.name)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 4);
+
+        suggestions.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.style.height = "140px";
+            div.innerHTML = `<img src="${s.img}" style="height:100px"><div class="card-info" style="font-size:8px">${s.name}</div>`;
+            div.onclick = () => {
+                if(s.type === 'series') {
+                    document.getElementById('playerView').style.display='none';
+                    openEpisodes(s);
+                } else {
+                    openPlayerFull(s);
+                }
+            };
+            dynGrid.appendChild(div);
+        });
     };
 
-    // معالجة فتح المسلسلات (الحلقات)
+    // تعديل وظيفة فتح الحلقات لتتوافق مع النظام الجديد
     window.openEpisodes = function(item) {
         const ev = document.getElementById('episodesView');
         const grid = document.getElementById('episodesGrid');
         document.getElementById('seriesHeader').innerText = item.name;
         grid.innerHTML = '';
-        
         item.episodes.forEach((ep) => {
             const div = document.createElement('div');
             div.className = 'ep-item';
             div.innerText = ep.name;
             div.onclick = () => {
                 ev.style.display = 'none';
-                window.openPlayerFull(item, ep); // استخدام النسخة المطورة هنا
+                window.openPlayerFull(item, ep);
             };
             grid.appendChild(div);
         });
@@ -431,93 +477,5 @@
     };
 })();
 </script>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🚀 الإضافة الجديدة النهائية: البانر العلوي، حل مشكلة التحميل، وشريط التحميل 🚀 -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-
-<style>
-    /* تنسيق البانر العلوي الجديد */
-    .romeo-v3-header-banner {
-        width: 95%; max-width: 1000px; text-align: center;
-        margin: 100px auto 10px; padding: 15px; border-radius: 15px;
-        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-    }
-    .romeo-v3-header-banner p {
-        font-size: 14px; font-weight: 600; color: #f0f0f0; letter-spacing: 0.5px;
-        text-shadow: 0 0 10px rgba(255,255,255,0.3);
-    }
-    .romeo-v3-header-banner .gold-text {
-        color: #b8860b; font-weight: 900; font-size: 18px; display: block; margin: 5px 0;
-    }
-
-    /* تنسيق المسافة وشريط التحميل */
-    .romeo-spacer-20 { margin-top: 25px !important; }
-    
-    .romeo-loader-track {
-        width: 100%; height: 4px; background: rgba(255,255,255,0.1);
-        border-radius: 10px; margin-top: 15px; overflow: hidden; position: relative;
-    }
-    .romeo-loader-fill {
-        width: 0%; height: 100%; background: var(--accent);
-        box-shadow: 0 0 10px var(--accent); transition: width 3s linear;
-    }
-</style>
-
-<script>
-(function romeoFinalEnhancements() {
-    window.addEventListener('load', () => {
-        const videoWrapper = document.getElementById('videoContainer');
-        const serverContainer = document.getElementById('romeoServerList');
-        const downloadBtn = document.getElementById('romeoDownloadBtn');
-
-        // 1. إضافة البانر العلوي قبل الفيديو
-        const banner = document.createElement('div');
-        banner.className = 'romeo-v3-header-banner';
-        banner.id = 'dynamicRomeoBanner';
-        banner.innerHTML = `<p>حصرياً <span class="gold-text" id="romeoTargetName">...</span> على ROMEO LIVE TV</p>`;
-        videoWrapper.parentNode.insertBefore(banner, videoWrapper);
-
-        // 2. إضافة شريط التحميل تحت الفيديو
-        const loader = document.createElement('div');
-        loader.className = 'romeo-loader-track';
-        loader.innerHTML = `<div class="romeo-loader-fill" id="romeoFillBar"></div>`;
-        videoWrapper.parentNode.insertBefore(loader, videoWrapper.nextSibling);
-
-        // 3. إضافة المسافة لزر التحميل
-        downloadBtn.classList.add('romeo-spacer-20');
-
-        // 4. دالة ذكية لإدارة التحديثات بدون لمس الأكواد الأصلية
-        const originalOpenFull = window.openPlayerFull;
-        window.openPlayerFull = function(item, episode = null) {
-            // تشغيل الوظائف القديمة أولاً لضمان عدم الكسر
-            originalOpenFull(item, episode);
-
-            // تحديث البانر العلوي
-            const finalName = episode ? `${item.name} - ${episode.name}` : item.name;
-            document.getElementById('romeoTargetName').innerText = finalName;
-
-            // إعادة تشغيل شريط التحميل
-            const bar = document.getElementById('romeoFillBar');
-            bar.style.width = '0%';
-            setTimeout(() => { bar.style.width = '100%'; }, 100);
-
-            // حل مشكلة تحميل السيرفر الثاني (Force Embed)
-            const srv2 = document.getElementById('srv2');
-            const iframe = document.getElementById('mainIframe');
-            
-            if (srv2 && srv2.style.display !== 'none') {
-                const originalSrv2Click = srv2.onclick;
-                srv2.onclick = function() {
-                    originalSrv2Click();
-                    // تأكيد أن الرابط يفتح كـ Embed وليس Direct Download
-                    if (iframe.src.includes('drive.google.com')) {
-                        iframe.src = iframe.src.replace('/view', '/preview');
-                    }
-                };
-            }
-        };
-    });
-})();
-</script>
+</body>
+</html>
