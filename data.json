@@ -1936,20 +1936,6 @@
       "type": "movie"
     },
     {
-      "id": 1774531654446,
-      "name": "نسر الصعيد- محمد رمضان ",
-      "img": "https://i.postimg.cc/28S6DPHc/images-(8).jpg",
-      "cat": "arabic",
-      "type": "series",
-      "total_episodes": "30",
-      "episodes": [
-        {
-          "num": "1",
-          "link": "https://romeo311020.github.io/nsar-al-saed/"
-        }
-      ]
-    },
-    {
       "id": 1774532418788,
       "name": "فيلم حياة السيد المسيح",
       "img": "https://img.youtube.com/vi/Okqqib7h7Bw/maxresdefault.jpg",
