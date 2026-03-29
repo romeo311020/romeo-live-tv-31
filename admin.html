@@ -1,3 +1,4 @@
+<!-- استبدل محتوى ملف لوحة التحكم بهذا الكود بالكامل -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -330,161 +331,46 @@
     }
 </script>
 
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const formContainer = document.querySelector('#screen-form .form-container');
-        const saveBtn = formContainer.querySelector('.save-btn');
-        
-        const input2 = document.createElement('input');
-        input2.type = 'text';
-        input2.id = 'link2';
-        input2.placeholder = 'رابط سيرفر 2 (إختياري)';
-        
-        const input3 = document.createElement('input');
-        input3.type = 'text';
-        input3.id = 'link3';
-        input3.placeholder = 'رابط سيرفر 3 (إختياري)';
-        
-        formContainer.insertBefore(input2, saveBtn);
-        formContainer.insertBefore(input3, saveBtn);
-
-        saveBtn.setAttribute('onclick', 'saveDataNew()');
-    });
-
-    async function saveDataNew() {
-        const type = document.getElementById('editType').value;
-        const indexOrId = document.getElementById('editId').value;
-        const name = document.getElementById('name').value;
-        const img = document.getElementById('img').value;
-        const link = document.getElementById('link').value;
-        const link2 = document.getElementById('link2').value;
-        const link3 = document.getElementById('link3').value;
-
-        if(type === 'item') {
-            const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
-            const obj = {
-                id: indexOrId ? parseInt(indexOrId) : Date.now(),
-                name, 
-                img, 
-                link,
-                link2: link2 || "",
-                link3: link3 || "",
-                cat: currentSub,
-                type: currentMain === 'series' ? 'series' : 'movie',
-                episodes: existingItem ? (existingItem.episodes || []) : []
-            };
-            if(indexOrId) {
-                const idx = db.items.findIndex(i => i.id == indexOrId);
-                db.items[idx] = obj;
-            } else {
-                db.items.push(obj);
-            }
-            showScreen('screen-items');
-            renderItems();
-        } else {
-            const series = db.items.find(i => i.id === currentSeriesId);
-            if(!series.episodes) series.episodes = [];
-            
-            const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
-            const epObj = { 
-                num: epNum, 
-                name: name, 
-                link: link,
-                link2: link2 || "",
-                link3: link3 || ""
-            };
-
-            if(indexOrId !== '') series.episodes[indexOrId] = epObj;
-            else series.episodes.push(epObj);
-            
-            showScreen('screen-episodes');
-            renderEpisodes();
-        }
-        await sync();
-    }
-
-    function goBackFixed() {
-        const active = document.querySelector('.active-screen').id;
-        if(active === 'screen-subs') showScreen('screen-home');
-        else if(active === 'screen-items') showScreen('screen-subs');
-        else if(active === 'screen-episodes') showScreen('screen-items');
-        else if(active === 'screen-form') {
-            const type = document.getElementById('editType').value;
-            showScreen(type === 'episode' ? 'screen-episodes' : 'screen-items');
-        }
-    }
-    document.getElementById('backBtn').onclick = goBackFixed;
-
-    const oldEditItem = editItem;
-    editItem = function(id) {
-        oldEditItem(id);
-        const item = db.items.find(i => i.id === id);
-        document.getElementById('link2').value = item.link2 || '';
-        document.getElementById('link3').value = item.link3 || '';
-    };
-
-    const oldEditEpisode = editEpisode;
-    editEpisode = function(index) {
-        oldEditEpisode(index);
-        const series = db.items.find(i => i.id === currentSeriesId);
-        const ep = series.episodes[index];
-        document.getElementById('link2').value = ep.link2 || '';
-        document.getElementById('link3').value = ep.link3 || '';
-    };
-
-    const oldOpenForm = openForm;
-    openForm = function(type, index = null) {
-        oldOpenForm(type, index);
-        document.getElementById('link2').value = '';
-        document.getElementById('link3').value = '';
-    }
-</script>
-
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافة الموحدة لحل مشكلة عدم حفظ رابط التحميل 🆕 -->
+<!-- 🆕 الإضافة الجديدة: دعم السيرفر الثاني ورابط التحميل (Add Only) 🆕 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 
 <script>
-(function romioPowerSync() {
+(function romeoMultiServerSystem() {
     window.addEventListener('load', () => {
-        const container = document.querySelector('#screen-form .form-container');
-        const saveBtn = container.querySelector('.save-btn');
-        
-        // 1. تنظيف أي حقول مكررة وإضافتها بشكل سليم وموحد
-        container.querySelectorAll('#link2, #link3, #download_url').forEach(el => el.remove());
+        const formContainer = document.querySelector('#screen-form .form-container');
+        const originalSaveBtn = formContainer.querySelector('.save-btn');
+        const linkInput = document.getElementById('link');
 
-        const f2 = document.createElement('input'); f2.id = 'link2'; f2.placeholder = 'رابط سيرفر 2 (إختياري)';
-        const f3 = document.createElement('input'); f3.id = 'link3'; f3.placeholder = 'رابط سيرفر 3 (إختياري)';
-        const fDL = document.createElement('input'); fDL.id = 'download_url'; fDL.placeholder = 'رابط التحميل المباشر (إختياري)';
-        
-        container.insertBefore(f2, saveBtn);
-        container.insertBefore(f3, saveBtn);
-        container.insertBefore(fDL, saveBtn);
+        // 1. إضافة حقول السيرفر الثاني ورابط التحميل برمجياً
+        const fServer2 = document.createElement('input'); 
+        fServer2.id = 'link2'; 
+        fServer2.placeholder = 'رابط السيرفر الثاني (إختياري)';
+        formContainer.insertBefore(fServer2, linkInput.nextSibling);
 
-        // 2. دالة حفظ شاملة لضمان إرسال كافة البيانات لـ GitHub
-        window.saveDataUltimate = async function() {
+        const fDownload = document.createElement('input'); 
+        fDownload.id = 'download_url'; 
+        fDownload.placeholder = 'رابط التحميل المباشر (إختياري)';
+        formContainer.insertBefore(fDownload, fServer2.nextSibling);
+
+        // 2. إعادة تعريف دالة الحفظ لجمع البيانات الجديدة دون تغيير الكود الأصلي
+        window.saveDataEnhanced = async function() {
             const type = document.getElementById('editType').value;
             const indexOrId = document.getElementById('editId').value;
             const name = document.getElementById('name').value;
             const img = document.getElementById('img').value;
             const link = document.getElementById('link').value;
             const link2 = document.getElementById('link2').value;
-            const link3 = document.getElementById('link3').value;
-            const downloadUrl = document.getElementById('download_url').value;
+            const download_url = document.getElementById('download_url').value;
 
             if(type === 'item') {
-                const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
+                const existing = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
                 const obj = {
                     id: indexOrId ? parseInt(indexOrId) : Date.now(),
-                    name: name,
-                    img: img,
-                    link: link,
-                    link2: link2 || "",
-                    link3: link3 || "",
-                    download_url: downloadUrl || "",
+                    name: name, img: img, link: link, link2: link2, download_url: download_url,
                     cat: currentSub,
                     type: currentMain === 'series' ? 'series' : 'movie',
-                    episodes: existingItem ? (existingItem.episodes || []) : []
+                    episodes: existing ? (existing.episodes || []) : []
                 };
                 if(indexOrId) {
                     const idx = db.items.findIndex(i => i.id == indexOrId);
@@ -499,49 +385,41 @@
                 if(!series.episodes) series.episodes = [];
                 const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
                 const epObj = { 
-                    num: epNum, 
-                    name: name, 
-                    link: link,
-                    link2: link2 || "",
-                    link3: link3 || "",
-                    download_url: downloadUrl || ""
+                    num: epNum, name: name, link: link, link2: link2, download_url: download_url 
                 };
                 if(indexOrId !== '') series.episodes[indexOrId] = epObj;
                 else series.episodes.push(epObj);
                 showScreen('screen-episodes');
                 renderEpisodes();
             }
-            await sync(); // المزامنة النهائية
+            await sync();
         };
 
-        // تفعيل دالة الحفظ الجديدة على الزر
-        saveBtn.setAttribute('onclick', 'saveDataUltimate()');
+        // تحويل الزر الأصلي ليعمل بالدالة الجديدة
+        originalSaveBtn.setAttribute('onclick', 'saveDataEnhanced()');
 
-        // 3. تحديث دوال التعديل لفتح البيانات المسجلة مسبقاً بما فيها رابط التحميل
-        const lastEditItem = window.editItem;
+        // 3. ربط استرجاع البيانات عند التعديل (Patching Edit functions)
+        const oldEditItem = window.editItem;
         window.editItem = function(id) {
-            lastEditItem(id);
+            oldEditItem(id);
             const item = db.items.find(i => i.id === id);
             document.getElementById('link2').value = item.link2 || '';
-            document.getElementById('link3').value = item.link3 || '';
             document.getElementById('download_url').value = item.download_url || '';
         };
 
-        const lastEditEp = window.editEpisode;
+        const oldEditEp = window.editEpisode;
         window.editEpisode = function(index) {
-            lastEditEp(index);
+            oldEditEp(index);
             const series = db.items.find(i => i.id === currentSeriesId);
             const ep = series.episodes[index];
             document.getElementById('link2').value = ep.link2 || '';
-            document.getElementById('link3').value = ep.link3 || '';
             document.getElementById('download_url').value = ep.download_url || '';
         };
 
-        const lastOpenForm = window.openForm;
+        const oldOpenForm = window.openForm;
         window.openForm = function(type, index = null) {
-            lastOpenForm(type, index);
+            oldOpenForm(type, index);
             document.getElementById('link2').value = '';
-            document.getElementById('link3').value = '';
             document.getElementById('download_url').value = '';
         };
     });

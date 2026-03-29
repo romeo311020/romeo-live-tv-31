@@ -1,3 +1,4 @@
+<!-- استبدل محتوى ملف الموقع بهذا الكود بالكامل -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -187,36 +188,24 @@
         }
         .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
 
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        /* 🆕 الكود الجديد: تنسيق زر التحميل الذهبي (Add Only) 🆕 */
-        /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-        .dynamic-download-btn {
-            display: none; /* مخفي افتراضياً */
+        /* --- 🆕 الإضافة: تنسيق زر التحميل المطور (Add Only) --- */
+        .romeo-download-btn-v3 {
+            display: none; 
             width: 100%;
-            background: linear-gradient(135deg, #b8860b 0%, #8b6508 100%);
-            color: #ffffff;
+            background: linear-gradient(135deg, #e5b80b 0%, #b8860b 100%);
+            color: #000 !important;
             text-align: center;
             padding: 14px;
             border-radius: 12px;
             font-size: 16px;
-            font-weight: 800;
+            font-weight: 900;
             text-decoration: none;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.2);
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(229, 184, 11, 0.3);
+            transition: 0.3s;
             cursor: pointer;
         }
-        .dynamic-download-btn:hover {
-            filter: brightness(1.2);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
-        }
-        .dynamic-download-btn i {
-            margin-left: 8px;
-            font-size: 18px;
-        }
-        
+        .romeo-download-btn-v3:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -281,18 +270,14 @@
     
     <div class="player-details">
         
+        <!-- نظام السيرفرات المطور -->
         <div id="romeoServerList" class="romeo-server-container">
-            <button class="romeo-server-btn active">سيرفر 1</button>
-            <button class="romeo-server-btn">سيرفر 2</button>
-            <button class="romeo-server-btn">سيرفر الاحتياطي</button>
+            <button class="romeo-server-btn active" id="srv1">سيرفر 1</button>
+            <button class="romeo-server-btn" id="srv2" style="display:none;">سيرفر 2</button>
         </div>
 
-        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-        <!-- 🆕 الكود الجديد: عنصر زر التحميل (Add Only) 🆕 -->
-        <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-        <a id="dynamicDownloadBtn" class="dynamic-download-btn" href="#" target="_blank">
-            <span id="downloadBtnText">تحميل</span>
-        </a>
+        <!-- 🆕 زر التحميل الجديد (Add Only) -->
+        <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -316,8 +301,6 @@
 
 <script>
     let database = [];
-    let favorites = JSON.parse(localStorage.getItem('romeo_favs')) || [];
-
     async function loadData() {
         try {
             const response = await fetch('data.json');
@@ -330,74 +313,24 @@
     function render(data) {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = '';
-        if(data.length === 0) {
-            grid.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 50px; opacity: 0.5;">لا توجد نتائج تطابق بحثك..</div>`;
-            return;
-        }
         data.forEach((item, index) => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.style.animation = `slideUp 0.5s ease forwards ${index * 0.05}s`;
             card.innerHTML = `<img src="${item.img}" loading="lazy"><div class="card-info">${item.name}</div>`;
             card.onclick = () => {
                 if(item.type === 'series') openEpisodes(item);
-                else openPlayer(item.link, item.name, item.img);
+                else openPlayerFull(item); 
             };
             grid.appendChild(card);
         });
     }
 
-    function openEpisodes(item) {
-        const ev = document.getElementById('episodesView');
-        ev.style.display = 'flex';
-        document.getElementById('seriesHeader').innerText = item.name;
-        const grid = document.getElementById('episodesGrid');
-        grid.innerHTML = '';
-        if(item.episodes) {
-            item.episodes.forEach((ep, idx) => {
-                const div = document.createElement('div');
-                div.className = 'ep-item';
-                div.style.animation = `slideDown 0.4s ease forwards ${idx * 0.05}s`;
-                div.innerText = ep.name || `الحلقة ${ep.num}`;
-                div.onclick = () => {
-                    ev.style.display = 'none';
-                    openPlayer(ep.link, `${item.name} - ${ep.name || 'الحلقة ' + ep.num}`, item.img, item.episodes);
-                };
-                grid.appendChild(div);
-            });
-        }
-    }
-
     function openPlayer(link, name, img, episodes = null) {
         const pv = document.getElementById('playerView');
         pv.style.display = 'flex';
-        pv.scrollTop = 0;
-        document.body.style.overflow = 'hidden';
-        
         document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
         document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
-        
-        document.getElementById('videoContainer').innerHTML = `
-            <div class="skeleton" style="aspect-ratio:16/9; position:absolute; width:100%; z-index:-1;"></div>
-            <iframe src="${link}" allowfullscreen sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"></iframe>
-        `;
-
-        const slider = document.getElementById('playerEpSlider');
-        const sliderTitle = document.getElementById('epSliderTitle');
-        slider.innerHTML = '';
-        
-        if(episodes && episodes.length > 0) {
-            sliderTitle.style.display = 'block';
-            episodes.forEach(ep => {
-                const epCard = document.createElement('div');
-                epCard.className = `mini-ep-card ${link === ep.link ? 'active' : ''}`;
-                epCard.innerText = ep.name || `الحلقة ${ep.num}`;
-                epCard.onclick = () => openPlayer(ep.link, name, img, episodes);
-                slider.appendChild(epCard);
-            });
-        } else {
-            sliderTitle.style.display = 'none';
-        }
+        document.getElementById('videoContainer').innerHTML = `<iframe id="mainIframe" src="${link}" allowfullscreen></iframe>`;
     }
 
     function closePlayer() {
@@ -410,18 +343,14 @@
         const menu = document.getElementById(id);
         const isVisible = menu.style.display === 'grid';
         hideAllSubs();
-        if (!isVisible) {
-            menu.style.display = 'grid';
-        }
+        if (!isVisible) menu.style.display = 'grid';
     }
 
     function hideAllSubs() { document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none'); }
 
     function filterData(cat, title) {
         document.getElementById('gridTitle').innerText = title;
-        window.scrollTo({top: 0, behavior: 'smooth'});
         render(database.filter(i => i.cat === cat));
-        hideAllSubs();
     }
 
     function handleSearch() {
@@ -429,123 +358,76 @@
         render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
-    window.onscroll = () => {
-        const header = document.querySelector('header');
-        if (window.scrollY > 50) header.style.background = "rgba(4, 7, 20, 0.95)";
-        else header.style.background = "rgba(4, 7, 20, 0.8)";
-    };
-
     loadData();
-
-    function romeoNewScriptControl() {
-        const originalOpenPlayer = window.openPlayer;
-        window.openPlayer = function(link, name, img, episodes = null) {
-            originalOpenPlayer(link, name, img, episodes);
-            
-            const banner = document.getElementById('romeoExclusiveBanner');
-            const filmNameSpan = document.getElementById('romeoFilmName');
-            if (banner && filmNameSpan) {
-                filmNameSpan.innerText = name;
-                banner.style.display = 'block';
-            }
-        };
-
-        const serverBtns = document.querySelectorAll('.romeo-server-btn');
-        serverBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                serverBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                alert('جاري التبديل إلى ' + this.innerText);
-            });
-        });
-    }
-    romeoNewScriptControl();
 </script>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 سكربت المزامنة وحل مشكلة السيرفرات المتعددة (Add Only) 🆕 -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 🆕 الإضافة الجديدة: ربط السيرفرات المتعددة وزر التحميل (Add Only) 🆕 -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <script>
-/**
- * هذا الكود يضاف في نهاية الملف ليقوم بعمل "إعادة تعريف" ذكية للدوال 
- * لربط السيرفرات link, link2, link3 من الـ JSON دون تعديل الكود القديم.
- */
-(function romeoSyncUpdate() {
-    // 1. تحديث دالة الـ render الأصلية لتدعم تمرير الكائن بالكامل
-    const oldRender = window.render;
-    window.render = function(data) {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = '';
-        if(data.length === 0) {
-            grid.innerHTML = `<div style="grid-column: span 3; text-align: center; padding: 50px; opacity: 0.5;">لا توجد نتائج تطابق بحثك..</div>`;
-            return;
+(function romeoAdvancedIntegration() {
+    // وظيفة ذكية لفتح المحتوى مع السيرفرات الإضافية
+    window.openPlayerFull = function(item, episode = null) {
+        const currentItem = episode ? episode : item;
+        const itemName = episode ? `${item.name} - ${episode.name}` : item.name;
+        
+        // تشغيل المشغل الأصلي أولاً
+        window.openPlayer(currentItem.link, itemName, item.img, item.type === 'series' ? item.episodes : null);
+
+        // 1. معالجة زر التحميل (Download Link)
+        const dBtn = document.getElementById('romeoDownloadBtn');
+        if (currentItem.download_url && currentItem.download_url.trim() !== "") {
+            dBtn.href = currentItem.download_url;
+            dBtn.style.display = 'block';
+        } else {
+            dBtn.style.display = 'none';
         }
-        data.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.style.animation = `slideUp 0.5s ease forwards ${index * 0.05}s`;
-            card.innerHTML = `<img src="${item.img}" loading="lazy"><div class="card-info">${item.name}</div>`;
-            card.onclick = () => {
-                if(item.type === 'series') openEpisodes(item);
-                else openPlayerFull(item); // دالة جديدة للسيرفرات
+
+        // 2. معالجة السيرفر الثاني (Server 2)
+        const srv1 = document.getElementById('srv1');
+        const srv2 = document.getElementById('srv2');
+        const iframe = document.getElementById('mainIframe');
+
+        // إعادة ضبط الأزرار
+        srv1.classList.add('active');
+        srv2.classList.remove('active');
+
+        if (currentItem.link2 && currentItem.link2.trim() !== "") {
+            srv2.style.display = 'inline-block';
+            srv2.onclick = function() {
+                srv1.classList.remove('active');
+                srv2.classList.add('active');
+                if(iframe) iframe.src = currentItem.link2;
             };
-            grid.appendChild(card);
-        });
+            srv1.onclick = function() {
+                srv2.classList.remove('active');
+                srv1.classList.add('active');
+                if(iframe) iframe.src = currentItem.link;
+            };
+        } else {
+            srv2.style.display = 'none';
+        }
     };
 
-    // 2. تحديث دالة الحلقات لتدعم السيرفرات لكل حلقة
+    // معالجة فتح المسلسلات (الحلقات)
     window.openEpisodes = function(item) {
         const ev = document.getElementById('episodesView');
-        ev.style.display = 'flex';
-        document.getElementById('seriesHeader').innerText = item.name;
         const grid = document.getElementById('episodesGrid');
+        document.getElementById('seriesHeader').innerText = item.name;
         grid.innerHTML = '';
-        if(item.episodes) {
-            item.episodes.forEach((ep, idx) => {
-                const div = document.createElement('div');
-                div.className = 'ep-item';
-                div.innerText = ep.name || `الحلقة ${ep.num}`;
-                div.onclick = () => {
-                    ev.style.display = 'none';
-                    openPlayerFull(item, ep); // دالة جديدة للسيرفرات
-                };
-                grid.appendChild(div);
-            });
-        }
-    };
-
-    // 3. الدالة الجديدة تماماً لإدارة السيرفرات
-    window.openPlayerFull = function(item, episode = null) {
-        const pv = document.getElementById('playerView');
-        pv.style.display = 'flex';
         
-        // جلب البيانات الأساسية
-        const currentData = episode ? episode : item;
-        const title = episode ? `${item.name} - ${episode.name || 'الحلقة ' + episode.num}` : item.name;
-        
-        // استدعاء دالة التشغيل الأصلية لفتح الواجهة
-        window.openPlayer(currentData.link, title, item.img, item.type === 'series' ? item.episodes : null);
-
-        // تحديث أزرار السيرفرات بناءً على البيانات القادمة من JSON
-        const serverBtns = document.querySelectorAll('.romeo-server-btn');
-        const links = [currentData.link, currentData.link2, currentData.link3];
-        const iframe = document.querySelector('#videoContainer iframe');
-
-        serverBtns.forEach((btn, index) => {
-            if (links[index] && links[index].trim() !== "") {
-                btn.style.display = 'inline-block';
-                btn.classList.remove('active');
-                if(index === 0) btn.classList.add('active');
-
-                btn.onclick = function() {
-                    serverBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    if(iframe) iframe.src = links[index];
-                };
-            } else {
-                btn.style.display = 'none';
-            }
+        item.episodes.forEach((ep) => {
+            const div = document.createElement('div');
+            div.className = 'ep-item';
+            div.innerText = ep.name;
+            div.onclick = () => {
+                ev.style.display = 'none';
+                window.openPlayerFull(item, ep); // استخدام النسخة المطورة هنا
+            };
+            grid.appendChild(div);
         });
+        ev.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     };
 })();
 </script>
