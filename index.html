@@ -206,87 +206,57 @@
         .romeo-download-btn-v3:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 
-    <style id="romeoFinalUpdates">
-        /* منع أي تحميل تلقائي من الـ iframe الأصلي */
-        #mainIframe { visibility: hidden; }
-
-        /* واجهة ما قبل التشغيل */
-        #prePlayerOverlay {
-            position: fixed; inset: 0; z-index: 3000; display: none;
-            background-size: cover; background-position: center;
-            flex-direction: column; align-items: center; justify-content: space-between;
-            padding: 50px 20px;
-        }
-        #prePlayerOverlay::before {
-            content: ''; position: absolute; inset: 0; 
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(30px); z-index: -1;
+    <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
+         إضافات ROMEO الجديدة (Add Only)
+         ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
+    <style>
+        /* خلفية ضبابية شفافة للمسلسلات */
+        #episodesView {
+            background-color: rgba(4, 7, 20, 0.7) !important;
+            backdrop-filter: blur(25px) !important;
         }
 
-        /* بانر "حصرياً" شفاف وجذاب */
-        .romeo-banner-top {
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* زر إغلاق المشغل الشفاف */
+        .romeo-transparent-close {
+            position: fixed; top: 20px; left: 20px;
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 20px;
-            text-align: center;
-            width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .romeo-banner-top h2 { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; }
-        .romeo-banner-top h2 span { color: #ff0000; text-shadow: 0 0 10px rgba(255,0,0,0.5); }
-
-        /* زر الإغلاق الشفاف الرفيع */
-        .romeo-close-slim {
-            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 10px 40px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-            backdrop-filter: blur(5px);
+            color: #fff; padding: 8px 18px; border-radius: 15px;
+            z-index: 2100; font-weight: bold; cursor: pointer;
         }
-        .romeo-close-slim:hover { background: rgba(255, 0, 0, 0.4); border-color: #ff0000; }
 
-        /* الأزرار الرئيسية في الواجهة */
-        .pre-player-btns { display: flex; flex-direction: column; gap: 20px; width: 80%; max-width: 320px; }
-        .btn-play-red {
-            background: #ff0000; color: #fff; padding: 18px; border-radius: 50px;
-            border: none; font-weight: 900; font-size: 18px; cursor: pointer;
-            box-shadow: 0 0 30px rgba(255,0,0,0.5); transition: 0.3s;
+        /* حاوية المربعات (الحلقات / المقترحات) */
+        .romeo-grid-suggestions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 15px 0;
+            width: 100%;
         }
-        .btn-play-red:active { transform: scale(0.95); }
-
-        /* تعديلات صفحة الحلقات لتكون أكثر جاذبية */
-        #episodesView { background-size: cover; background-position: center; }
-        .custom-ep-box {
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,0,0,0.2);
-            border-radius: 15px; padding: 10px; backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(255,0,0,0.2); transition: 0.3s;
+        .suggestion-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            font-size: 10px;
         }
-        .custom-ep-box:hover { box-shadow: 0 0 30px rgba(255,0,0,0.5); border-color: #ff0000; }
-
-        /* إخفاء زر التحميل القديم من صفحة التشغيل نهائياً */
-        .romeo-download-btn-v3 { display: none !important; }
+        .suggestion-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+        .suggestion-item div {
+            padding: 5px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
-
-<div id="prePlayerOverlay">
-    <div class="romeo-banner-top">
-        <h2 id="romeoBannerText">حصرياً <span>...</span> على ROMEO LIVE TV</h2>
-    </div>
-
-    <div class="pre-player-btns">
-        <button class="btn-play-red" id="romeoStartPlay">▶ تشغيل الآن</button>
-        <button class="btn-play-red" id="romeoStartDown" style="background: #222; box-shadow: none;">📥 تحميل الآن</button>
-    </div>
-
-    <div class="romeo-close-slim" onclick="document.getElementById('prePlayerOverlay').style.display='none'">✕ إغلاق وتراجع</div>
-</div>
 
 <header>
     <div class="logo-text">ROMEO <span>LIVE TV</span></div>
@@ -308,7 +278,7 @@
     <div class="main-btn" onclick="toggleSub('m-sub')"><i>🎥</i><span>الأفلام</span></div>
     <div class="main-btn" onclick="toggleSub('s-sub')"><i>📺</i><span>المسلسلات</span></div>
     <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i>⚽</i><span>المباريات</span></div>
-    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>الأغاني</span></div>
+    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>أغاني</span></div>
 </div>
 
 <div id="m-sub" class="sub-menu">
@@ -336,6 +306,9 @@
 </div>
 
 <div id="playerView" class="player-view">
+    <!-- زر إغلاق شفاف مضاف -->
+    <div class="romeo-transparent-close" onclick="closePlayer()">✕ إغلاق</div>
+    
     <div class="player-bg-blur" id="playerBlur"></div>
     <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق العرض</div>
     
@@ -349,14 +322,17 @@
     <div class="player-details">
         
         <div id="romeoServerList" class="romeo-server-container">
-            <button class="romeo-server-btn active" id="srv1">سيرفر 1</button>
-            <button class="romeo-server-btn" id="srv2" style="display:none;">سيرفر 2</button>
         </div>
 
         <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        
+        <!-- قسم الحلقات أو المقترحات المربعات -->
+        <h3 id="romeoDynamicTitle" style="color: var(--accent); margin: 20px 0 10px;">حلقات المسلسل</h3>
+        <div id="romeoSquareGrid" class="romeo-grid-suggestions"></div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; margin-top: 30px;">
             <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
             <button class="sub-item" onclick="window.open('https://wa.me/201027675035')">💬 أبلغ عن مشكلة</button>
         </div>
@@ -364,7 +340,7 @@
         <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
         <div class="player-episodes-slider" id="playerEpSlider"></div>
         
-        <div class="romeo-close-slim" onclick="closePlayer()" style="width:100%; text-align:center;">✕ إغلاق العرض</div>
+        <button class="romeo-new-close-btn" onclick="closePlayer()">إغلاق المشغل والرجوع</button>
     </div>
 </div>
 
@@ -406,15 +382,30 @@
         pv.style.display = 'flex';
         document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
         document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
-        // حل التحميل التلقائي: الـ iframe لا يحتوي على رابط إلا في هذه اللحظة
         const container = document.getElementById('videoContainer');
-        container.innerHTML = `<iframe id="mainIframe" src="${link}" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="no-referrer"></iframe>`;
-        document.getElementById('mainIframe').style.visibility = 'visible';
+        container.innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
+        
+        if(episodes) {
+            const slider = document.getElementById('playerEpSlider');
+            document.getElementById('epSliderTitle').style.display = 'block';
+            slider.innerHTML = '';
+            episodes.forEach(ep => {
+                const epCard = document.createElement('div');
+                epCard.className = `mini-ep-card ${ep.link === link ? 'active' : ''}`;
+                epCard.innerText = ep.name;
+                epCard.onclick = () => {
+                    slider.querySelectorAll('.mini-ep-card').forEach(c => c.classList.remove('active'));
+                    epCard.classList.add('active');
+                    openPlayer(ep.link, `${name.split(' - ')[0]} - ${ep.name}`, img, episodes);
+                };
+                slider.appendChild(epCard);
+            });
+        }
     }
 
     function closePlayer() {
         document.getElementById('playerView').style.display = 'none';
-        document.getElementById('videoContainer').innerHTML = ''; // تفريغ المشغل تماماً لمنع التحميل في الخلفية
+        document.getElementById('videoContainer').innerHTML = ''; 
         document.body.style.overflow = 'auto';
     }
 
@@ -441,111 +432,78 @@
 </script>
 
 <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-     تعديلات ROMEO الإضافية (Add Only)
+     محرك ROMEO الذكي (Add Only) - تشغيل اليوتيوب والمقترحات
      ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
-<script id="romeoProLogic">
-(function romeoAdvancedUpgrade() {
-    
-    // 1. مُصلح روابط يوتيوب (يمنع Error 153)
+<script id="romeoSmartFixer">
+(function romeoEngine() {
+    // 1. وظيفة تحويل روابط اليوتيوب للعمل داخل المشغل فوراً
     window.fixYoutubeLink = function(url) {
         if (!url) return "";
         if (url.includes('youtube.com/watch?v=')) {
-            return url.replace('watch?v=', 'embed/') + '?autoplay=1&rel=0&showinfo=0';
+            return url.replace('watch?v=', 'embed/') + '?autoplay=1&rel=0';
         } else if (url.includes('youtu.be/')) {
             const videoId = url.split('/').pop();
-            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
         }
         return url;
     };
 
-    // 2. إعادة تعريف واجهة التشغيل والتحميل (استعادة واجهة الصورة)
+    // 2. تعديل فتح المشغل ليشمل المربعات (حلقات أو مقترحات)
     window.openPlayerFull = function(item, episode = null) {
-        const target = episode ? episode : item;
         const name = episode ? `${item.name} - ${episode.name}` : item.name;
+        const link = episode ? episode.link : item.link;
         
-        const overlay = document.getElementById('prePlayerOverlay');
-        overlay.style.display = 'flex';
-        overlay.style.backgroundImage = `url(${item.img})`;
-        
-        // تحديث النص العلوي
-        document.getElementById('romeoBannerText').innerHTML = `حصرياً <span>${name}</span> على ROMEO LIVE TV`;
+        // تشغيل الفيديو مع معالجة اليوتيوب
+        window.openPlayer(window.fixYoutubeLink(link), name, item.img);
 
-        // زر تشغيل الآن
-        document.getElementById('romeoStartPlay').onclick = () => {
-            overlay.style.display = 'none';
-            const fixedUrl = window.fixYoutubeLink(target.link);
-            window.openPlayer(fixedUrl, name, item.img);
-            window.setupServers(target); // تشغيل السيرفرات
-        };
+        const gridContainer = document.getElementById('romeoSquareGrid');
+        const dynamicTitle = document.getElementById('romeoDynamicTitle');
+        gridContainer.innerHTML = '';
 
-        // زر تحميل الآن
-        const downBtn = document.getElementById('romeoStartDown');
-        if(target.download_url) {
-            downBtn.style.display = 'block';
-            downBtn.onclick = () => window.open(target.download_url, '_blank');
+        if (item.type === 'series' && item.episodes) {
+            // حالة المسلسلات: عرض الحلقات
+            dynamicTitle.innerText = "حلقات المسلسل";
+            item.episodes.forEach(ep => {
+                const epBox = document.createElement('div');
+                epBox.className = 'suggestion-item';
+                epBox.innerHTML = `<img src="${item.img}"><div>${ep.name}</div>`;
+                epBox.onclick = () => window.openPlayerFull(item, ep);
+                gridContainer.appendChild(epBox);
+            });
         } else {
-            downBtn.style.display = 'none';
+            // حالة الأفلام/الأغاني/المباريات: عرض مقترحات من نفس القسم
+            dynamicTitle.innerText = "مقترحات";
+            const suggestions = database.filter(i => i.cat === item.cat && i.name !== item.name).slice(0, 6);
+            suggestions.forEach(sug => {
+                const sugBox = document.createElement('div');
+                sugBox.className = 'suggestion-item';
+                sugBox.innerHTML = `<img src="${sug.img}"><div>${sug.name}</div>`;
+                sugBox.onclick = () => window.openPlayerFull(sug);
+                gridContainer.appendChild(sugBox);
+            });
         }
     };
 
-    // 3. استعادة السيرفرات (1 و 2)
-    window.setupServers = function(target) {
-        const srv1 = document.getElementById('srv1');
-        const srv2 = document.getElementById('srv2');
-        const container = document.getElementById('videoContainer');
-
-        srv1.classList.add('active');
-        srv2.style.display = 'none';
-
-        srv1.onclick = () => {
-            srv2.classList.remove('active');
-            srv1.classList.add('active');
-            container.innerHTML = `<iframe src="${window.fixYoutubeLink(target.link)}" allowfullscreen></iframe>`;
-        };
-
-        if(target.link2) {
-            srv2.style.display = 'block';
-            srv2.onclick = () => {
-                srv1.classList.remove('active');
-                srv2.classList.add('active');
-                container.innerHTML = `<iframe src="${window.fixYoutubeLink(target.link2)}" allowfullscreen></iframe>`;
-            };
-        }
-    };
-
-    // 4. تعديل عرض المسلسلات (كارت لكل حلقة مع خلفية ضبابية)
-    window.openEpisodes = function(item) {
-        const ev = document.getElementById('episodesView');
-        const grid = document.getElementById('episodesGrid');
-        
-        ev.style.display = 'flex';
-        ev.style.backgroundImage = `url(${item.img})`;
-        ev.style.backgroundSize = 'cover';
-        ev.style.backgroundPosition = 'center';
-        
-        document.getElementById('seriesHeader').innerText = item.name;
-        document.getElementById('seriesHeader').style.textShadow = "0 0 15px rgba(255,0,0,0.8)";
-        
-        grid.innerHTML = '';
-        item.episodes.forEach((ep) => {
-            const card = document.createElement('div');
-            card.className = 'custom-ep-box';
-            card.style.cursor = 'pointer';
-            card.innerHTML = `
-                <img src="${item.img}" style="width:100%; border-radius:10px; height:120px; object-fit:cover; margin-bottom:8px;">
-                <div style="font-weight:900; font-size:14px; text-align:center; color:#fff; margin-bottom:10px;">${ep.name}</div>
-                <button class="btn-play-red" style="padding:10px; font-size:12px; width:100%; margin-bottom:5px;">▶ دخول</button>
-            `;
-            
-            card.onclick = () => {
-                ev.style.display = 'none';
-                window.openPlayerFull(item, ep);
-            };
-            grid.appendChild(card);
+    // 3. مراقب ذكي للتأكد من أن أي iframe مضاف يتم معالجته لليوتيوب
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                let iframe = (node.tagName === 'IFRAME') ? node : (node.querySelector ? node.querySelector('iframe') : null);
+                if (iframe) {
+                    let src = iframe.getAttribute('src');
+                    if (src && (src.includes('youtube.com') || src.includes('youtu.be'))) {
+                        iframe.setAttribute('src', window.fixYoutubeLink(src));
+                        iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+                    }
+                }
+            });
         });
-    };
+    });
 
+    const videoBox = document.getElementById('videoContainer');
+    if (videoBox) observer.observe(videoBox, { childList: true, subtree: true });
 })();
 </script>
+
 </body>
 </html>
