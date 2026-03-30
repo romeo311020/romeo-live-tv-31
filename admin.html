@@ -1,3 +1,4 @@
+<!-- استبدل محتوى ملف لوحة التحكم بهذا الكود بالكامل -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -101,7 +102,7 @@
         <input type="hidden" id="editId">
         <input type="text" id="name" placeholder="الاسم (مسلسل أو حلقة)">
         <input type="text" id="img" placeholder="رابط البوستر (صورة)">
-        <input type="text" id="link" placeholder="رابط المشاهدة (Embed)">
+        <input type="text" id="link" placeholder="رابط المشاهدة (السيرفر الأول)">
         <button class="save-btn" onclick="saveData()">حفظ البيانات ✅</button>
     </div>
 </div>
@@ -235,7 +236,6 @@
         if(confirm("حذف هذه الحلقة؟")) {
             const series = db.items.find(i => i.id === currentSeriesId);
             series.episodes.splice(index, 1);
-            // إعادة ترتيب أرقام الحلقات بعد الحذف لضمان التسلسل
             series.episodes.forEach((ep, idx) => ep.num = (idx + 1).toString());
             await sync();
             renderEpisodes();
@@ -256,7 +256,7 @@
                 img, 
                 link, 
                 cat: currentSub,
-                type: currentMain === 'series' ? 'series' : 'movie', // التعديل 1: إضافة النوع تلقائياً
+                type: currentMain === 'series' ? 'series' : 'movie',
                 episodes: indexOrId ? (db.items.find(i => i.id == indexOrId).episodes || []) : []
             };
             if(indexOrId) {
@@ -271,7 +271,6 @@
             const series = db.items.find(i => i.id === currentSeriesId);
             if(!series.episodes) series.episodes = [];
             
-            // التعديل 2: إضافة رقم الحلقة num تلقائياً
             const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
             const epObj = { 
                 num: epNum, 
@@ -332,128 +331,104 @@
     }
 </script>
 
-<!-- ======================================================== -->
-<!-- الكود الجديد المضاف (إضافة حقول السيرفرات وإصلاح زر الرجوع) -->
-<!-- ======================================================== -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 🆕 الإضافة الجديدة: دعم السيرفر الثاني ورابط التحميل (Add Only) 🆕 -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 
 <script>
-    // 1. إضافة حقول السيرفرات الجديدة في الفورم ديناميكياً عند تحميل الصفحة
-    window.addEventListener('DOMContentLoaded', () => {
+(function romeoSystemV5() {
+    window.addEventListener('load', () => {
         const formContainer = document.querySelector('#screen-form .form-container');
-        const saveBtn = formContainer.querySelector('.save-btn');
-        
-        // إنشاء الحقول الجديدة
-        const input2 = document.createElement('input');
-        input2.type = 'text';
-        input2.id = 'link2';
-        input2.placeholder = 'رابط سيرفر 2 (إختياري)';
-        
-        const input3 = document.createElement('input');
-        input3.type = 'text';
-        input3.id = 'link3';
-        input3.placeholder = 'رابط سيرفر 3 (إختياري)';
-        
-        // إضافتهم قبل زر الحفظ
-        formContainer.insertBefore(input2, saveBtn);
-        formContainer.insertBefore(input3, saveBtn);
+        const originalSaveBtn = formContainer.querySelector('.save-btn');
+        const linkInput = document.getElementById('link');
 
-        // تعديل وظيفة زر الحفظ لتستخدم الدالة الجديدة المضافة بالأسفل
-        saveBtn.setAttribute('onclick', 'saveDataNew()');
-    });
+        // 1. إضافة مدخلات السيرفر الثاني ورابط التحميل برمجياً
+        const server2Input = document.createElement('input');
+        server2Input.id = 'link2';
+        server2Input.placeholder = 'رابط السيرفر الثاني (إختياري)';
+        formContainer.insertBefore(server2Input, originalSaveBtn);
 
-    // 2. دالة حفظ جديدة تدعم السيرفرات الثلاثة (بدون تعديل الدالة القديمة)
-    async function saveDataNew() {
-        const type = document.getElementById('editType').value;
-        const indexOrId = document.getElementById('editId').value;
-        const name = document.getElementById('name').value;
-        const img = document.getElementById('img').value;
-        const link = document.getElementById('link').value;
-        const link2 = document.getElementById('link2').value;
-        const link3 = document.getElementById('link3').value;
+        const downloadInput = document.createElement('input');
+        downloadInput.id = 'download_url';
+        downloadInput.placeholder = 'رابط التحميل المباشر (إختياري)';
+        formContainer.insertBefore(downloadInput, originalSaveBtn);
 
-        if(type === 'item') {
-            const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
-            const obj = {
-                id: indexOrId ? parseInt(indexOrId) : Date.now(),
-                name, 
-                img, 
-                link,
-                link2: link2 || "",
-                link3: link3 || "",
-                cat: currentSub,
-                type: currentMain === 'series' ? 'series' : 'movie',
-                episodes: existingItem ? (existingItem.episodes || []) : []
-            };
-            if(indexOrId) {
-                const idx = db.items.findIndex(i => i.id == indexOrId);
-                db.items[idx] = obj;
-            } else {
-                db.items.push(obj);
-            }
-            showScreen('screen-items');
-            renderItems();
-        } else {
-            const series = db.items.find(i => i.id === currentSeriesId);
-            if(!series.episodes) series.episodes = [];
-            
-            const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
-            const epObj = { 
-                num: epNum, 
-                name: name, 
-                link: link,
-                link2: link2 || "",
-                link3: link3 || ""
-            };
-
-            if(indexOrId !== '') series.episodes[indexOrId] = epObj;
-            else series.episodes.push(epObj);
-            
-            showScreen('screen-episodes');
-            renderEpisodes();
-        }
-        await sync();
-    }
-
-    // 3. إصلاح زر الرجوع (Fix goBack)
-    // الكود القديم فيه خطأ في أسماء الـ IDs (كان مكتوب 'home' بدلاً من 'screen-home')
-    // سنقوم بإعادة تعريف الوظيفة لإصلاح المسارات
-    function goBackFixed() {
-        const active = document.querySelector('.active-screen').id;
-        if(active === 'screen-subs') showScreen('screen-home');
-        else if(active === 'screen-items') showScreen('screen-subs');
-        else if(active === 'screen-episodes') showScreen('screen-items');
-        else if(active === 'screen-form') {
+        // 2. تحديث دالة الحفظ لتدعم الخانات الجديدة
+        window.saveData = async function() {
             const type = document.getElementById('editType').value;
-            showScreen(type === 'episode' ? 'screen-episodes' : 'screen-items');
-        }
-    }
-    // تغيير وظيفة الزر في الهيدر لتستخدم النسخة المصلحة
-    document.getElementById('backBtn').onclick = goBackFixed;
+            const indexOrId = document.getElementById('editId').value;
+            const name = document.getElementById('name').value;
+            const img = document.getElementById('img').value;
+            const link = document.getElementById('link').value;
+            const link2 = document.getElementById('link2').value; // جلب القيمة الجديدة
+            const download_url = document.getElementById('download_url').value; // جلب القيمة الجديدة
 
-    // 4. تحديث وظائف التعديل لتمسح وتضع بيانات السيرفرات الجديدة
-    const oldEditItem = editItem;
-    editItem = function(id) {
-        oldEditItem(id);
-        const item = db.items.find(i => i.id === id);
-        document.getElementById('link2').value = item.link2 || '';
-        document.getElementById('link3').value = item.link3 || '';
-    };
+            if(type === 'item') {
+                const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
+                const obj = {
+                    id: indexOrId ? parseInt(indexOrId) : Date.now(),
+                    name, img, link, 
+                    link2: link2 || '', // حفظ السيرفر 2
+                    download_url: download_url || '', // حفظ رابط التحميل
+                    cat: currentSub,
+                    type: currentMain === 'series' ? 'series' : 'movie',
+                    episodes: existingItem ? (existingItem.episodes || []) : []
+                };
+                if(indexOrId) {
+                    const idx = db.items.findIndex(i => i.id == indexOrId);
+                    db.items[idx] = obj;
+                } else {
+                    db.items.push(obj);
+                }
+                showScreen('screen-items');
+                renderItems();
+            } else {
+                const series = db.items.find(i => i.id === currentSeriesId);
+                if(!series.episodes) series.episodes = [];
+                
+                const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
+                const epObj = { 
+                    num: epNum, name, link,
+                    link2: link2 || '', // حفظ سيرفر 2 للحلقة
+                    download_url: download_url || '' // حفظ تحميل للحلقة
+                };
 
-    const oldEditEpisode = editEpisode;
-    editEpisode = function(index) {
-        oldEditEpisode(index);
-        const series = db.items.find(i => i.id === currentSeriesId);
-        const ep = series.episodes[index];
-        document.getElementById('link2').value = ep.link2 || '';
-        document.getElementById('link3').value = ep.link3 || '';
-    };
+                if(indexOrId !== '') series.episodes[indexOrId] = epObj;
+                else series.episodes.push(epObj);
+                
+                showScreen('screen-episodes');
+                renderEpisodes();
+            }
+            await sync();
+        };
 
-    const oldOpenForm = openForm;
-    openForm = function(type, index = null) {
-        oldOpenForm(type, index);
-        document.getElementById('link2').value = '';
-        document.getElementById('link3').value = '';
-    }
+        // 3. تعديل وظائف (فتح الفورم) و (التعديل) لتنظيف واسترجاع البيانات الجديدة
+        const oldOpenForm = window.openForm;
+        window.openForm = function(type, index = null) {
+            oldOpenForm(type, index);
+            document.getElementById('link2').value = '';
+            document.getElementById('download_url').value = '';
+        };
+
+        const oldEditItem = window.editItem;
+        window.editItem = function(id) {
+            oldEditItem(id);
+            const item = db.items.find(i => i.id === id);
+            document.getElementById('link2').value = item.link2 || '';
+            document.getElementById('download_url').value = item.download_url || '';
+        };
+
+        const oldEditEp = window.editEpisode;
+        window.editEpisode = function(index) {
+            oldEditEp(index);
+            const series = db.items.find(i => i.id === currentSeriesId);
+            const ep = series.episodes[index];
+            document.getElementById('link2').value = ep.link2 || '';
+            document.getElementById('download_url').value = ep.download_url || '';
+        };
+    });
+})();
 </script>
+
 </body>
 </html>
