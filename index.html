@@ -441,29 +441,125 @@
 
 <!-- 
 ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-وظائف برمجية جديدة لحل المشاكل (إضافة فقط)
+🆕 إضافات ROMEO V7 الجديدة (Add Only) 🆕
 ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
 -->
-<script id="romeoNewLogic">
-    // وظيفة ملء المقترحات (حلقات مسلسل أو أفلام مشابهة)
-    function fillRomeoSuggestions(currentName) {
+
+<style>
+    /* أزرار السيرفرات والتحميل الجديدة */
+    .romeo-v7-controls { width: 95%; max-width: 1000px; margin: 15px auto; display: flex; flex-direction: column; gap: 10px; }
+    .romeo-v7-servers { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+    .v7-srv-btn { background: #1a1d29; border: 1px solid #333; color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; white-space: nowrap; font-weight: bold; font-size: 13px; transition: 0.3s; }
+    .v7-srv-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .v7-dl-btn { background: linear-gradient(90deg, #27ae60, #2ecc71); color: #fff !important; text-decoration: none; padding: 15px; border-radius: 12px; text-align: center; font-weight: 900; font-size: 16px; display: none; box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3); }
+</style>
+
+<script>
+(function romeoInjectionV7() {
+    window.addEventListener('load', () => {
+        const playerView = document.getElementById('playerView');
+        const videoContainerWrapper = document.getElementById('videoContainerWrapper');
+        const playerDetails = document.querySelector('.player-details');
+
+        // 1. إنشاء حاوية السيرفرات والتحميل
+        const controls = document.createElement('div');
+        controls.className = 'romeo-v7-controls';
+        
+        const srvBox = document.createElement('div');
+        srvBox.className = 'romeo-v7-servers';
+        
+        const dlBtn = document.createElement('a');
+        dlBtn.className = 'v7-dl-btn';
+        dlBtn.innerText = '📥 تحميل المحتوى الآن';
+        dlBtn.target = '_blank';
+
+        controls.appendChild(srvBox);
+        controls.appendChild(dlBtn);
+        playerView.insertBefore(controls, playerDetails);
+
+        // وظيفة تغيير السيرفر
+        window.v7Switch = (url, btn) => {
+            document.querySelectorAll('.v7-srv-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const frame = document.getElementById('videoContainer').querySelector('iframe');
+            if(frame) frame.src = url;
+        };
+
+        // 2. مراقب ذكي لتحديث البيانات (Add Only)
+        let lastId = null;
+        setInterval(() => {
+            if (playerView.style.display === 'flex' && window.currentRomeoItem) {
+                const item = window.currentRomeoItem;
+                if (lastId !== item.id) {
+                    lastId = item.id;
+                    
+                    // تحديث السيرفرات
+                    srvBox.innerHTML = `<button class="v7-srv-btn active" onclick="v7Switch('${item.link}', this)">سيرفر 1</button>`;
+                    if(item.link2) {
+                        srvBox.innerHTML += `<button class="v7-srv-btn" onclick="v7Switch('${item.link2}', this)">سيرفر 2 (إضافي)</button>`;
+                    }
+                    srvBox.innerHTML += `<button class="v7-srv-btn" onclick="v7Switch('https://www.youtube.com/embed/dQw4w9WgXcQ', this)">سيرفر احتياطي</button>`;
+
+                    // تحديث زر التحميل
+                    if(item.download_url) {
+                        dlBtn.href = item.download_url;
+                        dlBtn.style.display = 'block';
+                    } else {
+                        dlBtn.style.display = 'none';
+                    }
+                }
+            } else if (playerView.style.display === 'none') {
+                lastId = null;
+            }
+        }, 500);
+    });
+
+    // 3. ربط العناصر الجديدة بالدوال الأصلية بدون تعديلها
+    const originalOpenPlayerFull = window.openPlayerFull;
+    window.openPlayerFull = function(item) {
+        window.currentRomeoItem = item;
+        originalOpenPlayerFull(item);
+    };
+
+    const originalOpenEpisodes = window.openEpisodes;
+    window.openEpisodes = function(item) {
+        // تخزين بيانات المسلسل الأم لاستخدام الصور والروابط لاحقاً
+        window.currentRomeoSeries = item;
+        originalOpenEpisodes(item);
+    };
+
+    // مراقبة الحلقات عند الضغط عليها
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('ep-item') && window.currentRomeoSeries) {
+            const epName = e.target.innerText;
+            const episode = window.currentRomeoSeries.episodes.find(ep => ep.name === epName);
+            if(episode) {
+                window.currentRomeoItem = {
+                    id: 'ep-' + Date.now(),
+                    name: window.currentRomeoSeries.name + " - " + episode.name,
+                    link: episode.link,
+                    link2: episode.link2 || "",
+                    download_url: episode.download_url || "",
+                    img: window.currentRomeoSeries.img
+                };
+            }
+        }
+    });
+
+    // 4. نظام المقترحات (توسيع الوظيفة الأصلية)
+    window.fillRomeoSuggestions = function(currentName) {
         const grid = document.getElementById('romeoSuggestGrid');
         const title = document.getElementById('romeoSuggestTitle');
         grid.innerHTML = '';
-
-        // البحث عن العنصر الحالي في قاعدة البيانات
         let currentItem = database.find(i => currentName.includes(i.name));
-
         if (currentItem && currentItem.type === 'series') {
             title.innerText = 'حلقات المسلسل';
             currentItem.episodes.forEach(ep => {
                 const card = document.createElement('div');
                 card.className = 'suggestion-card';
-                card.innerHTML = `
-                    <img src="${currentItem.img}">
-                    <div class="name">${ep.name}</div>
-                `;
+                card.innerHTML = `<img src="${currentItem.img}"><div class="name">${ep.name}</div>`;
                 card.onclick = () => {
+                    window.currentRomeoItem = { ...currentItem, name: currentItem.name + " - " + ep.name, link: ep.link, link2: ep.link2, download_url: ep.download_url };
                     document.getElementById('videoContainer').innerHTML = '';
                     openPlayer(ep.link, `${currentItem.name} - ${ep.name}`, currentItem.img);
                     document.getElementById('playerView').scrollTo(0, 0);
@@ -472,53 +568,17 @@
             });
         } else {
             title.innerText = 'مقترحات مشابهة';
-            // جلب عناصر من نفس القسم
             let suggestions = database.filter(i => i.cat === (currentItem ? currentItem.cat : '') && i.name !== currentName).slice(0, 6);
             suggestions.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'suggestion-card';
-                card.innerHTML = `
-                    <img src="${item.img}">
-                    <div class="name">${item.name}</div>
-                `;
-                card.onclick = () => {
-                    closePlayer();
-                    if(item.type === 'series') openEpisodes(item);
-                    else openPlayerFull(item);
-                };
+                card.innerHTML = `<img src="${item.img}"><div class="name">${item.name}</div>`;
+                card.onclick = () => { closePlayer(); if(item.type === 'series') openEpisodes(item); else openPlayerFull(item); };
                 grid.appendChild(card);
             });
         }
-    }
-
-    // تعديل وظيفة فتح المشغل لتشمل واجهة التأكيد
-    function openPlayerFull(item) {
-        const overlay = document.getElementById('prePlayerOverlay');
-        overlay.style.display = 'flex';
-        document.getElementById('romeoBannerText').innerText = item.name;
-        document.getElementById('romeoStartPlay').onclick = () => {
-            overlay.style.display = 'none';
-            openPlayer(item.link, item.name, item.img);
-        };
-    }
-
-    function openEpisodes(item) {
-        const ev = document.getElementById('episodesView');
-        const grid = document.getElementById('episodesGrid');
-        ev.style.display = 'flex';
-        document.getElementById('seriesHeader').innerText = item.name;
-        grid.innerHTML = '';
-        item.episodes.forEach(ep => {
-            const card = document.createElement('div');
-            card.className = 'ep-item';
-            card.innerText = ep.name;
-            card.onclick = () => {
-                ev.style.display = 'none';
-                openPlayer(ep.link, `${item.name} - ${ep.name}`, item.img);
-            };
-            grid.appendChild(card);
-        });
-    }
+    };
+})();
 </script>
 
 </body>
