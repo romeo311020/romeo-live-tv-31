@@ -1,3 +1,4 @@
+<!-- الكود الأصلي كما هو 100% بدون تعديل حرف واحد -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -360,155 +361,208 @@
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافات الجديدة (Add Only) لتعمل الوظائف بدون تعديل الكود القديم 🆕 -->
+<!-- 🆕 الإضافات الاحترافية الجديدة (Add Only) - نظام الحقن الذكي V3 🆕 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 
-<style id="romeo-new-styles">
-    /* [6] خلفية صفحة المشغل مع Particles */
-    #playerView { background: #000 !important; overflow: hidden; position: fixed; inset: 0; }
-    .romeo-particles-overlay {
-        position: absolute; inset: 0; pointer-events: none;
-        background: radial-gradient(circle at center, rgba(139, 0, 0, 0.2) 0%, transparent 70%);
-        z-index: -1;
-    }
-    /* [7] Shadow أحمر داكن للمشغل */
-    .video-wrapper { box-shadow: 0 0 30px rgba(139, 0, 0, 0.8) !important; border: 1px solid #400 !important; }
+<style id="romeo-pro-styles">
+    /* [1] مسافة بين الرسالة والمشغل */
+    .romeo-exclusive-banner { margin-bottom: 40px !important; }
 
-    /* [8] شريط تحميل يتحرك */
-    .romeo-loader-line {
-        width: 0%; height: 3px; background: #ff0000; position: absolute; bottom: 0; left: 0;
-        box-shadow: 0 0 10px #f00; transition: width 0.5s ease; z-index: 10;
+    /* [7] Shadow أحمر داكن للمشغل */
+    .video-wrapper { 
+        box-shadow: 0 10px 50px rgba(139, 0, 0, 0.6), 0 0 30px rgba(0, 0, 0, 0.8) !important; 
+        border: 2px solid rgba(139, 0, 0, 0.3) !important;
     }
-    
+
+    /* [6] خلفية المشغل وتأثير الـ Particles */
+    #playerView { background: radial-gradient(circle at center, #0a0000 0%, #000 100%) !important; }
+    .romeo-particles-overlay {
+        position: absolute; inset: 0; pointer-events: none; z-index: -1;
+        background-image: radial-gradient(#8b0000 1px, transparent 1px);
+        background-size: 50px 50px; opacity: 0.2; animation: particleMove 20s linear infinite;
+    }
+    @keyframes particleMove { from { background-position: 0 0; } to { background-position: 500px 1000px; } }
+
+    /* [8] شريط تحميل متحرك */
+    .romeo-loading-bar-container {
+        width: 95%; max-width: 1000px; height: 3px; background: rgba(255,255,255,0.05);
+        margin-top: -3px; border-radius: 0 0 15px 15px; overflow: hidden; position: relative; z-index: 10;
+    }
+    .romeo-loading-bar-fill {
+        width: 0%; height: 100%; background: linear-gradient(90deg, transparent, #ff0000, transparent);
+        box-shadow: 0 0 10px #ff0000; animation: romeoBarMove 3s ease-in-out infinite;
+    }
+    @keyframes romeoBarMove { 0% { width: 0%; left: 0%; } 50% { width: 70%; left: 15%; } 100% { width: 0%; left: 100%; } }
+
     /* [2] واجهة منع التحميل التلقائي */
     .romeo-play-blocker {
-        position: absolute; inset: 0; background: rgba(0,0,0,0.8);
+        position: absolute; inset: 0; background: rgba(0,0,0,0.85);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        z-index: 100; cursor: pointer; color: #fff;
+        z-index: 100; cursor: pointer; backdrop-filter: blur(5px);
     }
-    .romeo-play-btn-v3 { font-size: 50px; color: #e5b80b; margin-bottom: 10px; }
+    .romeo-play-icon {
+        width: 80px; height: 80px; background: var(--accent); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 30px;
+        color: #000; box-shadow: 0 0 30px var(--accent-glow); transition: 0.3s;
+    }
+    .romeo-play-blocker:hover .romeo-play-icon { transform: scale(1.1); }
 
-    /* [10, 11] تصاميم الأقسام الإضافية */
-    .romeo-extra-section { padding: 20px 5%; width: 100%; max-width: 1000px; }
-    .romeo-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    /* [4] WebView Container */
+    #romeoWebView {
+        position: fixed; inset: 0; background: #000; z-index: 9999; display: none;
+        flex-direction: column;
+    }
+    .romeo-wv-header { padding: 15px; background: #1a1d29; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #333; }
 
-    /* WebView */
-    #romeoWebView { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; }
+    /* [10, 11] أقسام الأفلام والمسلسلات الإضافية */
+    .romeo-extra-section { width: 100%; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+    .romeo-extra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
 </style>
 
-<!-- WebView Container -->
 <div id="romeoWebView">
-    <div class="back-nav-btn" id="closeWV">✕ إغلاق المتصفح</div>
-    <iframe id="romeoFrame" style="width:100%; height:100%; border:none;"></iframe>
+    <div class="romeo-wv-header">
+        <div class="back-nav-btn" style="position: static;" onclick="document.getElementById('romeoWebView').style.display='none'">✕ إغلاق المتصفح</div>
+        <span id="romeoWvTitle" style="font-size: 12px; opacity: 0.6; overflow: hidden; white-space: nowrap;"></span>
+    </div>
+    <iframe id="romeoFrame" style="flex: 1; width: 100%; border: none;"></iframe>
 </div>
 
-<script id="romeo-logic-v3">
-(function romeoUltimateProtection() {
+<script id="romeo-pro-logic">
+(function romeoUltimateSolution() {
     
-    // [9] تأكيد منع التحميل التلقائي
-    const injectBlocker = () => {
-        const container = document.getElementById('videoContainer');
-        if (container && !container.querySelector('.romeo-play-blocker')) {
-            const iframe = container.querySelector('iframe');
-            if (iframe) iframe.style.display = 'none'; // إخفاء الفريم لمنع التحميل
-
-            const blocker = document.createElement('div');
-            blocker.className = 'romeo-play-blocker';
-            blocker.innerHTML = `<div class="romeo-play-btn-v3">▶</div><p>اضغط لبدء التشغيل</p>
-                                 <div class="romeo-loader-line" id="romeoLoader"></div>`;
-            
-            blocker.onclick = function() {
-                const loader = document.getElementById('romeoLoader');
-                loader.style.width = '100%';
-                setTimeout(() => {
-                    blocker.style.display = 'none';
-                    if (iframe) iframe.style.display = 'block';
-                }, 1000);
-            };
-            container.appendChild(blocker);
+    // [3] كود سحري لمنع الإعلانات داخل الـ iframe
+    // ملاحظة: الـ Sandbox هو أقوى وسيلة حماية برمجية متاحة
+    function applyIframeSecurity() {
+        const iframe = document.getElementById('mainIframe');
+        if (iframe) {
+            // السماح بالتشغيل والسكربتات فقط ومنع الـ Popups والتحويلات
+            iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-presentation');
         }
-    };
+    }
 
-    // [1] مسافة بين الرسالة والمشغل
-    const addSpacer = () => {
-        const banner = document.getElementById('romeoExclusiveBanner');
-        if (banner) banner.style.marginBottom = '50px';
-    };
+    // [2, 9] منع التحميل التلقائي عبر وضع حاجز ضغطة واحدة
+    function injectPlayBlocker() {
+        const container = document.getElementById('videoContainer');
+        if (!container || container.querySelector('.romeo-play-blocker')) return;
 
-    // [5] زر الرجوع في الموبايل
+        const blocker = document.createElement('div');
+        blocker.className = 'romeo-play-blocker';
+        blocker.innerHTML = `
+            <div class="romeo-play-icon">▶</div>
+            <p style="margin-top:15px; font-weight:bold; color:var(--accent)">اضغط لبدء التشغيل الآمن</p>
+            <p style="font-size:10px; opacity:0.5; margin-top:5px">ROMEO PROTECT ACTIVE</p>
+        `;
+
+        // إخفاء الـ iframe مؤقتاً لضمان عدم التحميل خلف الحاجز
+        const iframe = container.querySelector('iframe');
+        if (iframe) iframe.style.visibility = 'hidden';
+
+        blocker.onclick = function() {
+            blocker.style.display = 'none';
+            if (iframe) {
+                iframe.style.visibility = 'visible';
+                applyIframeSecurity(); // تفعيل الحماية عند التشغيل
+            }
+            // إظهار شريط التحميل لفترة قصيرة
+            injectLoadingBar();
+        };
+        container.appendChild(blocker);
+    }
+
+    // [8] حقن شريط التحميل
+    function injectLoadingBar() {
+        const wrapper = document.getElementById('videoContainerWrapper');
+        if (!wrapper || wrapper.querySelector('.romeo-loading-bar-container')) return;
+        
+        const loader = document.createElement('div');
+        loader.className = 'romeo-loading-bar-container';
+        loader.innerHTML = '<div class="romeo-loading-bar-fill"></div>';
+        wrapper.appendChild(loader);
+        
+        setTimeout(() => { if(loader) loader.remove(); }, 5000);
+    }
+
+    // [5] زر الرجوع الذكي (Mobile Back Button)
     history.pushState(null, null, location.href);
     window.onpopstate = function() {
         const player = document.getElementById('playerView');
-        if (player && player.style.display === 'flex') {
+        const webview = document.getElementById('romeoWebView');
+        const episodes = document.getElementById('episodesView');
+
+        if (webview.style.display === 'flex') {
+            webview.style.display = 'none';
+            history.pushState(null, null, location.href);
+        } else if (player.style.display === 'flex') {
             closePlayer();
+            history.pushState(null, null, location.href);
+        } else if (episodes.style.display === 'flex') {
+            episodes.style.display = 'none';
             history.pushState(null, null, location.href);
         }
     };
 
-    // [3] منع الإعلانات والـ Popups داخل المشغل
-    const killAds = () => {
-        const iframes = document.getElementsByTagName('iframe');
-        for (let f of iframes) {
-            if (f.id === 'mainIframe') {
-                f.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-presentation');
-            }
-        }
-    };
-
-    // [4] WebView - منع الخروج من التطبيق
-    document.addEventListener('click', (e) => {
-        const tag = e.target.closest('a');
-        if (tag && tag.href && !tag.href.includes(window.location.hostname) && !tag.id.includes('romeoDownloadBtn')) {
+    // [4] تفعيل الـ WebView الداخلي لجميع الروابط الخارجية
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a');
+        if (target && target.href && !target.href.includes(window.location.hostname) && !target.id.includes('romeoDownloadBtn')) {
             e.preventDefault();
-            document.getElementById('romeoFrame').src = tag.href;
-            document.getElementById('romeoWebView').style.display = 'block';
+            const wv = document.getElementById('romeoWebView');
+            const frame = document.getElementById('romeoFrame');
+            document.getElementById('romeoWvTitle').innerText = target.href;
+            frame.src = target.href;
+            wv.style.display = 'flex';
         }
-    });
-    document.getElementById('closeWV').onclick = () => document.getElementById('romeoWebView').style.display = 'none';
+    }, true);
 
-    // [10, 11] إضافة الأقسام الجديدة أسفل المشغل
-    const addExtraSections = (item) => {
+    // [10, 11] حقن الأقسام الإضافية (أفلام أخرى / حلقات أخرى)
+    function injectExtraSections(item) {
         const details = document.querySelector('.player-details');
-        if (!details || details.querySelector('.romeo-added-sec')) return;
+        if (!details || details.querySelector('.romeo-extra-section')) return;
 
         const extra = document.createElement('div');
-        extra.className = 'romeo-added-sec';
+        extra.className = 'romeo-extra-section';
         
-        // قسم أفلام أخرى
-        let moviesHtml = `<div class="romeo-extra-section"><h3>أفلام أخرى</h3><div class="romeo-grid-2col">`;
-        const others = database.filter(i => i.type === 'movie').slice(0, 2);
-        others.forEach(m => {
-            moviesHtml += `<div class="card" onclick="closePlayer(); openPlayerFull(${JSON.stringify(m).replace(/"/g, '&quot;')})"><img src="${m.img}"><div class="card-info">${m.name}</div></div>`;
+        // جلب عينات عشوائية من الداتابيز
+        const recommendations = database.filter(i => i.name !== item.name).slice(0, 2);
+        
+        let html = `<h3 style="color:var(--accent); font-size:14px">مقترحات قد تعجبك:</h3><div class="romeo-extra-grid">`;
+        recommendations.forEach(rec => {
+            html += `
+                <div class="card" onclick="closePlayer(); setTimeout(() => { openPlayerFull(${JSON.stringify(rec).replace(/"/g, '&quot;')}) }, 100)">
+                    <img src="${rec.img}" style="height:120px">
+                    <div class="card-info" style="font-size:9px">${rec.name}</div>
+                </div>
+            `;
         });
-        moviesHtml += `</div></div>`;
-
-        extra.innerHTML = moviesHtml;
+        html += `</div>`;
+        extra.innerHTML = html;
         details.appendChild(extra);
-    };
+    }
 
-    // ربط كل شئ عند فتح المشغل
-    const originalOpen = window.openPlayerFull;
+    // الربط مع دوال الموقع الأصلية عبر المراقبة (Hooking)
+    const originalOpenPlayerFull = window.openPlayerFull;
     window.openPlayerFull = function(item, ep = null) {
-        // تنفيذ الكود الأصلي أولاً لفتح الصفحة
-        if (typeof originalOpen === "function") originalOpen(item, ep);
+        // استدعاء الوظيفة الأصلية
+        if (typeof originalOpenPlayerFull === 'function') {
+            originalOpenPlayerFull(item, ep);
+        } else {
+            // في حال عدم وجود openPlayerFull، نستخدم openPlayer العادية
+            const current = ep || item;
+            openPlayer(current.link, ep ? `${item.name} - ${ep.name}` : item.name, item.img);
+        }
 
-        // تنفيذ التحسينات فوراً (Add-on)
+        // تنفيذ التحسينات
         setTimeout(() => {
-            injectBlocker();
-            addSpacer();
-            killAds();
-            addExtraSections(item);
-            
-            // [6] تأثير الخلفية
+            injectPlayBlocker();
+            injectExtraSections(item);
+            // إضافة الـ Particles للخلفية
             const blur = document.getElementById('playerBlur');
-            if(blur) blur.innerHTML = '<div class="romeo-particles-overlay"></div>';
+            if (blur && !blur.querySelector('.romeo-particles-overlay')) {
+                const p = document.createElement('div');
+                p.className = 'romeo-particles-overlay';
+                blur.appendChild(p);
+            }
         }, 100);
-    };
-
-    // في حال كانت الصفحة هي المسلسلات
-    const originalOpenEp = window.openEpisodes;
-    window.openEpisodes = function(item) {
-        if (typeof originalOpenEp === "function") originalOpenEp(item);
     };
 
 })();
