@@ -207,56 +207,67 @@
     </style>
 
     <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-         إضافات ROMEO الجديدة (Add Only)
+         قسم الإضافات الجديدة (Add Only) لـ ROMEO
          ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
     <style>
-        /* خلفية ضبابية شفافة للمسلسلات */
-        #episodesView {
-            background-color: rgba(4, 7, 20, 0.7) !important;
-            backdrop-filter: blur(25px) !important;
+        /* واجهة ما قبل التشغيل */
+        #romeoPrePlayer {
+            position: fixed; inset: 0; z-index: 3000; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            background-size: cover; background-position: center;
+        }
+        #romeoPrePlayer::before {
+            content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(40px); z-index: -1;
         }
 
-        /* زر إغلاق المشغل الشفاف */
-        .romeo-transparent-close {
-            position: fixed; top: 20px; left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff; padding: 8px 18px; border-radius: 15px;
-            z-index: 2100; font-weight: bold; cursor: pointer;
+        .pre-content { width: 90%; text-align: center; animation: fadeIn 0.5s; }
+        .pre-title { font-size: 22px; font-weight: 900; margin-bottom: 30px; color: #fff; }
+        .pre-title span { color: #ff0000; }
+
+        /* الأزرار الحمراء الكبيرة */
+        .romeo-big-btn {
+            width: 100%; max-width: 300px; padding: 18px; border-radius: 50px;
+            border: none; font-size: 18px; font-weight: 900; cursor: pointer;
+            margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: 0.3s; color: #fff;
+        }
+        .btn-red-play { background: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+        .btn-red-down { background: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+
+        /* زر الإغلاق الشفاف بالأسفل */
+        .romeo-bottom-close {
+            position: absolute; bottom: 30px; width: 85%;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff; padding: 15px; border-radius: 15px; text-align: center;
+            font-weight: bold; cursor: pointer; backdrop-filter: blur(10px);
         }
 
-        /* حاوية المربعات (الحلقات / المقترحات) */
-        .romeo-grid-suggestions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 15px 0;
-            width: 100%;
+        /* مربعات المقترحات / الحلقات */
+        .romeo-suggest-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;
         }
-        .suggestion-item {
-            background: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            text-align: center;
-            font-size: 10px;
+        .suggest-card {
+            background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
         }
-        .suggestion-item img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-        }
-        .suggestion-item div {
-            padding: 5px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .suggest-card img { width: 100%; height: 90px; object-fit: cover; }
+        .suggest-card div { padding: 5px; font-size: 10px; text-align: center; font-weight: bold; }
+
+        /* تعديلات السيرفرات */
+        .srv-active { background: #ff0000 !important; color: #fff !important; }
     </style>
 </head>
 <body>
+
+<!-- واجهة ما قبل التشغيل المضافة -->
+<div id="romeoPrePlayer">
+    <div class="pre-content">
+        <div class="pre-title" id="preTitleText">حصرياً <span>...</span> على ROMEO</div>
+        <button class="romeo-big-btn btn-red-play" id="prePlayBtn">▶ تشغيل الآن</button>
+        <button class="romeo-big-btn btn-red-down" id="preDownBtn">📥 تحميل الآن</button>
+    </div>
+    <div class="romeo-bottom-close" onclick="document.getElementById('romeoPrePlayer').style.display='none'">✕ إغلاق وتراجع</div>
+</div>
 
 <header>
     <div class="logo-text">ROMEO <span>LIVE TV</span></div>
@@ -278,7 +289,7 @@
     <div class="main-btn" onclick="toggleSub('m-sub')"><i>🎥</i><span>الأفلام</span></div>
     <div class="main-btn" onclick="toggleSub('s-sub')"><i>📺</i><span>المسلسلات</span></div>
     <div class="main-btn" onclick="filterData('match', 'ملخصات المباريات'); hideAllSubs()"><i>⚽</i><span>المباريات</span></div>
-    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>أغاني</span></div>
+    <div class="main-btn" onclick="filterData('music', 'أجمل الأغاني'); hideAllSubs()"><i>🎵</i><span>الأغاني</span></div>
 </div>
 
 <div id="m-sub" class="sub-menu">
@@ -306,9 +317,6 @@
 </div>
 
 <div id="playerView" class="player-view">
-    <!-- زر إغلاق شفاف مضاف -->
-    <div class="romeo-transparent-close" onclick="closePlayer()">✕ إغلاق</div>
-    
     <div class="player-bg-blur" id="playerBlur"></div>
     <div class="back-nav-btn" onclick="closePlayer()">✕ إغلاق العرض</div>
     
@@ -322,17 +330,18 @@
     <div class="player-details">
         
         <div id="romeoServerList" class="romeo-server-container">
+            <!-- سيتم إضافة السيرفرات هنا برمجياً -->
         </div>
 
         <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-        
-        <!-- قسم الحلقات أو المقترحات المربعات -->
-        <h3 id="romeoDynamicTitle" style="color: var(--accent); margin: 20px 0 10px;">حلقات المسلسل</h3>
-        <div id="romeoSquareGrid" class="romeo-grid-suggestions"></div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 20px; margin-top: 30px;">
+        <!-- قسم المربعات (مقترحات/حلقات) -->
+        <h3 id="romeoGridLabel" style="color: var(--accent); margin: 20px 0 10px;">حلقات المسلسل</h3>
+        <div id="romeoGridArea" class="romeo-suggest-grid"></div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; margin-top: 20px;">
             <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
             <button class="sub-item" onclick="window.open('https://wa.me/201027675035')">💬 أبلغ عن مشكلة</button>
         </div>
@@ -340,7 +349,7 @@
         <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
         <div class="player-episodes-slider" id="playerEpSlider"></div>
         
-        <button class="romeo-new-close-btn" onclick="closePlayer()">إغلاق المشغل والرجوع</button>
+        <div class="romeo-bottom-close" onclick="closePlayer()" style="position:relative; bottom:0; width:100%; margin-top:30px;">✕ إغلاق المشغل</div>
     </div>
 </div>
 
@@ -432,76 +441,115 @@
 </script>
 
 <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-     محرك ROMEO الذكي (Add Only) - تشغيل اليوتيوب والمقترحات
+     محرك ROMEO المتطور (إضافة فقط)
      ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
-<script id="romeoSmartFixer">
-(function romeoEngine() {
-    // 1. وظيفة تحويل روابط اليوتيوب للعمل داخل المشغل فوراً
-    window.fixYoutubeLink = function(url) {
+<script id="romeoLegacySystem">
+(function romeoUpgrade() {
+    
+    // تحويل روابط اليوتيوب للعمل
+    window.fixYoutube = function(url) {
         if (!url) return "";
-        if (url.includes('youtube.com/watch?v=')) {
-            return url.replace('watch?v=', 'embed/') + '?autoplay=1&rel=0';
-        } else if (url.includes('youtu.be/')) {
-            const videoId = url.split('/').pop();
-            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-        }
+        if (url.includes('youtube.com/watch?v=')) return url.replace('watch?v=', 'embed/') + '?autoplay=1';
+        if (url.includes('youtu.be/')) return `https://www.youtube.com/embed/${url.split('/').pop()}?autoplay=1`;
         return url;
     };
 
-    // 2. تعديل فتح المشغل ليشمل المربعات (حلقات أو مقترحات)
+    // إعادة تعريف فتح المشغل (صفحة ما قبل التشغيل)
     window.openPlayerFull = function(item, episode = null) {
-        const name = episode ? `${item.name} - ${episode.name}` : item.name;
+        const pre = document.getElementById('romeoPrePlayer');
+        const title = episode ? `${item.name} - ${episode.name}` : item.name;
         const link = episode ? episode.link : item.link;
-        
-        // تشغيل الفيديو مع معالجة اليوتيوب
-        window.openPlayer(window.fixYoutubeLink(link), name, item.img);
+        const link2 = episode ? (episode.link2 || "") : (item.link2 || "");
+        const downUrl = episode ? (episode.download_url || "") : (item.download_url || "");
 
-        const gridContainer = document.getElementById('romeoSquareGrid');
-        const dynamicTitle = document.getElementById('romeoDynamicTitle');
-        gridContainer.innerHTML = '';
+        pre.style.display = 'flex';
+        pre.style.backgroundImage = `url(${item.img})`;
+        document.getElementById('preTitleText').innerHTML = `حصرياً <span>${title}</span> على ROMEO`;
 
-        if (item.type === 'series' && item.episodes) {
-            // حالة المسلسلات: عرض الحلقات
-            dynamicTitle.innerText = "حلقات المسلسل";
+        // زر التشغيل
+        document.getElementById('prePlayBtn').onclick = () => {
+            pre.style.display = 'none';
+            window.openPlayer(window.fixYoutube(link), title, item.img);
+            window.renderServers(link, link2);
+            window.renderGrid(item, episode);
+        };
+
+        // زر التحميل من الـ JSON
+        const downBtn = document.getElementById('preDownBtn');
+        if (downUrl) {
+            downBtn.style.display = 'flex';
+            downBtn.onclick = () => window.open(downUrl, '_blank');
+        } else {
+            downBtn.style.display = 'none';
+        }
+    };
+
+    // إضافة السيرفرات (1 و 2)
+    window.renderServers = function(l1, l2) {
+        const srvBox = document.getElementById('romeoServerList');
+        srvBox.innerHTML = `<button class="romeo-server-btn srv-active" onclick="switchSrv(this, '${window.fixYoutube(l1)}')">سيرفر 1</button>`;
+        if (l2) {
+            srvBox.innerHTML += `<button class="romeo-server-btn" onclick="switchSrv(this, '${window.fixYoutube(l2)}')">سيرفر 2</button>`;
+        }
+    };
+
+    window.switchSrv = function(btn, link) {
+        document.querySelectorAll('.romeo-server-btn').forEach(b => b.classList.remove('srv-active'));
+        btn.classList.add('srv-active');
+        document.getElementById('videoContainer').innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
+    };
+
+    // إضافة المربعات (حلقات أو مقترحات)
+    window.renderGrid = function(item, currentEp = null) {
+        const grid = document.getElementById('romeoGridArea');
+        const label = document.getElementById('romeoGridLabel');
+        grid.innerHTML = '';
+
+        if (item.type === 'series') {
+            label.innerText = "حلقات المسلسل";
             item.episodes.forEach(ep => {
-                const epBox = document.createElement('div');
-                epBox.className = 'suggestion-item';
-                epBox.innerHTML = `<img src="${item.img}"><div>${ep.name}</div>`;
-                epBox.onclick = () => window.openPlayerFull(item, ep);
-                gridContainer.appendChild(epBox);
+                const card = document.createElement('div');
+                card.className = 'suggest-card';
+                card.innerHTML = `<img src="${item.img}"><div>${ep.name}</div>`;
+                card.onclick = () => window.openPlayerFull(item, ep);
+                grid.appendChild(card);
             });
         } else {
-            // حالة الأفلام/الأغاني/المباريات: عرض مقترحات من نفس القسم
-            dynamicTitle.innerText = "مقترحات";
+            label.innerText = "مقترحات قد تعجبك";
             const suggestions = database.filter(i => i.cat === item.cat && i.name !== item.name).slice(0, 6);
             suggestions.forEach(sug => {
-                const sugBox = document.createElement('div');
-                sugBox.className = 'suggestion-item';
-                sugBox.innerHTML = `<img src="${sug.img}"><div>${sug.name}</div>`;
-                sugBox.onclick = () => window.openPlayerFull(sug);
-                gridContainer.appendChild(sugBox);
+                const card = document.createElement('div');
+                card.className = 'suggest-card';
+                card.innerHTML = `<img src="${sug.img}"><div>${sug.name}</div>`;
+                card.onclick = () => window.openPlayerFull(sug);
+                grid.appendChild(card);
             });
         }
     };
 
-    // 3. مراقب ذكي للتأكد من أن أي iframe مضاف يتم معالجته لليوتيوب
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-                let iframe = (node.tagName === 'IFRAME') ? node : (node.querySelector ? node.querySelector('iframe') : null);
-                if (iframe) {
-                    let src = iframe.getAttribute('src');
-                    if (src && (src.includes('youtube.com') || src.includes('youtu.be'))) {
-                        iframe.setAttribute('src', window.fixYoutubeLink(src));
-                        iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
-                    }
-                }
-            });
+    // تعديل فتح المسلسلات من الشبكة الرئيسية
+    window.openEpisodes = function(item) {
+        const ev = document.getElementById('episodesView');
+        const grid = document.getElementById('episodesGrid');
+        ev.style.display = 'flex';
+        ev.style.backgroundImage = `url(${item.img})`;
+        ev.style.backdropFilter = 'blur(30px)';
+        document.getElementById('seriesHeader').innerText = item.name;
+        grid.innerHTML = '';
+        item.episodes.forEach(ep => {
+            const div = document.createElement('div');
+            div.className = 'ep-item';
+            div.style.background = 'rgba(255,255,255,0.05)';
+            div.style.backdropFilter = 'blur(10px)';
+            div.innerHTML = `<img src="${item.img}" style="width:100%; border-radius:10px; margin-bottom:10px;"> ${ep.name}`;
+            div.onclick = () => {
+                ev.style.display = 'none';
+                window.openPlayerFull(item, ep);
+            };
+            grid.appendChild(div);
         });
-    });
+    };
 
-    const videoBox = document.getElementById('videoContainer');
-    if (videoBox) observer.observe(videoBox, { childList: true, subtree: true });
 })();
 </script>
 
