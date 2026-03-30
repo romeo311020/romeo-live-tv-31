@@ -1,4 +1,3 @@
-<!-- استبدل محتوى ملف لوحة التحكم بهذا الكود بالكامل -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -236,6 +235,7 @@
         if(confirm("حذف هذه الحلقة؟")) {
             const series = db.items.find(i => i.id === currentSeriesId);
             series.episodes.splice(index, 1);
+            // إعادة ترتيب أرقام الحلقات بعد الحذف لضمان التسلسل
             series.episodes.forEach((ep, idx) => ep.num = (idx + 1).toString());
             await sync();
             renderEpisodes();
@@ -256,7 +256,7 @@
                 img, 
                 link, 
                 cat: currentSub,
-                type: currentMain === 'series' ? 'series' : 'movie',
+                type: currentMain === 'series' ? 'series' : 'movie', // التعديل 1: إضافة النوع تلقائياً
                 episodes: indexOrId ? (db.items.find(i => i.id == indexOrId).episodes || []) : []
             };
             if(indexOrId) {
@@ -271,6 +271,7 @@
             const series = db.items.find(i => i.id === currentSeriesId);
             if(!series.episodes) series.episodes = [];
             
+            // التعديل 2: إضافة رقم الحلقة num تلقائياً
             const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
             const epObj = { 
                 num: epNum, 
@@ -331,100 +332,128 @@
     }
 </script>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافة الجديدة: دعم السيرفر الثاني ورابط التحميل (Add Only) 🆕 -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ======================================================== -->
+<!-- الكود الجديد المضاف (إضافة حقول السيرفرات وإصلاح زر الرجوع) -->
+<!-- ======================================================== -->
 
 <script>
-(function romeoMultiServerSystem() {
-    window.addEventListener('load', () => {
+    // 1. إضافة حقول السيرفرات الجديدة في الفورم ديناميكياً عند تحميل الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
         const formContainer = document.querySelector('#screen-form .form-container');
-        const originalSaveBtn = formContainer.querySelector('.save-btn');
-        const linkInput = document.getElementById('link');
+        const saveBtn = formContainer.querySelector('.save-btn');
+        
+        // إنشاء الحقول الجديدة
+        const input2 = document.createElement('input');
+        input2.type = 'text';
+        input2.id = 'link2';
+        input2.placeholder = 'رابط سيرفر 2 (إختياري)';
+        
+        const input3 = document.createElement('input');
+        input3.type = 'text';
+        input3.id = 'link3';
+        input3.placeholder = 'رابط سيرفر 3 (إختياري)';
+        
+        // إضافتهم قبل زر الحفظ
+        formContainer.insertBefore(input2, saveBtn);
+        formContainer.insertBefore(input3, saveBtn);
 
-        // 1. إضافة حقول السيرفر الثاني ورابط التحميل برمجياً
-        const fServer2 = document.createElement('input'); 
-        fServer2.id = 'link2'; 
-        fServer2.placeholder = 'رابط السيرفر الثاني (إختياري)';
-        formContainer.insertBefore(fServer2, linkInput.nextSibling);
-
-        const fDownload = document.createElement('input'); 
-        fDownload.id = 'download_url'; 
-        fDownload.placeholder = 'رابط التحميل المباشر (إختياري)';
-        formContainer.insertBefore(fDownload, fServer2.nextSibling);
-
-        // 2. إعادة تعريف دالة الحفظ لجمع البيانات الجديدة دون تغيير الكود الأصلي
-        window.saveDataEnhanced = async function() {
-            const type = document.getElementById('editType').value;
-            const indexOrId = document.getElementById('editId').value;
-            const name = document.getElementById('name').value;
-            const img = document.getElementById('img').value;
-            const link = document.getElementById('link').value;
-            const link2 = document.getElementById('link2').value;
-            const download_url = document.getElementById('download_url').value;
-
-            if(type === 'item') {
-                const existing = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
-                const obj = {
-                    id: indexOrId ? parseInt(indexOrId) : Date.now(),
-                    name: name, img: img, link: link, link2: link2, download_url: download_url,
-                    cat: currentSub,
-                    type: currentMain === 'series' ? 'series' : 'movie',
-                    episodes: existing ? (existing.episodes || []) : []
-                };
-                if(indexOrId) {
-                    const idx = db.items.findIndex(i => i.id == indexOrId);
-                    db.items[idx] = obj;
-                } else {
-                    db.items.push(obj);
-                }
-                showScreen('screen-items');
-                renderItems();
-            } else {
-                const series = db.items.find(i => i.id === currentSeriesId);
-                if(!series.episodes) series.episodes = [];
-                const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
-                const epObj = { 
-                    num: epNum, name: name, link: link, link2: link2, download_url: download_url 
-                };
-                if(indexOrId !== '') series.episodes[indexOrId] = epObj;
-                else series.episodes.push(epObj);
-                showScreen('screen-episodes');
-                renderEpisodes();
-            }
-            await sync();
-        };
-
-        // تحويل الزر الأصلي ليعمل بالدالة الجديدة
-        originalSaveBtn.setAttribute('onclick', 'saveDataEnhanced()');
-
-        // 3. ربط استرجاع البيانات عند التعديل (Patching Edit functions)
-        const oldEditItem = window.editItem;
-        window.editItem = function(id) {
-            oldEditItem(id);
-            const item = db.items.find(i => i.id === id);
-            document.getElementById('link2').value = item.link2 || '';
-            document.getElementById('download_url').value = item.download_url || '';
-        };
-
-        const oldEditEp = window.editEpisode;
-        window.editEpisode = function(index) {
-            oldEditEp(index);
-            const series = db.items.find(i => i.id === currentSeriesId);
-            const ep = series.episodes[index];
-            document.getElementById('link2').value = ep.link2 || '';
-            document.getElementById('download_url').value = ep.download_url || '';
-        };
-
-        const oldOpenForm = window.openForm;
-        window.openForm = function(type, index = null) {
-            oldOpenForm(type, index);
-            document.getElementById('link2').value = '';
-            document.getElementById('download_url').value = '';
-        };
+        // تعديل وظيفة زر الحفظ لتستخدم الدالة الجديدة المضافة بالأسفل
+        saveBtn.setAttribute('onclick', 'saveDataNew()');
     });
-})();
-</script>
 
+    // 2. دالة حفظ جديدة تدعم السيرفرات الثلاثة (بدون تعديل الدالة القديمة)
+    async function saveDataNew() {
+        const type = document.getElementById('editType').value;
+        const indexOrId = document.getElementById('editId').value;
+        const name = document.getElementById('name').value;
+        const img = document.getElementById('img').value;
+        const link = document.getElementById('link').value;
+        const link2 = document.getElementById('link2').value;
+        const link3 = document.getElementById('link3').value;
+
+        if(type === 'item') {
+            const existingItem = indexOrId ? db.items.find(i => i.id == indexOrId) : null;
+            const obj = {
+                id: indexOrId ? parseInt(indexOrId) : Date.now(),
+                name, 
+                img, 
+                link,
+                link2: link2 || "",
+                link3: link3 || "",
+                cat: currentSub,
+                type: currentMain === 'series' ? 'series' : 'movie',
+                episodes: existingItem ? (existingItem.episodes || []) : []
+            };
+            if(indexOrId) {
+                const idx = db.items.findIndex(i => i.id == indexOrId);
+                db.items[idx] = obj;
+            } else {
+                db.items.push(obj);
+            }
+            showScreen('screen-items');
+            renderItems();
+        } else {
+            const series = db.items.find(i => i.id === currentSeriesId);
+            if(!series.episodes) series.episodes = [];
+            
+            const epNum = indexOrId !== '' ? series.episodes[indexOrId].num : (series.episodes.length + 1).toString();
+            const epObj = { 
+                num: epNum, 
+                name: name, 
+                link: link,
+                link2: link2 || "",
+                link3: link3 || ""
+            };
+
+            if(indexOrId !== '') series.episodes[indexOrId] = epObj;
+            else series.episodes.push(epObj);
+            
+            showScreen('screen-episodes');
+            renderEpisodes();
+        }
+        await sync();
+    }
+
+    // 3. إصلاح زر الرجوع (Fix goBack)
+    // الكود القديم فيه خطأ في أسماء الـ IDs (كان مكتوب 'home' بدلاً من 'screen-home')
+    // سنقوم بإعادة تعريف الوظيفة لإصلاح المسارات
+    function goBackFixed() {
+        const active = document.querySelector('.active-screen').id;
+        if(active === 'screen-subs') showScreen('screen-home');
+        else if(active === 'screen-items') showScreen('screen-subs');
+        else if(active === 'screen-episodes') showScreen('screen-items');
+        else if(active === 'screen-form') {
+            const type = document.getElementById('editType').value;
+            showScreen(type === 'episode' ? 'screen-episodes' : 'screen-items');
+        }
+    }
+    // تغيير وظيفة الزر في الهيدر لتستخدم النسخة المصلحة
+    document.getElementById('backBtn').onclick = goBackFixed;
+
+    // 4. تحديث وظائف التعديل لتمسح وتضع بيانات السيرفرات الجديدة
+    const oldEditItem = editItem;
+    editItem = function(id) {
+        oldEditItem(id);
+        const item = db.items.find(i => i.id === id);
+        document.getElementById('link2').value = item.link2 || '';
+        document.getElementById('link3').value = item.link3 || '';
+    };
+
+    const oldEditEpisode = editEpisode;
+    editEpisode = function(index) {
+        oldEditEpisode(index);
+        const series = db.items.find(i => i.id === currentSeriesId);
+        const ep = series.episodes[index];
+        document.getElementById('link2').value = ep.link2 || '';
+        document.getElementById('link3').value = ep.link3 || '';
+    };
+
+    const oldOpenForm = openForm;
+    openForm = function(type, index = null) {
+        oldOpenForm(type, index);
+        document.getElementById('link2').value = '';
+        document.getElementById('link3').value = '';
+    }
+</script>
 </body>
 </html>
