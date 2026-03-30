@@ -3,13 +3,12 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- تحسين تجربة الموبايل ومنع الزوم (المطلب 4) -->
+    <!-- إضافة منع الزووم وتحسين عرض الموبايل -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- الأساسيات الأصلية (بدون تغيير)[span_0](start_span)[span_0](end_span) --- */
+        /* --- الأساسيات الأصلية (بدون تغيير) --- */
         :root {
             --main-bg: #040714;
             --accent: #e5b80b;
@@ -190,6 +189,7 @@
         }
         .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
 
+        /* --- 🆕 الإضافة: تنسيق زر التحميل المطور (Add Only) --- */
         .romeo-download-btn-v3 {
             display: none; 
             width: 100%;
@@ -207,72 +207,6 @@
             cursor: pointer;
         }
         .romeo-download-btn-v3:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        /* --- 🆕 إضافات CSS الجديدة (Add Only) --- */
-        body {
-            height: 100vh;
-            width: 100vw;
-            user-select: none;
-        }
-
-        /* منع أي تفاعل مع خلفية الفيديو لقتل الإعلانات */
-        .video-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-            pointer-events: none; /* يسمح فقط بالتفاعل مع عناصر معينة */
-        }
-
-        /* تحسين شكل القائمة الأفقية للمحتوى المشابه */
-        .related-content-area {
-            width: 100%;
-            margin-top: 30px;
-            padding: 0 5%;
-        }
-        .horizontal-list {
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 0;
-            scrollbar-width: none;
-        }
-        .horizontal-list::-webkit-scrollbar { display: none; }
-        
-        .mini-card {
-            min-width: 120px;
-            background: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: var(--transition);
-        }
-        .mini-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .mini-card img { width: 100%; height: 140px; object-fit: cover; }
-        .mini-card p { font-size: 10px; padding: 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* زر التحميل الجديد */
-        .pro-download-btn {
-            display: block;
-            width: 100%;
-            background: #b8860b; /* ذهبي داكن احترافي */
-            color: #000 !important;
-            padding: 15px;
-            text-align: center;
-            border-radius: 10px;
-            font-weight: 900;
-            text-decoration: none;
-            margin: 20px 0;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: 0.3s;
-        }
-        .pro-download-btn:hover { background: #e5b80b; transform: scale(1.02); }
-
-        /* إخفاء زر الترجمة CC */
-        .video-wrapper iframe {
-            pointer-events: auto;
-        }
     </style>
 </head>
 <body>
@@ -332,8 +266,7 @@
         <div id="romeoExclusiveBanner" class="romeo-exclusive-banner" style="width: 95%; max-width: 1000px; display: none;">
             <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
         </div>
-        <!-- تم تعديل الـ Wrapper لمنع الإعلانات -->
-        <div class="video-wrapper" id="videoContainer" style="margin-top: 0; position: relative;"></div>
+        <div class="video-wrapper" id="videoContainer" style="margin-top: 0;"></div>
     </div>
     
     <div class="player-details">
@@ -343,20 +276,12 @@
             <button class="romeo-server-btn" id="srv2" style="display:none;">سيرفر 2</button>
         </div>
 
-        <!-- 🆕 زر التحميل الاحترافي الجديد (المطلب 3) -->
-        <a id="proDownloadAction" href="#" class="pro-download-btn">تحميل المحتوى الآن (High Quality) 📥</a>
+        <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-        
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
             <button class="sub-item" onclick="window.open('https://wa.me/201027675035')">💬 أبلغ عن مشكلة</button>
-        </div>
-
-        <!-- 🆕 منطقة المحتوى المشابه (المطلب 6) -->
-        <div class="related-content-area">
-            <h3 id="relatedTitle" style="color: var(--accent); margin-bottom: 10px;">المزيد لك</h3>
-            <div id="relatedList" class="horizontal-list"></div>
         </div>
         
         <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
@@ -374,7 +299,6 @@
 </div>
 
 <script>
-    /* --- الكود البرمجي الأصلي (بدون تغيير)[span_1](start_span)[span_1](end_span) --- */
     let database = [];
     async function loadData() {
         try {
@@ -405,8 +329,7 @@
         pv.style.display = 'flex';
         document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
         document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
-        // المطلب 2 & 5: منع التحميل التلقائي وتعطيل الترجمة عبر الـ Sandbox
-        document.getElementById('videoContainer').innerHTML = `<iframe id="mainIframe" src="${link}" sandbox="allow-scripts allow-same-origin" allowfullscreen></iframe>`;
+        document.getElementById('videoContainer').innerHTML = `<iframe id="mainIframe" src="${link}" allowfullscreen></iframe>`;
     }
 
     function closePlayer() {
@@ -437,89 +360,175 @@
     loadData();
 </script>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🆕 الإضافة الجديدة: نظام مكافحة الإعلانات، زر التحميل، والقائمة الديناميكية 🆕 -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ======================================================== -->
+<!-- 🆕 الأكواد الاحترافية الجديدة المضافة (Add-Only) 🆕 -->
+<!-- ======================================================== -->
+
+<style>
+    /* 1. بانر علوي ثابت (Fixed Header) */
+    .romeo-v3-fixed-header {
+        position: fixed; top: 0; left: 0; width: 100%; z-index: 3000;
+        background: linear-gradient(to bottom, var(--accent), #9b7500);
+        color: #000; text-align: center; padding: 10px; font-weight: 900;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none;
+        animation: slideDownHeader 0.5s ease forwards;
+    }
+    @keyframes slideDownHeader { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+    /* 2. شبكة المحتوى الذكية أسفل المشغل */
+    .romeo-content-grid-wrap {
+        width: 95%; max-width: 1000px; margin: 30px auto;
+        display: none; flex-direction: column; gap: 15px;
+    }
+    .romeo-grid-title {
+        font-size: 18px; font-weight: 800; color: var(--accent);
+        display: flex; align-items: center; gap: 8px;
+    }
+    .romeo-grid-layout {
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    }
+    .romeo-v3-card {
+        background: #111421; border-radius: 12px; overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        transition: 0.3s;
+    }
+    .romeo-v3-card:active { transform: scale(0.95); }
+    .romeo-v3-card img { width: 100%; height: 120px; object-fit: cover; }
+    .romeo-v3-card h4 { padding: 10px; font-size: 11px; text-align: center; color: #fff; }
+
+    /* 3. شريط تحميل وهمي للجمالية */
+    .romeo-loading-bar {
+        width: 100%; height: 3px; background: rgba(255,255,255,0.1);
+        margin: 10px 0; border-radius: 10px; overflow: hidden;
+    }
+    .romeo-loading-fill {
+        width: 0%; height: 100%; background: var(--accent);
+        transition: width 3s linear;
+    }
+</style>
+
 <script>
-(function romeoUltimateProtection() {
-    
-    // 1. المطلب 1: منع الإعلانات والنوافذ المنبثقة
-    window.open = function() { return null; }; // تعطيل فتح أي نافذة جديدة
-    
-    const originalOpenPlayerFull = window.openPlayerFull;
-    window.openPlayerFull = function(item, episode = null) {
-        
-        // جلب البيانات الأساسية
-        const currentItem = episode ? episode : item;
-        const itemName = episode ? `${item.name} - ${episode.name}` : item.name;
-        
-        // تشغيل المشغل الأصلي
-        openPlayer(currentItem.link, itemName, item.img);
+(function romeoProFeatures() {
+    // إنشاء العناصر ديناميكياً
+    const fixedHeader = document.createElement('div');
+    fixedHeader.id = 'romeoFixedHeader';
+    fixedHeader.className = 'romeo-v3-fixed-header';
+    document.body.appendChild(fixedHeader);
 
-        // 2. المطلب 3: زر التحميل الديناميكي
-        const dlBtn = document.getElementById('proDownloadAction');
-        dlBtn.href = currentItem.download_url || "#";
-        dlBtn.onclick = (e) => {
-            if(dlBtn.getAttribute('href') === "#") {
-                e.preventDefault();
-                alert("رابط التحميل غير متوفر حالياً");
+    const contentWrap = document.createElement('div');
+    contentWrap.id = 'romeoContentWrap';
+    contentWrap.className = 'romeo-content-grid-wrap';
+    contentWrap.innerHTML = `
+        <div class="romeo-grid-title" id="romeoGridTitleText">✨ محتوى مشابه</div>
+        <div class="romeo-loading-bar"><div id="romeoBarFill" class="romeo-loading-fill"></div></div>
+        <div class="romeo-grid-layout" id="romeoGridLayout"></div>
+    `;
+    document.querySelector('.player-details').appendChild(contentWrap);
+
+    // تحديث وظائف الفتح (Hooking)
+    const oldOpenPlayer = window.openPlayer;
+    window.openPlayer = function(link, name, img, episodes = null) {
+        // تشغيل الوظيفة القديمة
+        oldOpenPlayer(link, name, img, episodes);
+
+        // 1. العنوان الثابت العلوي
+        const header = document.getElementById('romeoFixedHeader');
+        header.innerText = `حصرياً على ROMEO LIVE TV : ${name}`;
+        header.style.display = 'block';
+
+        // 2. حماية الـ Iframe من الإعلانات (Sandbox)
+        setTimeout(() => {
+            const iframe = document.getElementById('mainIframe');
+            if (iframe) {
+                iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-presentation');
+                iframe.setAttribute('scrolling', 'no');
             }
-        };
+        }, 100);
 
-        // 3. المطلب 6: قائمة المحتوى الذكية
-        const relatedTitle = document.getElementById('relatedTitle');
-        const relatedList = document.getElementById('relatedList');
-        relatedList.innerHTML = '';
+        // 3. شريط التحميل
+        const fill = document.getElementById('romeoBarFill');
+        fill.style.width = '0%';
+        setTimeout(() => fill.style.width = '100%', 100);
 
-        if (item.type === 'series') {
-            relatedTitle.innerText = "باقي حلقات المسلسل";
-            item.episodes.forEach(ep => {
-                const epCard = document.createElement('div');
-                epCard.className = 'mini-card';
-                epCard.innerHTML = `<img src="${item.img}"><p>${ep.name}</p>`;
-                epCard.onclick = () => window.openPlayerFull(item, ep);
-                relatedList.appendChild(epCard);
-            });
-        } else {
-            relatedTitle.innerText = item.cat === 'music' ? "أغاني أخرى" : "أفلام مشابهة";
-            database.filter(i => i.cat === item.cat && i.name !== item.name).slice(0, 10).forEach(similar => {
-                const simCard = document.createElement('div');
-                simCard.className = 'mini-card';
-                simCard.innerHTML = `<img src="${similar.img}"><p>${similar.name}</p>`;
-                simCard.onclick = () => window.openPlayerFull(similar);
-                relatedList.appendChild(simCard);
-            });
-        }
-
-        // معالجة السيرفرات (إن وجدت)
-        const srv1 = document.getElementById('srv1');
-        const srv2 = document.getElementById('srv2');
-        const iframe = document.getElementById('mainIframe');
+        // 4. عرض المحتوى المشابه (Grid)
+        const gridWrap = document.getElementById('romeoContentWrap');
+        const gridLayout = document.getElementById('romeoGridLayout');
+        const gridTitle = document.getElementById('romeoGridTitleText');
         
-        if (currentItem.link2) {
-            srv2.style.display = 'inline-block';
-            srv2.onclick = () => {
-                iframe.src = currentItem.link2;
-                srv1.classList.remove('active');
-                srv2.classList.add('active');
-            };
-            srv1.onclick = () => {
-                iframe.src = currentItem.link;
-                srv2.classList.remove('active');
-                srv1.classList.add('active');
-            };
+        gridWrap.style.display = 'flex';
+        gridLayout.innerHTML = '';
+
+        // تحديد العنوان والفلتر
+        let filterCat = '';
+        if (name.includes('حلقة') || episodes) {
+            gridTitle.innerText = '📺 باقي حلقات المسلسل';
+            filterCat = database.find(i => name.includes(i.name))?.cat;
         } else {
-            srv2.style.display = 'none';
+            gridTitle.innerText = '🎬 أفلام أخرى قد تعجبك';
+            filterCat = database.find(i => name.includes(i.name))?.cat;
         }
+
+        // جلب البيانات
+        const related = database.filter(i => i.cat === filterCat && !name.includes(i.name)).slice(0, 6);
+        related.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'romeo-v3-card';
+            card.innerHTML = `<img src="${item.img}"><h4>${item.name}</h4>`;
+            card.onclick = () => {
+                closePlayer();
+                if(item.type === 'series') openEpisodes(item);
+                else openPlayerFull(item);
+            };
+            gridLayout.appendChild(card);
+        });
+
+        // التمرير للأعلى تلقائياً عند الفتح
+        document.getElementById('playerView').scrollTo({top: 0, behavior: 'smooth'});
     };
 
-    // المطلب 4: منع الزوم
-    document.addEventListener('touchstart', function (event) {
-        if (event.touches.length > 1) { event.preventDefault(); }
-    }, { passive: false });
+    // تحديث الإغلاق لإخفاء العناصر الجديدة
+    const oldClosePlayer = window.closePlayer;
+    window.closePlayer = function() {
+        oldClosePlayer();
+        document.getElementById('romeoFixedHeader').style.display = 'none';
+        document.getElementById('romeoContentWrap').style.display = 'none';
+    };
 
+    // دالة فتح مطورة للسيرفرات والتحميل
+    window.openPlayerFull = function(item, episode = null) {
+        const finalLink = episode ? episode.link : item.link;
+        const finalName = episode ? `${item.name} - ${episode.name}` : item.name;
+        
+        window.openPlayer(finalLink, finalName, item.img, item.type === 'series' ? item.episodes : null);
+
+        // تحديث زر التحميل
+        const dBtn = document.getElementById('romeoDownloadBtn');
+        const currentData = episode || item;
+        if(currentData.download_url) {
+            dBtn.href = currentData.download_url;
+            dBtn.style.display = 'block';
+        } else {
+            dBtn.style.display = 'none';
+        }
+
+        // تحديث السيرفرات
+        const srv2 = document.getElementById('srv2');
+        if(currentData.link2) {
+            srv2.style.display = 'inline-block';
+            srv2.onclick = () => {
+                document.querySelectorAll('.romeo-server-btn').forEach(b => b.classList.remove('active'));
+                srv2.classList.add('active');
+                document.getElementById('mainIframe').src = currentData.link2;
+            };
+        } else { srv2.style.display = 'none'; }
+    };
+
+    // منع الترجمة داخل المشغل عبر إرسال رسائل برمجية (إذا كان المشغل يدعمها)
+    window.addEventListener('message', function(e) {
+        const ifr = document.getElementById('mainIframe');
+        if(ifr) ifr.contentWindow.postMessage('{"event":"command","func":"unloadTextTrack","args":""}', '*');
+    });
 })();
 </script>
-
 </body>
 </html>
