@@ -1,4 +1,3 @@
-<!-- استبدل محتوى ملف الموقع بهذا الكود بالكامل -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -208,60 +207,88 @@
     </style>
 
     <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!-- 🆕 الأكواد الجديدة (التعديلات المطلوبة حرفياً) 🆕 -->
+    <!-- 🆕 الإضافات المطلوبة: المتصفح الداخلي وتنسيقات الأزرار الجديدة 🆕 -->
     <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <style id="romeoCustomUpdates">
-        /* واجهة ما قبل التشغيل (Full Screen Overlay) */
+    <style id="romeoUpgradedStyle">
+        /* المتصفح الداخلي WebView */
+        #romeoWebViewOverlay {
+            position: fixed; inset: 0; background: #000; z-index: 5000; display: none;
+            flex-direction: column;
+        }
+        #romeoWebViewHeader {
+            background: #1a1d29; padding: 10px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* واجهة ما قبل التشغيل المعدلة */
         #prePlayerOverlay {
             position: fixed; inset: 0; z-index: 3000; display: none;
             background-size: cover; background-position: center;
-            flex-direction: column; align-items: center; justify-content: center;
+            flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 40px 20px;
         }
         #prePlayerOverlay::before {
             content: ''; position: absolute; inset: 0; 
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); z-index: -1;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(25px); z-index: -1;
         }
-        .pre-player-btns {
-            display: flex; flex-direction: column; gap: 20px; width: 80%; max-width: 300px;
+
+        /* البانر العلوي الحصري */
+        .romeo-top-exclusive-box {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            padding: 15px 25px; border-radius: 15px; border: 1px solid rgba(229, 184, 11, 0.3);
+            width: 90%; text-align: center; animation: floatBanner 3s ease-in-out infinite;
         }
+        .romeo-top-exclusive-box h3 { font-size: 18px; font-weight: 900; color: #fff; line-height: 1.6; }
+        .romeo-top-exclusive-box span { color: #ff0000; text-shadow: 0 0 10px rgba(255,0,0,0.5); }
+        @keyframes floatBanner { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* الأزرار الحمراء */
+        .pre-player-btns { display: flex; flex-direction: column; gap: 20px; width: 85%; max-width: 320px; }
         .romeo-red-btn {
             background: #ff0000; color: #fff; padding: 18px; border-radius: 50px;
             border: none; font-weight: 900; font-size: 18px; cursor: pointer;
-            box-shadow: 0 0 20px rgba(255,0,0,0.5); transition: 0.3s;
+            box-shadow: 0 0 25px rgba(255,0,0,0.6); transition: 0.3s;
             text-align: center; text-decoration: none;
         }
-        .romeo-red-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .romeo-red-btn:active { transform: scale(0.95); }
 
-        /* تعديلات صفحة الحلقات الجديدة */
-        #episodesView {
-            background-size: cover !important; background-position: center !important;
+        /* زر الإغلاق السفلي الجديد */
+        .romeo-bottom-close-full {
+            width: 100%; background: #ff0000; color: #fff; padding: 18px;
+            font-weight: 900; font-size: 16px; text-align: center; cursor: pointer;
+            border: none; box-shadow: 0 -5px 20px rgba(255,0,0,0.3);
         }
-        #episodesView::before {
-            content: ''; position: absolute; inset: 0;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); z-index: -1;
-        }
-        .custom-ep-card {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; padding: 10px; display: flex; flex-direction: column; gap: 10px;
-            box-shadow: 0 0 15px rgba(255,0,0,0.2); transition: 0.3s;
-        }
-        .custom-ep-card:hover { box-shadow: 0 0 25px rgba(255,0,0,0.6); transform: translateY(-5px); }
-        .custom-ep-card img { width: 100%; border-radius: 10px; height: 100px; object-fit: cover; }
-        .ep-label { font-weight: 800; color: #fff; text-align: center; font-size: 14px; }
-        
-        /* إخفاء زر التحميل القديم من صفحة المشغل */
-        .romeo-download-btn-v3 { display: none !important; }
+
+        /* إخفاء iframe التشغيل الأصلي حتى يضغط المستخدم على تشغيل */
+        #mainIframe { display: none; }
     </style>
 </head>
 <body>
 
-<!-- واجهة ما قبل التشغيل (تظهر لكل الأقسام) -->
+<!-- المتصفح الداخلي -->
+<div id="romeoWebViewOverlay">
+    <div id="romeoWebViewHeader">
+        <span style="font-weight: bold; font-size: 12px;">ROMEO Browser</span>
+        <button onclick="document.getElementById('romeoWebViewOverlay').style.display='none'" style="background:#ff0000; color:#fff; border:none; padding:5px 15px; border-radius:5px;">إغلاق</button>
+    </div>
+    <iframe id="romeoWebViewFrame" style="flex: 1; width: 100%;" src=""></iframe>
+</div>
+
+<!-- واجهة ما قبل التشغيل المحدثة -->
 <div id="prePlayerOverlay">
-    <div class="back-nav-btn" onclick="document.getElementById('prePlayerOverlay').style.display='none'">✕ إغلاق</div>
+    <!-- البانر العلوي -->
+    <div class="romeo-top-exclusive-box">
+        <h3 id="preExclusiveText">حصرياً <span>...</span> على ROMEO LIVE TV</h3>
+    </div>
+
+    <!-- الأزرار الوسطى -->
     <div class="pre-player-btns">
         <button class="romeo-red-btn" id="prePlayBtn">▶ تشغيل الآن</button>
-        <a class="romeo-red-btn" id="preDownBtn" target="_blank">📥 تحميل الآن</a>
+        <button class="romeo-red-btn" id="preDownBtn" style="background: #222; box-shadow: 0 0 15px rgba(0,0,0,0.5);">📥 تحميل الآن</button>
     </div>
+
+    <!-- زر الإغلاق السفلي -->
+    <button class="romeo-bottom-close-full" onclick="document.getElementById('prePlayerOverlay').style.display='none'">✕ إغلاق وتراجع</button>
 </div>
 
 <header>
@@ -383,6 +410,8 @@
         document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
         document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
         document.getElementById('videoContainer').innerHTML = `<iframe id="mainIframe" src="${link}" allowfullscreen></iframe>`;
+        // إظهار الـ iframe فقط عند استدعاء هذه الدالة
+        document.getElementById('mainIframe').style.display = 'block';
     }
 
     function closePlayer() {
@@ -414,12 +443,20 @@
 </script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🚀 الإضافة البرمجية النهائية (نظام الـ Overriding الذكي) 🚀 -->
+<!-- 🚀 الإضافات النهائية (WebView + منع التحميل التلقائي + التصميم الجديد) 🚀 -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<script id="romeoDynamicLogic">
-(function romeoUpgrade() {
+<script id="romeoFinalLogic">
+(function romeoUpgradeV2() {
     
-    // 1. إعادة تعريف وظيفة فتح المشغل (لتظهر الواجهة الوسيطة أولاً)
+    // وظيفة فتح الروابط في المتصفح الداخلي
+    window.openInRomeoWebView = function(url) {
+        const wv = document.getElementById('romeoWebViewOverlay');
+        const frame = document.getElementById('romeoWebViewFrame');
+        frame.src = url;
+        wv.style.display = 'flex';
+    };
+
+    // إعادة تعريف وظيفة فتح المشغل (لمنع التحميل التلقائي وإظهار الواجهة الوسيطة)
     window.openPlayerFull = function(item, episode = null) {
         const target = episode ? episode : item;
         const itemName = episode ? `${item.name} - ${episode.name}` : item.name;
@@ -428,47 +465,54 @@
         overlay.style.display = 'flex';
         overlay.style.backgroundImage = `url(${item.img})`;
 
-        // زر التشغيل
+        // تحديث نص البانر العلوي
+        document.getElementById('preExclusiveText').innerHTML = `حصرياً <span>${itemName}</span> على ROMEO LIVE TV`;
+
+        // زر التشغيل: يحمل الـ Iframe فقط عند الضغط
         document.getElementById('prePlayBtn').onclick = () => {
             overlay.style.display = 'none';
-            // تشغيل المشغل الأصلي
+            // الآن فقط نقوم بفتح المشغل الفعلي
             window.openPlayer(target.link, itemName, item.img);
-            // إضافة السيرفرات من JSON
-            setupServers(target);
+            if(window.setupServers) window.setupServers(target);
         };
 
-        // زر التحميل (رابط التحميل من JSON)
+        // زر التحميل: يفتح في المتصفح الداخلي (سواء كان رابط مباشر أو موقع مثل عرب سيد)
         const downBtn = document.getElementById('preDownBtn');
         if(target.download_url) {
             downBtn.style.display = 'block';
-            downBtn.href = target.download_url;
+            downBtn.onclick = () => {
+                window.openInRomeoWebView(target.download_url);
+            };
         } else {
             downBtn.style.display = 'none';
         }
     };
 
-    // 2. إعادة تعريف وظيفة المسلسلات (تصميم المربعات والظلال والتحميل)
+    // تعديل وظيفة المسلسلات لتناسب التصميم الجديد
     window.openEpisodes = function(item) {
         const ev = document.getElementById('episodesView');
         const grid = document.getElementById('episodesGrid');
         
         ev.style.display = 'flex';
-        ev.style.backgroundImage = `url(${item.img})`; // خلفية المسلسل ضبابية
+        ev.style.backgroundImage = `url(${item.img})`;
         document.getElementById('seriesHeader').innerText = item.name;
         
         grid.innerHTML = '';
         item.episodes.forEach((ep) => {
             const card = document.createElement('div');
-            card.className = 'custom-ep-card';
+            // تصميم المربعات مع الظل الأحمر
+            card.style.cssText = "background:rgba(0,0,0,0.5); border:1px solid rgba(255,0,0,0.3); padding:10px; border-radius:15px; text-align:center; box-shadow:0 0 15px rgba(255,0,0,0.4); backdrop-filter:blur(10px);";
             card.innerHTML = `
-                <img src="${item.img}">
-                <div class="ep-label">${ep.name}</div>
-                <button class="romeo-red-btn" style="padding:10px; font-size:12px;">▶ دخول الحلقة</button>
-                ${ep.download_url ? `<a href="${ep.download_url}" target="_blank" class="romeo-red-btn" style="padding:10px; font-size:12px; background:#333;">📥 تحميل الحلقة</a>` : ''}
+                <img src="${item.img}" style="width:100%; border-radius:10px; height:120px; object-fit:cover; margin-bottom:10px;">
+                <div style="font-weight:900; margin-bottom:10px;">${ep.name}</div>
+                <button class="romeo-red-btn" style="padding:10px; font-size:12px; width:100%; margin-bottom:5px;">▶ دخول الحلقة</button>
+                ${ep.download_url ? `<button class="romeo-red-btn" style="padding:10px; font-size:12px; width:100%; background:#222; box-shadow:none;">📥 تحميل</button>` : ''}
             `;
-            // عند الضغط على المربع أو زر الدخول
+            
             card.onclick = (e) => {
-                if(e.target.tagName !== 'A') {
+                if(e.target.innerText.includes("تحميل")) {
+                    window.openInRomeoWebView(ep.download_url);
+                } else {
                     ev.style.display = 'none';
                     window.openPlayerFull(item, ep);
                 }
@@ -477,14 +521,13 @@
         });
     };
 
-    // 3. وظيفة إعداد السيرفرات (1 و 2)
-    function setupServers(target) {
+    // وظيفة إعداد السيرفرات (للسيرفر 1 و 2 من JSON)
+    window.setupServers = function(target) {
         const srv1 = document.getElementById('srv1');
         const srv2 = document.getElementById('srv2');
         const iframe = document.getElementById('mainIframe');
 
         srv1.classList.add('active');
-        srv2.classList.remove('active');
         srv2.style.display = 'none';
 
         if(target.link2) {
@@ -500,7 +543,7 @@
                 iframe.src = target.link;
             };
         }
-    }
+    };
 
 })();
 </script>
