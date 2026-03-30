@@ -256,13 +256,77 @@
         /* تعديلات السيرفرات */
         .srv-active { background: #ff0000 !important; color: #fff !important; }
     </style>
+
+    <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
+         التعديلات الجديدة المطلوبة (الدفعة الثانية)
+         ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
+    <style id="newRomeoAdjustments">
+        /* منع التكبير والتصغير وتثبيت حجم الشاشة */
+        html, body {
+            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* تعديل خلفية الحلقات لتصبح ضبابية شفافة بلون الموقع */
+        #episodesView {
+            background: rgba(4, 7, 20, 0.7) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            background-image: none !important;
+        }
+
+        /* تطوير أزرار صفحة ما قبل التشغيل */
+        .romeo-big-btn {
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* تنسيق بوستر المحتوى في صفحة ما قبل التشغيل */
+        .romeo-pre-poster {
+            width: 140px;
+            height: 200px;
+            border-radius: 15px;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            display: block;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            border: 2px solid rgba(255, 0, 0, 0.5);
+            animation: posterPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes posterPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 0, 0, 0.9); }
+        }
+
+        /* تعديل جملة حصريا */
+        .pre-title {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .pre-title .content-name {
+            color: #ff0000;
+            display: block;
+            font-size: 22px;
+            margin: 5px 0;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+    </style>
 </head>
 <body>
 
 <!-- واجهة ما قبل التشغيل المضافة -->
 <div id="romeoPrePlayer">
     <div class="pre-content">
-        <div class="pre-title" id="preTitleText">حصرياً <span>...</span> على ROMEO</div>
+        <!-- إضافة صورة البوستر هنا -->
+        <img id="prePosterImg" class="romeo-pre-poster" src="" alt="Poster">
+        <!-- تعديل الجملة هنا -->
+        <div class="pre-title" id="preTitleText">
+            حصرياً <span class="content-name" id="romeoTargetName">...</span> على ROMEO LIVE TV
+        </div>
         <button class="romeo-big-btn btn-red-play" id="prePlayBtn">▶ تشغيل الآن</button>
         <button class="romeo-big-btn btn-red-down" id="preDownBtn">📥 تحميل الآن</button>
     </div>
@@ -464,7 +528,10 @@
 
         pre.style.display = 'flex';
         pre.style.backgroundImage = `url(${item.img})`;
-        document.getElementById('preTitleText').innerHTML = `حصرياً <span>${title}</span> على ROMEO`;
+        
+        // التعديل الجديد: تحديث البوستر والجملة
+        document.getElementById('prePosterImg').src = item.img;
+        document.getElementById('romeoTargetName').innerText = title;
 
         // زر التشغيل
         document.getElementById('prePlayBtn').onclick = () => {
@@ -532,8 +599,7 @@
         const ev = document.getElementById('episodesView');
         const grid = document.getElementById('episodesGrid');
         ev.style.display = 'flex';
-        ev.style.backgroundImage = `url(${item.img})`;
-        ev.style.backdropFilter = 'blur(30px)';
+        // تم إلغاء خلفية الصورة هنا واستبدالها بالضبابية عبر الـ CSS المضاف
         document.getElementById('seriesHeader').innerText = item.name;
         grid.innerHTML = '';
         item.episodes.forEach(ep => {
@@ -550,6 +616,30 @@
         });
     };
 
+})();
+</script>
+
+<!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
+     كود منع التكبير (Add Only)
+     ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
+<script id="romeoAntiZoom">
+(function preventZoom() {
+    // منع التكبير عبر اللمس المزدوج
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+
+    // منع التكبير عبر السحب بإصبعين
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
 })();
 </script>
 
