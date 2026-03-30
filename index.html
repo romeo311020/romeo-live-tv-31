@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROMEO LIVE TV</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <title>ROMEO LIVE TV | روميو لايف تي في - أفلام ومسلسلات وحصريات</title>
+    <meta name="description" content="روميو لايف تي في - ROMEO LIVE TV: المنصة الأقوى لمشاهدة الأفلام والمسلسلات العربية والحصرية بجودة عالية، ومباريات اليوم بث مباشر.">
+    <meta name="keywords" content="ROMEO LIVE TV, روميو تي في, مشاهدة أفلام, مسلسلات رمضان 2026, بث مباشر مباريات, تحميل أفلام, حصريا روميو, ايجي بست">
+    <meta name="author" content="ROMEO">
+    <meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/bJrhMwWy/1774636158233.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/bJrhMwWy/1774636158233.png">
+
+    <meta property="og:title" content="ROMEO LIVE TV | عالم الترفيه بين يديك">
+    <meta property="og:description" content="شاهد أحدث الأفلام والمسلسلات وحلقات رمضان 2026 حصرياً على روميو لايف.">
+    <meta property="og:image" content="https://i.postimg.cc/bJrhMwWy/1774636158233.png">
+    <meta property="og:type" content="website">
+
     <style>
         /* --- الأساسيات الأصلية (بدون تغيير) --- */
         :root {
@@ -206,9 +221,6 @@
         .romeo-download-btn-v3:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 
-    <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-         قسم الإضافات الجديدة (Add Only) لـ ROMEO
-         ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
     <style>
         /* واجهة ما قبل التشغيل */
         #romeoPrePlayer {
@@ -257,9 +269,6 @@
         .srv-active { background: #ff0000 !important; color: #fff !important; }
     </style>
 
-    <!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-         التعديلات الجديدة المطلوبة (الدفعة الثانية)
-         ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
     <style id="newRomeoAdjustments">
         /* منع التكبير والتصغير وتثبيت حجم الشاشة */
         html, body {
@@ -318,12 +327,20 @@
 </head>
 <body>
 
-<!-- واجهة ما قبل التشغيل المضافة -->
+<div style="display:none;" aria-hidden="true">
+    <h1>ROMEO LIVE TV - روميو لايف تي في</h1>
+    <p>أهلاً بك في ROMEO LIVE TV، المصدر الأول لمشاهدة الأفلام والمسلسلات العربية والرمضانية. شاهد أفلام مصرية، مسلسلات حصرية، ومباريات اليوم بث مباشر. روميو لايف يقدم لك تجربة مشاهدة فريدة بجودة عالية وسيرفرات سريعة.</p>
+    <ul>
+        <li>أفلام مصرية جديدة 2026</li>
+        <li>مسلسلات رمضان 2026 كاملة</li>
+        <li>بث مباشر مباريات اليوم</li>
+        <li>أجمل الأغاني والكليبات</li>
+    </ul>
+</div>
+
 <div id="romeoPrePlayer">
     <div class="pre-content">
-        <!-- إضافة صورة البوستر هنا -->
         <img id="prePosterImg" class="romeo-pre-poster" src="" alt="Poster">
-        <!-- تعديل الجملة هنا -->
         <div class="pre-title" id="preTitleText">
             حصرياً <span class="content-name" id="romeoTargetName">...</span> على ROMEO LIVE TV
         </div>
@@ -394,14 +411,12 @@
     <div class="player-details">
         
         <div id="romeoServerList" class="romeo-server-container">
-            <!-- سيتم إضافة السيرفرات هنا برمجياً -->
-        </div>
+            </div>
 
         <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
 
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
 
-        <!-- قسم المربعات (مقترحات/حلقات) -->
         <h3 id="romeoGridLabel" style="color: var(--accent); margin: 20px 0 10px;">حلقات المسلسل</h3>
         <div id="romeoGridArea" class="romeo-suggest-grid"></div>
 
@@ -504,9 +519,6 @@
     loadData();
 </script>
 
-<!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-     محرك ROMEO المتطور (إضافة فقط)
-     ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
 <script id="romeoLegacySystem">
 (function romeoUpgrade() {
     
@@ -619,9 +631,6 @@
 })();
 </script>
 
-<!-- ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
-     كود منع التكبير (Add Only)
-     ـــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ -->
 <script id="romeoAntiZoom">
 (function preventZoom() {
     // منع التكبير عبر اللمس المزدوج
