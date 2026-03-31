@@ -1,3 +1,4 @@
+<!-- (1) الكود الأصلي كما هو (ممنوع تعديله) -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -682,177 +683,135 @@
 })();
 </script>
 
-<!-- 
-     ========================================================
-     🚀 كود الإضافة الجديد (Add-Only Section)
-     تمت إضافة إصلاح الصورة (Image Fix) ونظام المؤثرات الصوتية
-     ========================================================
--->
 
-<script id="romeoSoundAndFix">
-(function() {
-    // 1. نظام إصلاح الصور المعطلة
-    const NEW_LOGO_URL = "https://i.postimg.cc/bJrhMwWy/1774636158233.png";
-    
-    function fixBrokenImages() {
-        // تصحيح أي صورة تحوي الرابط القديم bJrhWyWy
-        document.querySelectorAll('img').forEach(img => {
-            if (img.src.includes('bJrhWyWy')) {
-                img.src = NEW_LOGO_URL;
-            }
-        });
+<!-- ============================================= -->
+<!-- (2) الإضافات الجديدة (Add Only) - الصفحة الترحيبية الجديدة -->
+<!-- ============================================= -->
+
+<style>
+    /* تصميم الصفحة الترحيبية الجديدة */
+    #new-welcome-layer {
+        position: fixed;
+        inset: 0;
+        background: #050505 !important;
+        z-index: 10000; /* فوق كل شيء */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
     }
 
-    // 2. نظام المؤثرات الصوتية الذكي
-    const sounds = {
-        click: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'), // صوت نقرة خفيفة
-        transition: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'), // صوت انتقال (سوش)
-        intro: new Audio('https://assets.mixkit.co/active_storage/sfx/2015/2015-preview.mp3') // صوت بداية احترافي
-    };
+    .welcome-container {
+        width: 90%;
+        max-width: 380px;
+        text-align: center !important;
+        margin: auto;
+        padding: 10px;
+    }
 
-    // خفض مستوى الصوت ليكون مريحاً
-    Object.values(sounds).forEach(s => s.volume = 0.3);
+    .logo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
 
-    function playSound(type) {
-        if (sounds[type]) {
-            sounds[type].currentTime = 0;
-            sounds[type].play().catch(() => {}); // تجاوز قيود المتصفح إذا لم يتفاعل المستخدم بعد
+    .main-logo {
+        width: 140px !important;
+        height: auto;
+        display: block;
+        margin: 0 auto 10px auto !important;
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+    }
+
+    .title {
+        color: #ffd700 !important;
+        font-size: 24px !important;
+        font-weight: 900 !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        margin: 0 !important;
+    }
+
+    .description-card {
+        background: rgba(255, 255, 255, 0.07) !important;
+        border: 1px solid rgba(255, 215, 0, 0.1) !important;
+        border-radius: 15px !important;
+        padding: 15px !important;
+        margin: 15px 0 !important;
+    }
+
+    .btn-watch, .btn-download {
+        width: 100% !important;
+        max-width: 250px;
+        padding: 10px !important;
+        font-size: 14px !important;
+        margin: 5px auto !important;
+        border-radius: 12px !important;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+    }
+
+    .btn-watch {
+        background: #ffd700;
+        color: #000;
+    }
+
+    .btn-download {
+        background: #fff;
+        color: #000;
+    }
+</style>
+
+<!-- عنصر الصفحة الترحيبية الجديد -->
+<div id="new-welcome-layer">
+    <div class="welcome-container">
+        <div class="logo-section">
+            <img src="https://i.postimg.cc/rmMTZyTP/IMG-20260331-031314.png" alt="ROMEO LIVE TV" class="main-logo">
+            <h1 class="title">ROMEO LIVE TV</h1>
+        </div>
+
+        <div class="description-card">
+            <div style="font-size: 13px; color: #fff; line-height: 1.6; text-align: center;">
+                <p style="font-weight: bold; font-size: 14px; margin-bottom: 8px;">🚀 عالم الترفيه في جيبك.......👇👑💫
+                . 🎬⚽..  𝑹𝑶𝑴𝑬𝑶 𝑳𝑰𝑽𝑬 𝑻𝑽..🎬⚽</p>
+                <p style="margin-bottom: 8px; opacity: 0.9;">أقوى منصة لمشاهدة كل اللي بتدور عليه في مكان واحد:</p>
+                <div style="text-align: right; display: inline-block; width: 100%;">
+                    ⚽ مباريات اليوم بث مباشر (بدون تقطيع).<br>
+                    🌙 مسلسلات رمضان 2026 الحصرية.<br>
+                    🎬 أفلام العيد وأحدث أفلام السينما.<br>
+                    📺 قنوات بث مباشر 24 ساعة.
+                </div>
+                <p style="color: #ffd700; margin-top: 8px; font-weight: bold;">جودة عالية.. سيرفرات سريعة.. ومجاناً بالكامل!</p>
+                <p style="margin-top: 10px; font-size: 11px; opacity: 0.7;">روميو لايف.. المتعة ملهاش حدود! ❤️✨</p>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-watch" onclick="startRomeoApp()">🔗 استمتع بالمشاهدة الآن</button>
+            <button class="btn-download" onclick="window.open('https://www.appcreator24.com/app3955137-obzs8n')">📥 تنزيل التطبيق المباشر</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // دالة جديدة لإغلاق الصفحة الترحيبية وتشغيل الصوت
+    function startRomeoApp() {
+        // تشغيل صوت الانتقال
+        const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
+        audio.play().catch(e => console.log("Audio play blocked"));
+        
+        // إخفاء طبقة الترحيب
+        const welcomeLayer = document.getElementById('new-welcome-layer');
+        if(welcomeLayer) {
+            welcomeLayer.style.transition = "opacity 0.5s ease";
+            welcomeLayer.style.opacity = "0";
+            setTimeout(() => {
+                welcomeLayer.style.display = "none";
+            }, 500);
         }
     }
-
-    // 3. حقن الأصوات في العناصر الموجودة برمجياً
-    function attachSounds() {
-        // أصوات للأزرار الرئيسية
-        document.querySelectorAll('.main-btn, .sub-item, .nav-item, .card, .ep-item, .romeo-big-btn').forEach(el => {
-            el.addEventListener('click', () => playSound('click'));
-        });
-
-        // أصوات لفتح المشغل
-        const originalOpenPlayer = window.openPlayer;
-        window.openPlayer = function() {
-            playSound('transition');
-            originalOpenPlayer.apply(this, arguments);
-        };
-    }
-
-    // 4. تشغيل عند تحميل الصفحة
-    window.addEventListener('load', () => {
-        fixBrokenImages();
-        attachSounds();
-        
-        // تشغيل صوت الانترو عند اختفاء الـ Splash
-        setTimeout(() => playSound('intro'), 1000);
-    });
-
-    // تكرار الإصلاح عند تغير الـ DOM (مثلاً عند تحميل أفلام جديدة)
-    const observer = new MutationObserver(fixBrokenImages);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-})();
-</script>
-
-<script id="romeoSmartEngine">
-/* نظام إدارة البيانات الجديد */
-const ROMEO_STORAGE_KEY = 'romeo_user_v4';
-let romeoState = JSON.parse(localStorage.getItem(ROMEO_STORAGE_KEY)) || {
-    favorites: [],
-    continue: [],
-    views: {}
-};
-
-function saveRomeoState() {
-    localStorage.setItem(ROMEO_STORAGE_KEY, JSON.stringify(romeoState));
-}
-
-/* 1. نظام استكمل المشاهدة والمفضلة المحسن */
-function injectSmartSections() {
-    const mainGrid = document.getElementById('mainGrid');
-    if (!mainGrid || romeoState.continue.length === 0) return;
-
-    // منع التكرار
-    const existing = document.getElementById('continueSection');
-    if (existing) existing.remove();
-
-    const container = document.createElement('div');
-    container.id = 'continueSection';
-    container.innerHTML = `<div class="section-title">استكمل المشاهدة</div>
-                           <div class="cards-grid" style="padding-bottom:20px; grid-template-columns: repeat(2, 1fr);"></div>`;
-    
-    const grid = container.querySelector('.cards-grid');
-    romeoState.continue.slice(0, 2).forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>
-                          <div style="position:absolute; bottom:0; left:0; height:3px; background:var(--accent); width:60%"></div>`;
-        card.onclick = () => window.openPlayerFull(item);
-        grid.appendChild(card);
-    });
-
-    mainGrid.parentNode.insertBefore(container, mainGrid);
-}
-
-/* 2. تحسين البحث (دالة مراقبة جديدة) */
-const oldHandleSearch = window.handleSearch;
-window.handleSearch = function() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const title = document.getElementById('gridTitle');
-    if(q.length > 0) title.innerText = `نتائج البحث عن: ${q}`;
-    else title.innerText = "المعروض الآن";
-    oldHandleSearch(); // تشغيل الدالة الأصلية
-};
-
-/* 3. تتبع المشاهدة (Hooking) */
-const oldOpenPlayer = window.openPlayer;
-window.openPlayer = function(link, name, img, episodes) {
-    // تشغيل الدالة الأصلية 100%
-    oldOpenPlayer(link, name, img, episodes);
-    
-    // تسجيل في استكمل المشاهدة
-    const cleanName = name.split(' - ')[0];
-    const item = database.find(i => i.name.includes(cleanName)) || {name, img, link};
-    romeoState.continue = [item, ...romeoState.continue.filter(i => i.name !== item.name)].slice(0, 4);
-    saveRomeoState();
-};
-
-/* 4. عرض المفضلة */
-window.showFavorites = function() {
-    const grid = document.getElementById('mainGrid');
-    const title = document.getElementById('gridTitle');
-    title.innerText = "قائمة المفضلة ❤️";
-    
-    if (romeoState.favorites.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; opacity:0.5;">المفضلة فارغة حالياً</div>`;
-        return;
-    }
-    
-    grid.innerHTML = '';
-    romeoState.favorites.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>`;
-        card.onclick = () => window.openPlayerFull(item);
-        grid.appendChild(card);
-    });
-};
-
-/* 5. شاشة التحميل (Splash) */
-function showSplashScreen() {
-    const splash = document.createElement('div');
-    splash.style = `position:fixed; inset:0; background:#040714; z-index:9999; display:flex; align-items:center; justify-content:center; transition:0.5s;`;
-    splash.innerHTML = `<div style="text-align:center;">
-                            <img src="https://i.postimg.cc/bJrhMwWy/1774636158233.png" style="width:100px; animation: pulse 2s infinite;">
-                            <div style="color:var(--accent); font-weight:900; margin-top:15px; letter-spacing:2px;">ROMEO LIVE TV</div>
-                        </div>
-                        <style>@keyframes pulse { 0% { transform: scale(1); opacity:1; } 50% { transform: scale(1.1); opacity:0.7; } 100% { transform: scale(1); opacity:1; } }</style>`;
-    document.body.appendChild(splash);
-    setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 500); }, 1500);
-}
-
-/* تشغيل الإضافات عند الجاهزية */
-document.addEventListener('DOMContentLoaded', () => {
-    showSplashScreen();
-    setTimeout(injectSmartSections, 2000);
-});
 </script>
 
 </body>
