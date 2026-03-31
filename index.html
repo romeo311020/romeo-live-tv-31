@@ -682,5 +682,96 @@
 })();
 </script>
 
+<!-- ======================================================== -->
+<!-- 🚀 الكود الجديد المضاف لتحسين التجربة والنظام (Add-Only) 🚀 -->
+<!-- ======================================================== -->
+
+<script id="romeoWebViewOptimization">
+(function() {
+    /** 1️⃣ نظام الترتيب التلقائي (المضاف حديثاً أولاً) **/
+    const originalRender = window.render;
+    window.render = function(data) {
+        // ترتيب البيانات تنازلياً بحيث يظهر الأحدث في بداية المصفوفة
+        const sortedData = [...data].reverse(); 
+        originalRender(sortedData);
+    };
+
+    /** 2️⃣ تحسين زر الرجوع في Android WebView **/
+    // إضافة حالة للتاريخ عند فتح أي واجهة
+    function pushState() {
+        window.history.pushState({view: 'active'}, "");
+    }
+
+    // تعديل الوظائف لتدعم History
+    const originalOpenEpisodes = window.openEpisodes;
+    window.openEpisodes = function(item) {
+        pushState();
+        originalOpenEpisodes(item);
+    };
+
+    const originalOpenPlayer = window.openPlayer;
+    window.openPlayer = function(l, n, i, eps) {
+        pushState();
+        originalOpenPlayer(l, n, i, eps);
+    };
+
+    // الاستماع لزر الرجوع
+    window.onpopstate = function(event) {
+        if (document.getElementById('playerView').style.display === 'flex') {
+            closePlayer();
+        } else if (document.getElementById('episodesView').style.display === 'flex') {
+            document.getElementById('episodesView').style.display = 'none';
+        } else if (document.getElementById('romeoPrePlayer').style.display === 'flex') {
+            document.getElementById('romeoPrePlayer').style.display = 'none';
+        }
+    };
+
+    /** 3️⃣ حماية الـ Iframe والتحكم في الروابط الخارجية **/
+    function romeoIframeProtector() {
+        const observer = new MutationObserver(() => {
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                // إضافة Sandbox لمنع النوافذ المنبثقة والتحويل التلقائي مع السماح بالتشغيل
+                if (!iframe.hasAttribute('sandbox')) {
+                    iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-presentation');
+                }
+                
+                // اعتراض محاولات الروابط الخارجية داخل الـ iframe (تحسين الأداء)
+                try {
+                    iframe.contentWindow.open = function() { return null; };
+                } catch(e) {}
+            });
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    /** 4️⃣ منع الخروج بسبب الـ Embed وتحسين الروابط **/
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a');
+        if (target && target.getAttribute('target') === '_blank') {
+            // إجبار الروابط المهمة فقط على العمل ومنع التحويلات الإعلانية
+            if (!target.href.includes('wa.me') && !target.href.includes('appcreator24')) {
+                e.preventDefault();
+                console.log("Blocked external redirect");
+            }
+        }
+    }, true);
+
+    // منع window.open العالمي
+    window.open = (function(open) {
+        return function(url, name, features) {
+            if (url && (url.includes('wa.me') || url.includes('github') || url.includes('appcreator24'))) {
+                return open.call(window, url, name, features);
+            }
+            return null; 
+        };
+    })(window.open);
+
+    // تفعيل الحماية عند التحميل
+    window.addEventListener('DOMContentLoaded', romeoIframeProtector);
+})();
+</script>
+
 </body>
 </html>
