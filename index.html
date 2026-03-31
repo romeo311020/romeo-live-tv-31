@@ -40,12 +40,12 @@
     <meta name="author" content="ROMEO">
     <meta name="robots" content="index, follow">
 
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/bJrhMwWy/1774636158233.png">
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/bJrhMwWy/1774636158233.png">
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/bJrhWyWy/1774636158233.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/bJrhWyWy/1774636158233.png">
 
     <meta property="og:title" content="ROMEO LIVE TV | عالم الترفيه بين يديك">
     <meta property="og:description" content="شاهد أحدث الأفلام والمسلسلات وحلقات رمضان 2026 حصرياً على روميو لايف.">
-    <meta property="og:image" content="https://i.postimg.cc/bJrhMwWy/1774636158233.png">
+    <meta property="og:image" content="https://i.postimg.cc/bJrhWyWy/1774636158233.png">
     <meta property="og:type" content="website">
 
     <style>
@@ -682,95 +682,177 @@
 })();
 </script>
 
-<!-- ======================================================== -->
-<!-- 🚀 الكود الجديد المضاف لتحسين التجربة والنظام (Add-Only) 🚀 -->
-<!-- ======================================================== -->
+<!-- 
+     ========================================================
+     🚀 كود الإضافة الجديد (Add-Only Section)
+     تمت إضافة إصلاح الصورة (Image Fix) ونظام المؤثرات الصوتية
+     ========================================================
+-->
 
-<script id="romeoWebViewOptimization">
+<script id="romeoSoundAndFix">
 (function() {
-    /** 1️⃣ نظام الترتيب التلقائي (المضاف حديثاً أولاً) **/
-    const originalRender = window.render;
-    window.render = function(data) {
-        // ترتيب البيانات تنازلياً بحيث يظهر الأحدث في بداية المصفوفة
-        const sortedData = [...data].reverse(); 
-        originalRender(sortedData);
-    };
-
-    /** 2️⃣ تحسين زر الرجوع في Android WebView **/
-    // إضافة حالة للتاريخ عند فتح أي واجهة
-    function pushState() {
-        window.history.pushState({view: 'active'}, "");
+    // 1. نظام إصلاح الصور المعطلة
+    const NEW_LOGO_URL = "https://i.postimg.cc/bJrhMwWy/1774636158233.png";
+    
+    function fixBrokenImages() {
+        // تصحيح أي صورة تحوي الرابط القديم bJrhWyWy
+        document.querySelectorAll('img').forEach(img => {
+            if (img.src.includes('bJrhWyWy')) {
+                img.src = NEW_LOGO_URL;
+            }
+        });
     }
 
-    // تعديل الوظائف لتدعم History
-    const originalOpenEpisodes = window.openEpisodes;
-    window.openEpisodes = function(item) {
-        pushState();
-        originalOpenEpisodes(item);
+    // 2. نظام المؤثرات الصوتية الذكي
+    const sounds = {
+        click: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'), // صوت نقرة خفيفة
+        transition: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'), // صوت انتقال (سوش)
+        intro: new Audio('https://assets.mixkit.co/active_storage/sfx/2015/2015-preview.mp3') // صوت بداية احترافي
     };
 
-    const originalOpenPlayer = window.openPlayer;
-    window.openPlayer = function(l, n, i, eps) {
-        pushState();
-        originalOpenPlayer(l, n, i, eps);
-    };
+    // خفض مستوى الصوت ليكون مريحاً
+    Object.values(sounds).forEach(s => s.volume = 0.3);
 
-    // الاستماع لزر الرجوع
-    window.onpopstate = function(event) {
-        if (document.getElementById('playerView').style.display === 'flex') {
-            closePlayer();
-        } else if (document.getElementById('episodesView').style.display === 'flex') {
-            document.getElementById('episodesView').style.display = 'none';
-        } else if (document.getElementById('romeoPrePlayer').style.display === 'flex') {
-            document.getElementById('romeoPrePlayer').style.display = 'none';
+    function playSound(type) {
+        if (sounds[type]) {
+            sounds[type].currentTime = 0;
+            sounds[type].play().catch(() => {}); // تجاوز قيود المتصفح إذا لم يتفاعل المستخدم بعد
         }
-    };
+    }
 
-    /** 3️⃣ حماية الـ Iframe والتحكم في الروابط الخارجية **/
-    function romeoIframeProtector() {
-        const observer = new MutationObserver(() => {
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-                // إضافة Sandbox لمنع النوافذ المنبثقة والتحويل التلقائي مع السماح بالتشغيل
-                if (!iframe.hasAttribute('sandbox')) {
-                    iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-presentation');
-                }
-                
-                // اعتراض محاولات الروابط الخارجية داخل الـ iframe (تحسين الأداء)
-                try {
-                    iframe.contentWindow.open = function() { return null; };
-                } catch(e) {}
-            });
+    // 3. حقن الأصوات في العناصر الموجودة برمجياً
+    function attachSounds() {
+        // أصوات للأزرار الرئيسية
+        document.querySelectorAll('.main-btn, .sub-item, .nav-item, .card, .ep-item, .romeo-big-btn').forEach(el => {
+            el.addEventListener('click', () => playSound('click'));
         });
 
-        observer.observe(document.body, { childList: true, subtree: true });
+        // أصوات لفتح المشغل
+        const originalOpenPlayer = window.openPlayer;
+        window.openPlayer = function() {
+            playSound('transition');
+            originalOpenPlayer.apply(this, arguments);
+        };
     }
 
-    /** 4️⃣ منع الخروج بسبب الـ Embed وتحسين الروابط **/
-    document.addEventListener('click', function(e) {
-        const target = e.target.closest('a');
-        if (target && target.getAttribute('target') === '_blank') {
-            // إجبار الروابط المهمة فقط على العمل ومنع التحويلات الإعلانية
-            if (!target.href.includes('wa.me') && !target.href.includes('appcreator24')) {
-                e.preventDefault();
-                console.log("Blocked external redirect");
-            }
-        }
-    }, true);
+    // 4. تشغيل عند تحميل الصفحة
+    window.addEventListener('load', () => {
+        fixBrokenImages();
+        attachSounds();
+        
+        // تشغيل صوت الانترو عند اختفاء الـ Splash
+        setTimeout(() => playSound('intro'), 1000);
+    });
 
-    // منع window.open العالمي
-    window.open = (function(open) {
-        return function(url, name, features) {
-            if (url && (url.includes('wa.me') || url.includes('github') || url.includes('appcreator24'))) {
-                return open.call(window, url, name, features);
-            }
-            return null; 
-        };
-    })(window.open);
+    // تكرار الإصلاح عند تغير الـ DOM (مثلاً عند تحميل أفلام جديدة)
+    const observer = new MutationObserver(fixBrokenImages);
+    observer.observe(document.body, { childList: true, subtree: true });
 
-    // تفعيل الحماية عند التحميل
-    window.addEventListener('DOMContentLoaded', romeoIframeProtector);
 })();
+</script>
+
+<script id="romeoSmartEngine">
+/* نظام إدارة البيانات الجديد */
+const ROMEO_STORAGE_KEY = 'romeo_user_v4';
+let romeoState = JSON.parse(localStorage.getItem(ROMEO_STORAGE_KEY)) || {
+    favorites: [],
+    continue: [],
+    views: {}
+};
+
+function saveRomeoState() {
+    localStorage.setItem(ROMEO_STORAGE_KEY, JSON.stringify(romeoState));
+}
+
+/* 1. نظام استكمل المشاهدة والمفضلة المحسن */
+function injectSmartSections() {
+    const mainGrid = document.getElementById('mainGrid');
+    if (!mainGrid || romeoState.continue.length === 0) return;
+
+    // منع التكرار
+    const existing = document.getElementById('continueSection');
+    if (existing) existing.remove();
+
+    const container = document.createElement('div');
+    container.id = 'continueSection';
+    container.innerHTML = `<div class="section-title">استكمل المشاهدة</div>
+                           <div class="cards-grid" style="padding-bottom:20px; grid-template-columns: repeat(2, 1fr);"></div>`;
+    
+    const grid = container.querySelector('.cards-grid');
+    romeoState.continue.slice(0, 2).forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>
+                          <div style="position:absolute; bottom:0; left:0; height:3px; background:var(--accent); width:60%"></div>`;
+        card.onclick = () => window.openPlayerFull(item);
+        grid.appendChild(card);
+    });
+
+    mainGrid.parentNode.insertBefore(container, mainGrid);
+}
+
+/* 2. تحسين البحث (دالة مراقبة جديدة) */
+const oldHandleSearch = window.handleSearch;
+window.handleSearch = function() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const title = document.getElementById('gridTitle');
+    if(q.length > 0) title.innerText = `نتائج البحث عن: ${q}`;
+    else title.innerText = "المعروض الآن";
+    oldHandleSearch(); // تشغيل الدالة الأصلية
+};
+
+/* 3. تتبع المشاهدة (Hooking) */
+const oldOpenPlayer = window.openPlayer;
+window.openPlayer = function(link, name, img, episodes) {
+    // تشغيل الدالة الأصلية 100%
+    oldOpenPlayer(link, name, img, episodes);
+    
+    // تسجيل في استكمل المشاهدة
+    const cleanName = name.split(' - ')[0];
+    const item = database.find(i => i.name.includes(cleanName)) || {name, img, link};
+    romeoState.continue = [item, ...romeoState.continue.filter(i => i.name !== item.name)].slice(0, 4);
+    saveRomeoState();
+};
+
+/* 4. عرض المفضلة */
+window.showFavorites = function() {
+    const grid = document.getElementById('mainGrid');
+    const title = document.getElementById('gridTitle');
+    title.innerText = "قائمة المفضلة ❤️";
+    
+    if (romeoState.favorites.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; opacity:0.5;">المفضلة فارغة حالياً</div>`;
+        return;
+    }
+    
+    grid.innerHTML = '';
+    romeoState.favorites.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<img src="${item.img}"><div class="card-info">${item.name}</div>`;
+        card.onclick = () => window.openPlayerFull(item);
+        grid.appendChild(card);
+    });
+};
+
+/* 5. شاشة التحميل (Splash) */
+function showSplashScreen() {
+    const splash = document.createElement('div');
+    splash.style = `position:fixed; inset:0; background:#040714; z-index:9999; display:flex; align-items:center; justify-content:center; transition:0.5s;`;
+    splash.innerHTML = `<div style="text-align:center;">
+                            <img src="https://i.postimg.cc/bJrhMwWy/1774636158233.png" style="width:100px; animation: pulse 2s infinite;">
+                            <div style="color:var(--accent); font-weight:900; margin-top:15px; letter-spacing:2px;">ROMEO LIVE TV</div>
+                        </div>
+                        <style>@keyframes pulse { 0% { transform: scale(1); opacity:1; } 50% { transform: scale(1.1); opacity:0.7; } 100% { transform: scale(1); opacity:1; } }</style>`;
+    document.body.appendChild(splash);
+    setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 500); }, 1500);
+}
+
+/* تشغيل الإضافات عند الجاهزية */
+document.addEventListener('DOMContentLoaded', () => {
+    showSplashScreen();
+    setTimeout(injectSmartSections, 2000);
+});
 </script>
 
 </body>
