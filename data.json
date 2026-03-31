@@ -2386,6 +2386,17 @@
       "cat": "egy1",
       "type": "movie",
       "episodes": []
+    },
+    {
+      "id": 1775001566162,
+      "name": "ملخص مباراة مصر VS اسبانيا ",
+      "img": "https://i.postimg.cc/k4FQ5c4R/FB-IMG-1775001437451.jpg",
+      "link": "https://www.youtube.com/embed/h7NW6x9wVTQ",
+      "link2": "",
+      "download_url": "",
+      "cat": "match",
+      "type": "movie",
+      "episodes": []
     }
   ],
   "categories": [
