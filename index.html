@@ -662,156 +662,179 @@
 })();
 </script>
 
-<script id="romeoAntiZoom">
-(function preventZoom() {
-    // منع التكبير عبر اللمس المزدوج
-    document.addEventListener('touchstart', function(event) {
+<!-- ========================================================== -->
+<!-- 🆕 الإضافات الجديدة (Add-Only) 🆕 -->
+<!-- ========================================================== -->
+
+<style id="premiumWelcomeStyles">
+    /* طبقة الحماية الترحيبية الاحترافية */
+    #premium-welcome-wrapper {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, #0a0f25 0%, #040714 100%);
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .premium-container {
+        width: 100%;
+        max-width: 380px;
+        animation: fadeInRomeo 0.8s ease-out;
+    }
+
+    /* تأثير اللوجو والبراند */
+    .brand-logo-main {
+        width: 130px;
+        filter: drop-shadow(0 0 20px rgba(229, 184, 11, 0.4));
+        margin-bottom: 15px;
+    }
+
+    .brand-title {
+        font-size: 24px;
+        font-weight: 900;
+        color: #fff;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    .brand-title span { color: #e5b80b; text-shadow: 0 0 10px rgba(229, 184, 11, 0.5); }
+
+    /* مصفوفة الأزرار المضيئة */
+    .neon-button-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .neon-btn {
+        position: relative;
+        padding: 14px;
+        border-radius: 50px;
+        font-size: 15px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 2px solid transparent;
+        overflow: hidden;
+    }
+
+    /* 1. زر المشاهدة (الذهبي الفاخر) */
+    .btn-watch-now {
+        background: linear-gradient(90deg, #e5b80b, #ffd700);
+        color: #000;
+        box-shadow: 0 5px 25px rgba(229, 184, 11, 0.4);
+    }
+    .btn-watch-now:active { transform: scale(0.95); }
+
+    /* 2. زر القنوات (الأزرق المضيء) */
+    .btn-channels {
+        background: rgba(255, 255, 255, 0.03);
+        color: #fff;
+        border-color: rgba(0, 115, 255, 0.5);
+        box-shadow: 0 0 15px rgba(0, 115, 255, 0.2);
+    }
+    .btn-channels:hover { background: rgba(0, 115, 255, 0.1); border-color: #0073ff; }
+
+    /* 3. زر المباريات (الأخضر المضيء) */
+    .btn-matches {
+        background: rgba(255, 255, 255, 0.03);
+        color: #fff;
+        border-color: rgba(0, 255, 136, 0.5);
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+    }
+    .btn-matches:hover { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; }
+
+    /* 4. زر التحميل (الشفاف الأنيق) */
+    .btn-app-down {
+        background: rgba(255, 255, 255, 0.03);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* منع الزوم وتعديل الخطوط البصرية */
+    html, body {
+        touch-action: manipulation;
+        font-size: 14px; /* تصغير طفيف للخط العام */
+    }
+
+    @keyframes fadeInRomeo {
+        from { opacity: 0; transform: translateY(30px) scale(0.9); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+</style>
+
+<!-- الواجهة الترحيبية الجديدة (حقن فوق القديم) -->
+<div id="premium-welcome-wrapper">
+    <div class="premium-container">
+        <img src="https://i.postimg.cc/rmMTZyTP/IMG-20260331-031314.png" alt="Logo" class="brand-logo-main">
+        <h1 class="brand-title">ROMEO <span>LIVE TV</span></h1>
+        
+        <div class="neon-button-grid">
+            <!-- 1. استمتع بالمشاهدة الآن -->
+            <a href="javascript:void(0)" class="neon-btn btn-watch-now" onclick="romeoCloseWelcome()">
+                <span>استمتع بالمشاهدة الآن</span>
+                <i>🎬</i>
+            </a>
+
+            <!-- 2. القنوات بث مباشر -->
+            <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="neon-btn btn-channels" target="_blank">
+                <span>القنوات بث مباشر</span>
+                <i>📺</i>
+            </a>
+
+            <!-- 3. المباريات بث مباشر والتشكيلة -->
+            <a href="https://romeo311020.github.io/ROMEO-MATCH/" class="neon-btn btn-matches" target="_blank">
+                <span>المباريات بث مباشر والتشكيلة</span>
+                <i>⚽</i>
+            </a>
+
+            <!-- 4. تحميل التطبيق -->
+            <a href="https://www.appcreator24.com/app3955137-obzs8n" class="neon-btn btn-app-down" target="_blank">
+                <span>تحميل التطبيق الرسمي</span>
+                <i>📥</i>
+            </a>
+        </div>
+
+        <p style="margin-top: 30px; font-size: 11px; color: rgba(255,255,255,0.4);">
+            المنصة الأقوى في الوطن العربي | 2026
+        </p>
+    </div>
+</div>
+
+<script id="premiumScripts">
+    // دالة إغلاق الترحيب للدخول للموقع
+    function romeoCloseWelcome() {
+        const wrapper = document.getElementById('premium-welcome-wrapper');
+        wrapper.style.transition = "all 0.6s cubic-bezier(1, 0, 0, 1)";
+        wrapper.style.opacity = "0";
+        wrapper.style.transform = "scale(1.2)";
+        setTimeout(() => wrapper.style.display = 'none', 600);
+    }
+
+    // منع التكبير باللمس المتعدد (Anti-Zoom System)
+    document.addEventListener('touchstart', function (event) {
         if (event.touches.length > 1) {
             event.preventDefault();
         }
     }, { passive: false });
 
-    // منع التكبير عبر السحب بإصبعين
     let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(event) {
-        const now = (new Date()).getTime();
+    document.addEventListener('touchend', function (event) {
+        let now = (new Date()).getTime();
         if (now - lastTouchEnd <= 300) {
             event.preventDefault();
         }
         lastTouchEnd = now;
     }, false);
-})();
-</script>
-
-
-<!-- ============================================= -->
-<!-- (2) الإضافات الجديدة (Add Only) - الصفحة الترحيبية الجديدة -->
-<!-- ============================================= -->
-
-<style>
-    /* تصميم الصفحة الترحيبية الجديدة */
-    #new-welcome-layer {
-        position: fixed;
-        inset: 0;
-        background: #050505 !important;
-        z-index: 10000; /* فوق كل شيء */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
-
-    .welcome-container {
-        width: 90%;
-        max-width: 380px;
-        text-align: center !important;
-        margin: auto;
-        padding: 10px;
-    }
-
-    .logo-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
-
-    .main-logo {
-        width: 140px !important;
-        height: auto;
-        display: block;
-        margin: 0 auto 10px auto !important;
-        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
-    }
-
-    .title {
-        color: #ffd700 !important;
-        font-size: 24px !important;
-        font-weight: 900 !important;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        margin: 0 !important;
-    }
-
-    .description-card {
-        background: rgba(255, 255, 255, 0.07) !important;
-        border: 1px solid rgba(255, 215, 0, 0.1) !important;
-        border-radius: 15px !important;
-        padding: 15px !important;
-        margin: 15px 0 !important;
-    }
-
-    .btn-watch, .btn-download {
-        width: 100% !important;
-        max-width: 250px;
-        padding: 10px !important;
-        font-size: 14px !important;
-        margin: 5px auto !important;
-        border-radius: 12px !important;
-        cursor: pointer;
-        border: none;
-        font-weight: bold;
-    }
-
-    .btn-watch {
-        background: #ffd700;
-        color: #000;
-    }
-
-    .btn-download {
-        background: #fff;
-        color: #000;
-    }
-</style>
-
-<!-- عنصر الصفحة الترحيبية الجديد -->
-<div id="new-welcome-layer">
-    <div class="welcome-container">
-        <div class="logo-section">
-            <img src="https://i.postimg.cc/rmMTZyTP/IMG-20260331-031314.png" alt="ROMEO LIVE TV" class="main-logo">
-            <h1 class="title">ROMEO LIVE TV</h1>
-        </div>
-
-        <div class="description-card">
-            <div style="font-size: 13px; color: #fff; line-height: 1.6; text-align: center;">
-                <p style="font-weight: bold; font-size: 14px; margin-bottom: 8px;">🚀 عالم الترفيه في جيبك.......👇👑💫
-                . 🎬⚽..  𝑹𝑶𝑴𝑬𝑶 𝑳𝑰𝑽𝑬 𝑻𝑽..🎬⚽</p>
-                <p style="margin-bottom: 8px; opacity: 0.9;">أقوى منصة لمشاهدة كل اللي بتدور عليه في مكان واحد:</p>
-                <div style="text-align: right; display: inline-block; width: 100%;">
-                    ⚽ مباريات اليوم بث مباشر (بدون تقطيع).<br>
-                    🌙 مسلسلات رمضان 2026 الحصرية.<br>
-                    🎬 أفلام العيد وأحدث أفلام السينما.<br>
-                    📺 قنوات بث مباشر 24 ساعة.
-                </div>
-                <p style="color: #ffd700; margin-top: 8px; font-weight: bold;">جودة عالية.. سيرفرات سريعة.. ومجاناً بالكامل!</p>
-                <p style="margin-top: 10px; font-size: 11px; opacity: 0.7;">روميو لايف.. المتعة ملهاش حدود! ❤️✨</p>
-            </div>
-        </div>
-
-        <div class="action-buttons">
-            <button class="btn-watch" onclick="startRomeoApp()">🔗 استمتع بالمشاهدة الآن</button>
-            <button class="btn-download" onclick="window.open('https://www.appcreator24.com/app3955137-obzs8n')">📥 تنزيل التطبيق المباشر</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // دالة جديدة لإغلاق الصفحة الترحيبية وتشغيل الصوت
-    function startRomeoApp() {
-        // تشغيل صوت الانتقال
-        const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
-        audio.play().catch(e => console.log("Audio play blocked"));
-        
-        // إخفاء طبقة الترحيب
-        const welcomeLayer = document.getElementById('new-welcome-layer');
-        if(welcomeLayer) {
-            welcomeLayer.style.transition = "opacity 0.5s ease";
-            welcomeLayer.style.opacity = "0";
-            setTimeout(() => {
-                welcomeLayer.style.display = "none";
-            }, 500);
-        }
-    }
 </script>
 
 </body>
