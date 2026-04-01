@@ -738,5 +738,27 @@
     })();
 </script>
 
+<script>
+  // نداء إضافي للتأكد من ربط الـ Service Worker بالطريقة الصحيحة
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('PWA Registered Successfully!'))
+        .catch(err => console.log('PWA Registration Failed:', err));
+    });
+  }
+
+  // كود إظهار نافذة التثبيت تلقائياً عند الدخول (اختياري لزيادة التفاعل)
+  let romeoPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    romeoPrompt = e;
+    // الرسالة تظهر بعد 4 ثواني من فتح الموقع
+    setTimeout(() => {
+      if (romeoPrompt) romeoPrompt.prompt();
+    }, 4000);
+  });
+</script>
+
 </body>
 </html>
