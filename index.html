@@ -585,77 +585,156 @@
   }
 </script>
 
-
-<style id="dynamicDownloadStyles">
-    .btn-download-dynamic {
-        background: #ff0000;
-        box-shadow: 0 0 20px rgba(255,0,0,0.4);
-        display: none; /* يظهر فقط عند وجود الرابط */
-        margin-top: 10px;
+<style id="proEnhancementsStyles">
+    .romeo-server-btn {
+        transition: 0.3s;
+        border: 1px solid var(--accent);
+        background: rgba(229, 184, 11, 0.1);
+        color: var(--accent);
+    }
+    .romeo-server-btn.active {
+        background: var(--accent) !important;
+        color: #000 !important;
+        box-shadow: 0 0 10px var(--accent-glow);
+    }
+    .suggest-card {
+        transition: 0.3s;
+    }
+    .suggest-card:hover {
+        transform: scale(1.05);
+        border-color: var(--accent);
     }
 </style>
 
-<script id="dynamicDownloadScript">
+<script id="proEnhancementsLogic">
     (function() {
-        // إنشاء الزر وإضافته للواجهة
+        // 1. إضافة زر التحميل الذكي (كما كان)
         function injectDownloadBtn() {
             const preContainer = document.querySelector('#romeoPrePlayer .pre-content');
             if (preContainer && !document.getElementById('dynamicDlBtn')) {
                 const dlBtn = document.createElement('button');
                 dlBtn.id = 'dynamicDlBtn';
-                dlBtn.className = 'romeo-big-btn btn-download-dynamic';
+                dlBtn.className = 'romeo-big-btn';
+                dlBtn.style.background = '#27ae60';
+                dlBtn.style.boxShadow = '0 0 20px rgba(39, 174, 96, 0.4)';
+                dlBtn.style.display = 'none';
                 dlBtn.innerHTML = '📥 تحميل الآن';
                 preContainer.appendChild(dlBtn);
             }
         }
 
-        // مراقب لفحص البيانات وتحديث حالة الزر
-        function checkDownloadLink() {
-            const currentTitle = document.getElementById('romeoTargetName').innerText;
-            const dlBtn = document.getElementById('dynamicDlBtn');
-            if (!dlBtn) return;
+        // 2. تحديث السيرفرات والاقتراحات والحلقات
+        function updatePlayerExtras(itemName, isEpisode = false) {
+            const serverList = document.getElementById('romeoServerList');
+            const gridArea = document.getElementById('romeoGridArea');
+            const gridLabel = document.getElementById('romeoGridLabel');
+            
+            serverList.innerHTML = '';
+            gridArea.innerHTML = '';
 
-            let downloadLink = null;
+            let currentItem = null;
+            let currentEp = null;
 
-            // البحث في قاعدة البيانات عن العنصر الذي يتطابق مع الاسم المعروض حالياً
+            // البحث عن العنصر في قاعدة البيانات
             database.forEach(item => {
-                if (item.type === 'movie' && item.name === currentTitle) {
-                    downloadLink = item.download_url; // استخدام المفتاح الصحيح من لوحة التحكم
-                } else if (item.type === 'series' && item.episodes) {
+                if (!isEpisode && item.name === itemName) currentItem = item;
+                if (isEpisode && item.type === 'series') {
                     item.episodes.forEach(ep => {
-                        if (`${item.name} - ${ep.name}` === currentTitle) {
-                            downloadLink = ep.download_url; // استخدام المفتاح الصحيح للحلقة
+                        if (`${item.name} - ${ep.name}` === itemName) {
+                            currentItem = item;
+                            currentEp = ep;
                         }
                     });
                 }
             });
 
-            // التحكم في ظهور الزر
-            if (downloadLink && downloadLink.trim() !== "") {
-                dlBtn.style.display = 'flex';
-                dlBtn.onclick = () => window.open(downloadLink, '_blank');
+            if (!currentItem) return;
+
+            // --- السيرفرات ---
+            const mainLink = currentEp ? currentEp.link : currentItem.link;
+            const backupLink = currentEp ? currentEp.link2 : currentItem.link2;
+
+            const srv1 = document.createElement('button');
+            srv1.className = 'romeo-server-btn active';
+            srv1.innerText = 'سيرفر 1';
+            srv1.onclick = () => {
+                document.querySelectorAll('.romeo-server-btn').forEach(b => b.classList.remove('active'));
+                srv1.classList.add('active');
+                document.getElementById('videoContainer').innerHTML = `<iframe src="${window.fixYoutube(mainLink)}" allowfullscreen></iframe>`;
+            };
+            serverList.appendChild(srv1);
+
+            if (backupLink && backupLink.trim() !== "") {
+                const srv2 = document.createElement('button');
+                srv2.className = 'romeo-server-btn';
+                srv2.innerText = 'سيرفر 2';
+                srv2.onclick = () => {
+                    document.querySelectorAll('.romeo-server-btn').forEach(b => b.classList.remove('active'));
+                    srv2.classList.add('active');
+                    document.getElementById('videoContainer').innerHTML = `<iframe src="${window.fixYoutube(backupLink)}" allowfullscreen></iframe>`;
+                };
+                serverList.appendChild(srv2);
+            }
+
+            // --- الحلقات أو الاقتراحات ---
+            if (currentItem.type === 'series') {
+                gridLabel.innerText = `حلقات المسلسل (${currentItem.name})`;
+                currentItem.episodes.forEach(ep => {
+                    const card = document.createElement('div');
+                    card.className = 'suggest-card';
+                    card.innerHTML = `<img src="${currentItem.img}"><div>${currentItem.name}<br>${ep.name}</div>`;
+                    card.onclick = () => {
+                        closePlayer();
+                        window.openPlayerFull(currentItem, ep);
+                    };
+                    gridArea.appendChild(card);
+                });
             } else {
-                dlBtn.style.display = 'none';
+                gridLabel.innerText = "اقتراحات أخرى";
+                const suggestions = database.filter(i => i.cat === currentItem.cat && i.id !== currentItem.id).slice(0, 6);
+                suggestions.forEach(suggest => {
+                    const card = document.createElement('div');
+                    card.className = 'suggest-card';
+                    card.innerHTML = `<img src="${suggest.img}"><div>${suggest.name}</div>`;
+                    card.onclick = () => {
+                        closePlayer();
+                        window.openPlayerFull(suggest);
+                    };
+                    gridArea.appendChild(card);
+                });
+            }
+
+            // --- تحديث زر التحميل ---
+            const dlBtn = document.getElementById('dynamicDlBtn');
+            const dlLink = currentEp ? currentEp.download_url : currentItem.download_url;
+            if (dlBtn) {
+                if (dlLink && dlLink.trim() !== "") {
+                    dlBtn.style.display = 'flex';
+                    dlBtn.onclick = () => window.open(dlLink, '_blank');
+                } else {
+                    dlBtn.style.display = 'none';
+                }
             }
         }
 
-        // تشغيل المنطق عند فتح نافذة الـ PrePlayer
+        // مراقبة فتح الـ PrePlayer والمشغل
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'style') {
                     const display = window.getComputedStyle(mutation.target).display;
-                    if (display === 'flex') {
+                    const name = document.getElementById('romeoTargetName').innerText;
+                    
+                    if (mutation.target.id === 'romeoPrePlayer' && display === 'flex') {
                         injectDownloadBtn();
-                        checkDownloadLink();
+                        updatePlayerExtras(name, name.includes(' - '));
                     }
                 }
             });
         });
 
         const prePlayer = document.getElementById('romeoPrePlayer');
-        if (prePlayer) {
-            observer.observe(prePlayer, { attributes: true });
-        }
+        if (prePlayer) observer.observe(prePlayer, { attributes: true });
+
     })();
 </script>
 
