@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- [إضافة جديدة] كود تفعيل خاصية التثبيت PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#e5b80b">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- [نهاية الإضافة] -->
-
     <meta name="description" content="موقع ROMEO LIVE TV - روميو لايف: المنصة الأقوى لمشاهدة الأفلام والمسلسلات العربية والحصرية، ومباريات اليوم بث مباشر، والقنوات الفضائية بث مباشر بجودة عالية.">
     <script type="application/ld+json">
     {
@@ -320,10 +317,25 @@
         }
     </style>
 
-    <!-- الإضافة الجديدة لإخفاء زر "شاهد القنوات بث مباشر" المطلوب -->
     <style>
         .glowing-btn-container {
             display: none !important;
+        }
+    </style>
+
+    <style>
+        .romeo-dynamic-servers {
+            display: flex; gap: 10px; margin-top: 15px; justify-content: center;
+        }
+        .dynamic-srv-btn {
+            background: #252936; color: #fff; padding: 10px 25px; border-radius: 8px;
+            border: 1px solid var(--accent); cursor: pointer; font-size: 13px; font-weight: bold;
+        }
+        .dynamic-srv-btn.active { background: var(--accent); color: #000; }
+        
+        .suggestion-section-title {
+            color: var(--accent); font-weight: 900; margin: 25px 0 15px; font-size: 18px;
+            border-right: 4px solid var(--accent); padding-right: 10px;
         }
     </style>
 
@@ -339,6 +351,7 @@
             حصرياً <span class="content-name" id="romeoTargetName">...</span> على ROMEO LIVE TV
         </div>
         <button class="romeo-big-btn btn-red-play" id="prePlayBtn">▶ تشغيل الآن</button>
+        <a id="romeoDownloadBtn" class="romeo-big-btn btn-red-play" style="background: #28a745; box-shadow: 0 0 20px rgba(40,167,69,0.4); text-decoration:none; display:none;">📥 تحميل الآن</a>
     </div>
     <div class="romeo-bottom-close" onclick="document.getElementById('romeoPrePlayer').style.display='none'">✕ إغلاق وتراجع</div>
 </div>
@@ -398,13 +411,15 @@
             <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
         </div>
         <div class="video-wrapper" id="videoContainer" style="margin-top: 0;"></div>
+        
+        <div class="romeo-dynamic-servers" id="dynamicServersRow"></div>
     </div>
     
     <div class="player-details">
         <div id="romeoServerList" class="romeo-server-container"></div>
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-        <h3 id="romeoGridLabel" style="color: var(--accent); margin: 20px 0 10px;">حلقات المسلسل</h3>
-        <div id="romeoGridArea" class="romeo-suggest-grid"></div>
+        
+        <div id="dynamicExtraSection"></div>
 
         <div style="display: flex; gap: 10px; margin-bottom: 20px; margin-top: 20px;">
             <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
@@ -424,9 +439,6 @@
     <div class="nav-item" onclick="window.open('https://wa.me/201027675035')"><i>💬</i><span>التواصل</span></div>
 </div>
 
-<!-- ========================================================== -->
-<!-- 🆕 واجهة الترحيب الفاخرة بدون زر التحميل 🆕 -->
-<!-- ========================================================== -->
 <style id="premiumWelcomeStyles">
     #premium-welcome-wrapper {
         position: fixed; inset: 0;
@@ -547,15 +559,31 @@
 
     window.openPlayerFull = function(item, episode = null) {
         const pre = document.getElementById('romeoPrePlayer');
+        const dlBtn = document.getElementById('romeoDownloadBtn'); // زر التحميل الجديد
         const title = episode ? `${item.name} - ${episode.name}` : item.name;
         const link = episode ? episode.link : item.link;
+        const link2 = episode ? episode.link2 : item.link2; // سيرفر 2
+        const downloadLink = episode ? episode.download : item.download; // رابط التحميل
+
         pre.style.display = 'flex';
         pre.style.backgroundImage = `url(${item.img})`;
         document.getElementById('prePosterImg').src = item.img;
         document.getElementById('romeoTargetName').innerText = title;
+        
+        // تفعيل زر التحميل إذا وجد رابط
+        if(downloadLink) {
+            dlBtn.style.display = 'flex';
+            dlBtn.href = downloadLink;
+            dlBtn.target = "_blank";
+        } else {
+            dlBtn.style.display = 'none';
+        }
+
         document.getElementById('prePlayBtn').onclick = () => {
             pre.style.display = 'none';
             openPlayer(window.fixYoutube(link), title, item.img);
+            // إضافة السيرفرات والاقتراحات بعد فتح المشغل
+            setupDynamicContent(item, episode);
         };
     };
 
@@ -578,9 +606,89 @@
     };
 
     loadData();
+
+    // [ADDITION] وظيفة السيرفرات والاقتراحات الديناميكية
+    function setupDynamicContent(item, currentEpisode = null) {
+        const srvRow = document.getElementById('dynamicServersRow');
+        const extraSection = document.getElementById('dynamicExtraSection');
+        srvRow.innerHTML = '';
+        extraSection.innerHTML = '';
+
+        // 1. إضافة السيرفرات
+        const l1 = currentEpisode ? currentEpisode.link : item.link;
+        const l2 = currentEpisode ? currentEpisode.link2 : item.link2;
+
+        if (l1) {
+            const b1 = document.createElement('button');
+            b1.className = 'dynamic-srv-btn active';
+            b1.innerText = 'سيرفر 1';
+            b1.onclick = () => {
+                document.querySelectorAll('.dynamic-srv-btn').forEach(b => b.classList.remove('active'));
+                b1.classList.add('active');
+                document.getElementById('videoContainer').innerHTML = `<iframe src="${window.fixYoutube(l1)}" allowfullscreen></iframe>`;
+            };
+            srvRow.appendChild(b1);
+        }
+
+        if (l2) {
+            const b2 = document.createElement('button');
+            b2.className = 'dynamic-srv-btn';
+            b2.innerText = 'سيرفر 2';
+            b2.onclick = () => {
+                document.querySelectorAll('.dynamic-srv-btn').forEach(b => b.classList.remove('active'));
+                b2.classList.add('active');
+                document.getElementById('videoContainer').innerHTML = `<iframe src="${window.fixYoutube(l2)}" allowfullscreen></iframe>`;
+            };
+            srvRow.appendChild(b2);
+        }
+
+        // 2. إضافة حلقات المسلسل أو الاقتراحات
+        if (item.type === 'series' && item.episodes) {
+            const title = document.createElement('h3');
+            title.className = 'suggestion-section-title';
+            title.innerText = `حلقات المسلسل (${item.name})`;
+            extraSection.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = 'romeo-suggest-grid';
+            item.episodes.forEach(ep => {
+                const card = document.createElement('div');
+                card.className = 'suggest-card';
+                card.innerHTML = `<img src="${item.img}"><div>${ep.name}</div>`;
+                card.onclick = () => {
+                    closePlayer();
+                    window.openPlayerFull(item, ep);
+                };
+                grid.appendChild(card);
+            });
+            extraSection.appendChild(grid);
+        } else {
+            // اقتراحات أفلام/أغاني من نفس القسم
+            const suggestions = database.filter(i => i.cat === item.cat && i.name !== item.name).slice(0, 6);
+            if (suggestions.length > 0) {
+                const title = document.createElement('h3');
+                title.className = 'suggestion-section-title';
+                title.innerText = 'اقتراحات أخرى قد تعجبك';
+                extraSection.appendChild(title);
+
+                const grid = document.createElement('div');
+                grid.className = 'romeo-suggest-grid';
+                suggestions.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'suggest-card';
+                    card.innerHTML = `<img src="${s.img}"><div>${s.name}</div>`;
+                    card.onclick = () => {
+                        closePlayer();
+                        window.openPlayerFull(s);
+                    };
+                    grid.appendChild(card);
+                });
+                extraSection.appendChild(grid);
+            }
+        }
+    }
 </script>
 
-<!-- [إضافة جديدة] كود تفعيل الـ Service Worker في الخلفية -->
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -592,7 +700,5 @@
     });
   }
 </script>
-<!-- [نهاية الإضافة] -->
-
 </body>
 </html>
