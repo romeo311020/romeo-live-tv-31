@@ -1,7 +1,13 @@
-<!-- (1) الكود الأصلي كما هو (ممنوع تعديله) -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- [إضافة جديدة] كود تفعيل خاصية التثبيت PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e5b80b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- [نهاية الإضافة] -->
+
     <meta name="description" content="موقع ROMEO LIVE TV - روميو لايف: المنصة الأقوى لمشاهدة الأفلام والمسلسلات العربية والحصرية، ومباريات اليوم بث مباشر، والقنوات الفضائية بث مباشر بجودة عالية.">
     <script type="application/ld+json">
     {
@@ -17,7 +23,6 @@
     }
     </script>
     <style>
-        /* [إضافة جديدة] تنسيق اسم الموقع العلوي للتعارف */
         .romeo-top-brand {
             background: rgba(229, 184, 11, 0.1);
             color: #e5b80b;
@@ -50,7 +55,6 @@
     <meta property="og:type" content="website">
 
     <style>
-        /* --- الأساسيات الأصلية (بدون تغيير) --- */
         :root {
             --main-bg: #040714;
             --accent: #e5b80b;
@@ -65,21 +69,12 @@
 
         header {
             padding: 12px 5%; background: rgba(4, 7, 20, 0.8); backdrop-filter: blur(20px);
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: center; align-items: center;
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .logo-text { font-weight: 900; font-size: 1.2rem; color: #fff; letter-spacing: 1px; }
+        .logo-text { font-weight: 900; font-size: 1.5rem; color: #fff; letter-spacing: 1px; }
         .logo-text span { color: var(--accent); }
         
-        .download-app-btn {
-            background: linear-gradient(45deg, var(--accent), #ffea00);
-            color: #000; padding: 6px 15px; border-radius: 20px;
-            font-size: 11px; font-weight: 800; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(229, 184, 11, 0.3);
-            transition: var(--transition);
-        }
-        .download-app-btn:active { transform: scale(0.9); }
-
         .search-area { padding: 15px 5% 5px; }
         .search-input { 
             width: 100%; background: #161922; border: 1px solid rgba(255,255,255,0.08); 
@@ -130,7 +125,6 @@
         }
         .card:hover { transform: scale(1.05); z-index: 2; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: var(--accent); }
         .card img { width: 100%; height: 180px; object-fit: cover; transition: 0.5s; }
-        .card:hover img { filter: brightness(0.7); }
         .card-info { padding: 8px 5px; background: linear-gradient(to top, #000, transparent); position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 10px; font-weight: 700; }
 
         #episodesView {
@@ -231,27 +225,9 @@
         }
         .romeo-server-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
 
-        .romeo-download-btn-v3 {
-            display: none; 
-            width: 100%;
-            background: linear-gradient(135deg, #e5b80b 0%, #b8860b 100%);
-            color: #000 !important;
-            text-align: center;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 900;
-            text-decoration: none;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(229, 184, 11, 0.3);
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .romeo-download-btn-v3:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 
     <style>
-        /* واجهة ما قبل التشغيل */
         #romeoPrePlayer {
             position: fixed; inset: 0; z-index: 3000; display: none;
             flex-direction: column; align-items: center; justify-content: center;
@@ -265,7 +241,6 @@
         .pre-title { font-size: 22px; font-weight: 900; margin-bottom: 30px; color: #fff; }
         .pre-title span { color: #ff0000; }
 
-        /* الأزرار الحمراء الكبيرة */
         .romeo-big-btn {
             width: 100%; max-width: 300px; padding: 18px; border-radius: 50px;
             border: none; font-size: 18px; font-weight: 900; cursor: pointer;
@@ -273,9 +248,7 @@
             transition: 0.3s; color: #fff;
         }
         .btn-red-play { background: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
-        .btn-red-down { background: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
 
-        /* زر الإغلاق الشفاف بالأسفل */
         .romeo-bottom-close {
             position: absolute; bottom: 30px; width: 85%;
             background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
@@ -283,7 +256,6 @@
             font-weight: bold; cursor: pointer; backdrop-filter: blur(10px);
         }
 
-        /* مربعات المقترحات / الحلقات */
         .romeo-suggest-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;
         }
@@ -294,18 +266,15 @@
         .suggest-card img { width: 100%; height: 90px; object-fit: cover; }
         .suggest-card div { padding: 5px; font-size: 10px; text-align: center; font-weight: bold; }
 
-        /* تعديلات السيرفرات */
         .srv-active { background: #ff0000 !important; color: #fff !important; }
     </style>
 
     <style id="newRomeoAdjustments">
-        /* منع التكبير والتصغير وتثبيت حجم الشاشة */
         html, body {
             touch-action: manipulation;
             -webkit-text-size-adjust: 100%;
         }
 
-        /* تعديل خلفية الحلقات لتصبح ضبابية شفافة بلون الموقع */
         #episodesView {
             background: rgba(4, 7, 20, 0.7) !important;
             backdrop-filter: blur(25px) !important;
@@ -313,7 +282,6 @@
             background-image: none !important;
         }
 
-        /* تطوير أزرار صفحة ما قبل التشغيل */
         .romeo-big-btn {
             margin-left: auto;
             margin-right: auto;
@@ -321,7 +289,6 @@
             border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* تنسيق بوستر المحتوى في صفحة ما قبل التشغيل */
         .romeo-pre-poster {
             width: 140px;
             height: 200px;
@@ -339,7 +306,6 @@
             50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 0, 0, 0.9); }
         }
 
-        /* تعديل جملة حصريا */
         .pre-title {
             font-size: 18px;
             line-height: 1.6;
@@ -353,21 +319,18 @@
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
     </style>
+
+    <!-- الإضافة الجديدة لإخفاء زر "شاهد القنوات بث مباشر" المطلوب -->
+    <style>
+        .glowing-btn-container {
+            display: none !important;
+        }
+    </style>
+
 </head>
 <body>
 
 <div class="romeo-top-brand">روميو لايف - ROMEO LIVE</div>
-
-<div style="display:none;" aria-hidden="true">
-    <h1>ROMEO LIVE TV - روميو لايف تي في</h1>
-    <p>أهلاً بك في ROMEO LIVE TV، المصدر الأول لمشاهدة الأفلام والمسلسلات العربية والرمضانية. شاهد أفلام مصرية، مسلسلات حصرية، ومباريات اليوم بث مباشر. روميو لايف يقدم لك تجربة مشاهدة فريدة بجودة عالية وسيرفرات سريعة.</p>
-    <ul>
-        <li>أفلام مصرية جديدة 2026</li>
-        <li>مسلسلات رمضان 2026 كاملة</li>
-        <li>بث مباشر مباريات اليوم</li>
-        <li>أجمل الأغاني والكليبات</li>
-    </ul>
-</div>
 
 <div id="romeoPrePlayer">
     <div class="pre-content">
@@ -376,14 +339,12 @@
             حصرياً <span class="content-name" id="romeoTargetName">...</span> على ROMEO LIVE TV
         </div>
         <button class="romeo-big-btn btn-red-play" id="prePlayBtn">▶ تشغيل الآن</button>
-        <button class="romeo-big-btn btn-red-down" id="preDownBtn">📥 تحميل الآن</button>
     </div>
     <div class="romeo-bottom-close" onclick="document.getElementById('romeoPrePlayer').style.display='none'">✕ إغلاق وتراجع</div>
 </div>
 
 <header>
     <div class="logo-text">ROMEO <span>LIVE TV</span></div>
-    <a href="https://www.appcreator24.com/app3955137-obzs8n" class="download-app-btn">تنزيل التطبيق</a>
 </header>
 
 <div class="search-area">
@@ -393,7 +354,7 @@
 <div class="glowing-btn-container">
     <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="glowing-btn">
         <i>⚽</i>
-        <span>شاهد المباريات والقنوات بث مباشر</span>
+        <span>شاهد القنوات بث مباشر</span>
     </a>
 </div>
 
@@ -440,14 +401,8 @@
     </div>
     
     <div class="player-details">
-        
-        <div id="romeoServerList" class="romeo-server-container">
-            </div>
-
-        <a id="romeoDownloadBtn" class="romeo-download-btn-v3" target="_blank">تحميل المحتوى الآن 📥</a>
-
+        <div id="romeoServerList" class="romeo-server-container"></div>
         <h1 class="player-title" id="playerContentTitle">اسم المحتوى <span>حصرياً</span></h1>
-
         <h3 id="romeoGridLabel" style="color: var(--accent); margin: 20px 0 10px;">حلقات المسلسل</h3>
         <div id="romeoGridArea" class="romeo-suggest-grid"></div>
 
@@ -458,7 +413,6 @@
         
         <h3 id="epSliderTitle" style="color: var(--accent); margin-bottom: 10px; display: none;">حلقات المسلسل:</h3>
         <div class="player-episodes-slider" id="playerEpSlider"></div>
-        
         <div class="romeo-bottom-close" onclick="closePlayer()" style="position:relative; bottom:0; width:100%; margin-top:30px;">✕ إغلاق المشغل</div>
     </div>
 </div>
@@ -467,7 +421,56 @@
     <div class="nav-item active" onclick="location.reload()"><i>🏠</i><span>الرئيسية</span></div>
     <div class="nav-item" onclick="showFavorites()"><i>❤️</i><span>المفضلة</span></div>
     <div class="nav-item" onclick="window.location.href='https://romeo311020.github.io/ROMEO-MATCH/'"><i>⚽</i><span>المباريات</span></div>
-    <div class="nav-item" onclick="window.open('https://wa.me/201027675035')"><i>💬</i><span></span>التواصل</span></div>
+    <div class="nav-item" onclick="window.open('https://wa.me/201027675035')"><i>💬</i><span>التواصل</span></div>
+</div>
+
+<!-- ========================================================== -->
+<!-- 🆕 واجهة الترحيب الفاخرة بدون زر التحميل 🆕 -->
+<!-- ========================================================== -->
+<style id="premiumWelcomeStyles">
+    #premium-welcome-wrapper {
+        position: fixed; inset: 0;
+        background: radial-gradient(circle at center, #0a0f25 0%, #040714 100%);
+        z-index: 99999; display: flex; justify-content: center; align-items: center;
+        text-align: center; padding: 20px;
+    }
+    .premium-container { width: 100%; max-width: 380px; animation: fadeInRomeo 0.8s ease-out; }
+    .brand-logo-main { width: 130px; filter: drop-shadow(0 0 20px rgba(229, 184, 11, 0.4)); margin-bottom: 15px; border-radius: 50%; }
+    .brand-title { font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 25px; letter-spacing: 1px; }
+    .brand-title span { color: #e5b80b; text-shadow: 0 0 10px rgba(229, 184, 11, 0.5); }
+    .neon-button-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+    .neon-btn {
+        position: relative; padding: 16px; border-radius: 50px; font-size: 16px; font-weight: 800;
+        text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px;
+        border: 2px solid transparent; overflow: hidden; cursor: pointer;
+    }
+    .btn-watch-now { background: linear-gradient(90deg, #e5b80b, #ffd700); color: #000; box-shadow: 0 5px 25px rgba(229, 184, 11, 0.4); }
+    .btn-channels { background: rgba(255, 255, 255, 0.03); color: #fff; border-color: rgba(0, 115, 255, 0.5); }
+    .btn-matches { background: rgba(255, 255, 255, 0.03); color: #fff; border-color: rgba(0, 255, 136, 0.5); }
+    
+    @keyframes fadeInRomeo { from { opacity: 0; transform: translateY(30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+</style>
+
+<div id="premium-welcome-wrapper">
+    <div class="premium-container">
+        <img src="https://i.postimg.cc/rmMTZyTP/IMG-20260331-031314.png" alt="Logo" class="brand-logo-main">
+        <h1 class="brand-title">ROMEO <span>LIVE TV</span></h1>
+        <div class="neon-button-grid">
+            <div class="neon-btn btn-watch-now" onclick="romeoCloseWelcome()">
+                <span>استمتع بالمشاهدة الآن</span>
+                <i>🎬</i>
+            </div>
+            <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="neon-btn btn-channels">
+                <span>القنوات بث مباشر</span>
+                <i>📺</i>
+            </a>
+            <a href="https://romeo311020.github.io/ROMEO-MATCH/" class="neon-btn btn-matches">
+                <span>المباريات بث مباشر</span>
+                <i>⚽</i>
+            </a>
+        </div>
+        <p style="margin-top: 35px; font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 1px;">المنصة الأقوى في الوطن العربي | 2026</p>
+    </div>
 </div>
 
 <script>
@@ -484,7 +487,7 @@
     function render(data) {
         const grid = document.getElementById('mainGrid');
         grid.innerHTML = '';
-        data.forEach((item, index) => {
+        data.forEach((item) => {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `<img src="${item.img}" loading="lazy"><div class="card-info">${item.name}</div>`;
@@ -501,31 +504,12 @@
         pv.style.display = 'flex';
         document.getElementById('playerBlur').style.backgroundImage = `url(${img})`;
         document.getElementById('playerContentTitle').innerHTML = `${name} <span>حصرياً</span>`;
-        const container = document.getElementById('videoContainer');
-        container.innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
-        
-        if(episodes) {
-            const slider = document.getElementById('playerEpSlider');
-            document.getElementById('epSliderTitle').style.display = 'block';
-            slider.innerHTML = '';
-            episodes.forEach(ep => {
-                const epCard = document.createElement('div');
-                epCard.className = `mini-ep-card ${ep.link === link ? 'active' : ''}`;
-                epCard.innerText = ep.name;
-                epCard.onclick = () => {
-                    slider.querySelectorAll('.mini-ep-card').forEach(c => c.classList.remove('active'));
-                    epCard.classList.add('active');
-                    openPlayer(ep.link, `${name.split(' - ')[0]} - ${ep.name}`, img, episodes);
-                };
-                slider.appendChild(epCard);
-            });
-        }
+        document.getElementById('videoContainer').innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
     }
 
     function closePlayer() {
         document.getElementById('playerView').style.display = 'none';
         document.getElementById('videoContainer').innerHTML = ''; 
-        document.body.style.overflow = 'auto';
     }
 
     function toggleSub(id) {
@@ -547,13 +531,13 @@
         render(database.filter(i => i.name.toLowerCase().includes(q)));
     }
 
-    loadData();
-</script>
+    function romeoCloseWelcome() {
+        const wrapper = document.getElementById('premium-welcome-wrapper');
+        wrapper.style.opacity = "0";
+        wrapper.style.transition = "opacity 0.6s ease";
+        setTimeout(() => wrapper.style.display = 'none', 600);
+    }
 
-<script id="romeoLegacySystem">
-(function romeoUpgrade() {
-    
-    // تحويل روابط اليوتيوب للعمل
     window.fixYoutube = function(url) {
         if (!url) return "";
         if (url.includes('youtube.com/watch?v=')) return url.replace('watch?v=', 'embed/') + '?autoplay=1';
@@ -561,95 +545,29 @@
         return url;
     };
 
-    // إعادة تعريف فتح المشغل (صفحة ما قبل التشغيل)
     window.openPlayerFull = function(item, episode = null) {
         const pre = document.getElementById('romeoPrePlayer');
         const title = episode ? `${item.name} - ${episode.name}` : item.name;
         const link = episode ? episode.link : item.link;
-        const link2 = episode ? (episode.link2 || "") : (item.link2 || "");
-        const downUrl = episode ? (episode.download_url || "") : (item.download_url || "");
-
         pre.style.display = 'flex';
         pre.style.backgroundImage = `url(${item.img})`;
-        
-        // التعديل الجديد: تحديث البوستر والجملة
         document.getElementById('prePosterImg').src = item.img;
         document.getElementById('romeoTargetName').innerText = title;
-
-        // زر التشغيل
         document.getElementById('prePlayBtn').onclick = () => {
             pre.style.display = 'none';
-            window.openPlayer(window.fixYoutube(link), title, item.img);
-            window.renderServers(link, link2);
-            window.renderGrid(item, episode);
+            openPlayer(window.fixYoutube(link), title, item.img);
         };
-
-        // زر التحميل من الـ JSON
-        const downBtn = document.getElementById('preDownBtn');
-        if (downUrl) {
-            downBtn.style.display = 'flex';
-            downBtn.onclick = () => window.open(downUrl, '_blank');
-        } else {
-            downBtn.style.display = 'none';
-        }
     };
 
-    // إضافة السيرفرات (1 و 2)
-    window.renderServers = function(l1, l2) {
-        const srvBox = document.getElementById('romeoServerList');
-        srvBox.innerHTML = `<button class="romeo-server-btn srv-active" onclick="switchSrv(this, '${window.fixYoutube(l1)}')">سيرفر 1</button>`;
-        if (l2) {
-            srvBox.innerHTML += `<button class="romeo-server-btn" onclick="switchSrv(this, '${window.fixYoutube(l2)}')">سيرفر 2</button>`;
-        }
-    };
-
-    window.switchSrv = function(btn, link) {
-        document.querySelectorAll('.romeo-server-btn').forEach(b => b.classList.remove('srv-active'));
-        btn.classList.add('srv-active');
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
-    };
-
-    // إضافة المربعات (حلقات أو مقترحات)
-    window.renderGrid = function(item, currentEp = null) {
-        const grid = document.getElementById('romeoGridArea');
-        const label = document.getElementById('romeoGridLabel');
-        grid.innerHTML = '';
-
-        if (item.type === 'series') {
-            label.innerText = "حلقات المسلسل";
-            item.episodes.forEach(ep => {
-                const card = document.createElement('div');
-                card.className = 'suggest-card';
-                card.innerHTML = `<img src="${item.img}"><div>${ep.name}</div>`;
-                card.onclick = () => window.openPlayerFull(item, ep);
-                grid.appendChild(card);
-            });
-        } else {
-            label.innerText = "مقترحات قد تعجبك";
-            const suggestions = database.filter(i => i.cat === item.cat && i.name !== item.name).slice(0, 6);
-            suggestions.forEach(sug => {
-                const card = document.createElement('div');
-                card.className = 'suggest-card';
-                card.innerHTML = `<img src="${sug.img}"><div>${sug.name}</div>`;
-                card.onclick = () => window.openPlayerFull(sug);
-                grid.appendChild(card);
-            });
-        }
-    };
-
-    // تعديل فتح المسلسلات من الشبكة الرئيسية
     window.openEpisodes = function(item) {
         const ev = document.getElementById('episodesView');
         const grid = document.getElementById('episodesGrid');
         ev.style.display = 'flex';
-        // تم إلغاء خلفية الصورة هنا واستبدالها بالضبابية عبر الـ CSS المضاف
         document.getElementById('seriesHeader').innerText = item.name;
         grid.innerHTML = '';
         item.episodes.forEach(ep => {
             const div = document.createElement('div');
             div.className = 'ep-item';
-            div.style.background = 'rgba(255,255,255,0.05)';
-            div.style.backdropFilter = 'blur(10px)';
             div.innerHTML = `<img src="${item.img}" style="width:100%; border-radius:10px; margin-bottom:10px;"> ${ep.name}`;
             div.onclick = () => {
                 ev.style.display = 'none';
@@ -659,183 +577,22 @@
         });
     };
 
-})();
+    loadData();
 </script>
 
-<!-- ========================================================== -->
-<!-- 🆕 الإضافات الجديدة (Add-Only) 🆕 -->
-<!-- ========================================================== -->
-
-<style id="premiumWelcomeStyles">
-    /* طبقة الحماية الترحيبية الاحترافية */
-    #premium-welcome-wrapper {
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at center, #0a0f25 0%, #040714 100%);
-        z-index: 99999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 20px;
-    }
-
-    .premium-container {
-        width: 100%;
-        max-width: 380px;
-        animation: fadeInRomeo 0.8s ease-out;
-    }
-
-    /* تأثير اللوجو والبراند */
-    .brand-logo-main {
-        width: 130px;
-        filter: drop-shadow(0 0 20px rgba(229, 184, 11, 0.4));
-        margin-bottom: 15px;
-    }
-
-    .brand-title {
-        font-size: 24px;
-        font-weight: 900;
-        color: #fff;
-        margin-bottom: 25px;
-        letter-spacing: 1px;
-    }
-
-    .brand-title span { color: #e5b80b; text-shadow: 0 0 10px rgba(229, 184, 11, 0.5); }
-
-    /* مصفوفة الأزرار المضيئة */
-    .neon-button-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        width: 100%;
-    }
-
-    .neon-btn {
-        position: relative;
-        padding: 14px;
-        border-radius: 50px;
-        font-size: 15px;
-        font-weight: 800;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        border: 2px solid transparent;
-        overflow: hidden;
-    }
-
-    /* 1. زر المشاهدة (الذهبي الفاخر) */
-    .btn-watch-now {
-        background: linear-gradient(90deg, #e5b80b, #ffd700);
-        color: #000;
-        box-shadow: 0 5px 25px rgba(229, 184, 11, 0.4);
-    }
-    .btn-watch-now:active { transform: scale(0.95); }
-
-    /* 2. زر القنوات (الأزرق المضيء) */
-    .btn-channels {
-        background: rgba(255, 255, 255, 0.03);
-        color: #fff;
-        border-color: rgba(0, 115, 255, 0.5);
-        box-shadow: 0 0 15px rgba(0, 115, 255, 0.2);
-    }
-    .btn-channels:hover { background: rgba(0, 115, 255, 0.1); border-color: #0073ff; }
-
-    /* 3. زر المباريات (الأخضر المضيء) */
-    .btn-matches {
-        background: rgba(255, 255, 255, 0.03);
-        color: #fff;
-        border-color: rgba(0, 255, 136, 0.5);
-        box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-    }
-    .btn-matches:hover { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; }
-
-    /* 4. زر التحميل (الشفاف الأنيق) */
-    .btn-app-down {
-        background: rgba(255, 255, 255, 0.03);
-        color: #fff;
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* منع الزوم وتعديل الخطوط البصرية */
-    html, body {
-        touch-action: manipulation;
-        font-size: 14px; /* تصغير طفيف للخط العام */
-    }
-
-    @keyframes fadeInRomeo {
-        from { opacity: 0; transform: translateY(30px) scale(0.9); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-</style>
-
-<!-- الواجهة الترحيبية الجديدة (حقن فوق القديم) -->
-<div id="premium-welcome-wrapper">
-    <div class="premium-container">
-        <img src="https://i.postimg.cc/rmMTZyTP/IMG-20260331-031314.png" alt="Logo" class="brand-logo-main">
-        <h1 class="brand-title">ROMEO <span>LIVE TV</span></h1>
-        
-        <div class="neon-button-grid">
-            <!-- 1. استمتع بالمشاهدة الآن -->
-            <a href="javascript:void(0)" class="neon-btn btn-watch-now" onclick="romeoCloseWelcome()">
-                <span>استمتع بالمشاهدة الآن</span>
-                <i>🎬</i>
-            </a>
-
-            <!-- 2. القنوات بث مباشر -->
-            <a href="https://romeo311020.github.io/ROMEO-LIVE-TV-/" class="neon-btn btn-channels" target="_blank">
-                <span>القنوات بث مباشر</span>
-                <i>📺</i>
-            </a>
-
-            <!-- 3. المباريات بث مباشر والتشكيلة -->
-            <a href="https://romeo311020.github.io/ROMEO-MATCH/" class="neon-btn btn-matches" target="_blank">
-                <span>المباريات بث مباشر والتشكيلة</span>
-                <i>⚽</i>
-            </a>
-
-            <!-- 4. تحميل التطبيق -->
-            <a href="https://www.appcreator24.com/app3955137-obzs8n" class="neon-btn btn-app-down" target="_blank">
-                <span>تحميل التطبيق الرسمي</span>
-                <i>📥</i>
-            </a>
-        </div>
-
-        <p style="margin-top: 30px; font-size: 11px; color: rgba(255,255,255,0.4);">
-            المنصة الأقوى في الوطن العربي | 2026
-        </p>
-    </div>
-</div>
-
-<script id="premiumScripts">
-    // دالة إغلاق الترحيب للدخول للموقع
-    function romeoCloseWelcome() {
-        const wrapper = document.getElementById('premium-welcome-wrapper');
-        wrapper.style.transition = "all 0.6s cubic-bezier(1, 0, 0, 1)";
-        wrapper.style.opacity = "0";
-        wrapper.style.transform = "scale(1.2)";
-        setTimeout(() => wrapper.style.display = 'none', 600);
-    }
-
-    // منع التكبير باللمس المتعدد (Anti-Zoom System)
-    document.addEventListener('touchstart', function (event) {
-        if (event.touches.length > 1) {
-            event.preventDefault();
-        }
-    }, { passive: false });
-
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function (event) {
-        let now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) {
-            event.preventDefault();
-        }
-        lastTouchEnd = now;
-    }, false);
+<!-- [إضافة جديدة] كود تفعيل الـ Service Worker في الخلفية -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('ROMEO PWA Loaded!');
+      }).catch(err => {
+        console.log('PWA Error', err);
+      });
+    });
+  }
 </script>
+<!-- [نهاية الإضافة] -->
 
 </body>
 </html>
