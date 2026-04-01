@@ -38,8 +38,11 @@
       "name": "صنع في مصر",
       "img": "https://i.postimg.cc/W30C8F0C/images-(17).jpg",
       "link": "https://www.youtube.com/embed/HoibpVTKjs4",
+      "link2": "",
+      "download_url": "https://v1.shabakngy.com/videoss/HoibpVTKjs4.mp4",
       "cat": "egy1",
-      "type": "movie"
+      "type": "movie",
+      "episodes": []
     },
     {
       "id": 6,
