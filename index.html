@@ -760,5 +760,58 @@
   });
 </script>
 
+<script id="romeoMusicDownloader">
+    (function() {
+        /**
+         * وظيفة إضافية للبحث عن بيانات الأغنية والتحكم في ظهور زر التحميل
+         * تعمل فقط مع قسم الأغاني (music) وتعتمد على download_url
+         */
+        function checkAndSyncMusicDownload() {
+            const prePlayerTitle = document.getElementById('romeoTargetName');
+            const prePlayerDisplay = window.getComputedStyle(document.getElementById('romeoPrePlayer')).display;
+            
+            if (prePlayerDisplay === 'flex' && prePlayerTitle) {
+                const currentName = prePlayerTitle.innerText.trim();
+                
+                // البحث في قاعدة البيانات عن هذا الاسم والتأكد أنه أغنية
+                const itemData = database.find(item => item.name === currentName && item.cat === 'music');
+                
+                // جلب زر التحميل (الذي تم إنشاؤه مسبقاً في السكربتات العلوية)
+                const dlBtn = document.getElementById('dynamicDlBtn');
+                
+                if (itemData && itemData.download_url && itemData.download_url.trim() !== "") {
+                    // إذا وُجد رابط تحميل للأغنية، نتأكد من ظهوره وربطه
+                    if (dlBtn) {
+                        dlBtn.style.display = 'flex';
+                        dlBtn.onclick = (e) => {
+                            e.preventDefault();
+                            window.open(itemData.download_url, '_blank');
+                        };
+                    }
+                } else if (itemData) {
+                    // إذا كانت أغنية ولكن لا يوجد لها رابط تحميل، نخفيه
+                    if (dlBtn) dlBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // إنشاء مراقب (Observer) لمراقبة تغييرات الواجهة دون لمس الكود الأصلي
+        const musicObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList' || mutation.attributeName === 'style') {
+                    // استدعاء الوظيفة عند أي تغيير في الـ PrePlayer
+                    checkAndSyncMusicDownload();
+                }
+            });
+        });
+
+        // تشغيل المراقب على الـ PrePlayer
+        const targetPre = document.getElementById('romeoPrePlayer');
+        if (targetPre) {
+            musicObserver.observe(targetPre, { attributes: true, childList: true, subtree: true });
+        }
+    })();
+</script>
+
 </body>
 </html>
