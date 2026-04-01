@@ -584,84 +584,79 @@
     });
   }
 </script>
-<style>
-    /* كود CSS جديد لإخفاء زر التحميل افتراضياً */
-    .romeo-dynamic-download-btn {
-        display: none; /* مخفي افتراضياً */
+
+
+<style id="dynamicDownloadStyles">
+    .btn-download-dynamic {
         background: #ff0000;
-        box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+        box-shadow: 0 0 20px rgba(255,0,0,0.4);
+        display: none; /* يظهر فقط عند وجود الرابط */
         margin-top: 10px;
     }
 </style>
 
-<script>
-    /**
-     * وظيفة جديدة لإدارة ظهور زر التحميل
-     * لا تغير أي دالة قديمة، بل تضيف منطقاً جديداً
-     */
-    function setupDynamicDownload() {
-        const preContent = document.querySelector('.pre-content');
-        if (!preContent) return;
-
-        // إنشاء زر التحميل الجديد وإضافته للواجهة
-        let downloadBtn = document.getElementById('dynamicDownloadBtn');
-        if (!downloadBtn) {
-            downloadBtn = document.createElement('button');
-            downloadBtn.id = 'dynamicDownloadBtn';
-            downloadBtn.className = 'romeo-big-btn romeo-dynamic-download-btn';
-            downloadBtn.innerHTML = '📥 تحميل الآن';
-            preContent.appendChild(downloadBtn);
+<script id="dynamicDownloadScript">
+    (function() {
+        // إنشاء الزر وإضافته للواجهة
+        function injectDownloadBtn() {
+            const preContainer = document.querySelector('#romeoPrePlayer .pre-content');
+            if (preContainer && !document.getElementById('dynamicDlBtn')) {
+                const dlBtn = document.createElement('button');
+                dlBtn.id = 'dynamicDlBtn';
+                dlBtn.className = 'romeo-big-btn btn-download-dynamic';
+                dlBtn.innerHTML = '📥 تحميل الآن';
+                preContainer.appendChild(dlBtn);
+            }
         }
 
-        // مراقبة فتح واجهة الـ PrePlayer
-        const observer = new MutationObserver(() => {
-            const prePlayer = document.getElementById('romeoPrePlayer');
-            if (prePlayer && prePlayer.style.display === 'flex') {
-                updateDownloadButtonState();
+        // مراقب لفحص البيانات وتحديث حالة الزر
+        function checkDownloadLink() {
+            const currentTitle = document.getElementById('romeoTargetName').innerText;
+            const dlBtn = document.getElementById('dynamicDlBtn');
+            if (!dlBtn) return;
+
+            let downloadLink = null;
+
+            // البحث في قاعدة البيانات عن العنصر الذي يتطابق مع الاسم المعروض حالياً
+            database.forEach(item => {
+                if (item.type === 'movie' && item.name === currentTitle) {
+                    downloadLink = item.download_url; // استخدام المفتاح الصحيح من لوحة التحكم
+                } else if (item.type === 'series' && item.episodes) {
+                    item.episodes.forEach(ep => {
+                        if (`${item.name} - ${ep.name}` === currentTitle) {
+                            downloadLink = ep.download_url; // استخدام المفتاح الصحيح للحلقة
+                        }
+                    });
+                }
+            });
+
+            // التحكم في ظهور الزر
+            if (downloadLink && downloadLink.trim() !== "") {
+                dlBtn.style.display = 'flex';
+                dlBtn.onclick = () => window.open(downloadLink, '_blank');
+            } else {
+                dlBtn.style.display = 'none';
             }
+        }
+
+        // تشغيل المنطق عند فتح نافذة الـ PrePlayer
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'style') {
+                    const display = window.getComputedStyle(mutation.target).display;
+                    if (display === 'flex') {
+                        injectDownloadBtn();
+                        checkDownloadLink();
+                    }
+                }
+            });
         });
 
-        observer.observe(document.getElementById('romeoPrePlayer'), { attributes: true, attributeFilter: ['style'] });
-    }
-
-    /**
-     * وظيفة لفحص وجود رابط التحميل في البيانات
-     */
-    function updateDownloadButtonState() {
-        const targetName = document.getElementById('romeoTargetName').innerText;
-        const downloadBtn = document.getElementById('dynamicDownloadBtn');
-        
-        // البحث عن العنصر في قاعدة البيانات بناءً على الاسم المكتوب حالياً
-        // نبحث في الأفلام أو داخل حلقات المسلسلات
-        let foundItem = database.find(i => i.name === targetName || (i.episodes && i.episodes.some(ep => `${i.name} - ${ep.name}` === targetName)));
-        
-        let downloadLink = null;
-
-        if (foundItem) {
-            // إذا كان فيلماً
-            if (foundItem.download) {
-                downloadLink = foundItem.download;
-            } 
-            // إذا كان مسلسلاً، نبحث عن الحلقة المحددة
-            else if (foundItem.episodes) {
-                const ep = foundItem.episodes.find(e => `${foundItem.name} - ${e.name}` === targetName);
-                if (ep && ep.download) {
-                    downloadLink = ep.download;
-                }
-            }
+        const prePlayer = document.getElementById('romeoPrePlayer');
+        if (prePlayer) {
+            observer.observe(prePlayer, { attributes: true });
         }
-
-        // التحكم في ظهور الزر
-        if (downloadLink && downloadLink.trim() !== "") {
-            downloadBtn.style.display = 'flex';
-            downloadBtn.onclick = () => window.open(downloadLink, '_blank');
-        } else {
-            downloadBtn.style.display = 'none';
-        }
-    }
-
-    // تشغيل المنطق الجديد عند تحميل الصفحة
-    window.addEventListener('DOMContentLoaded', setupDynamicDownload);
+    })();
 </script>
 
 </body>
