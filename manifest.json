@@ -7,15 +7,15 @@
   "theme_color": "#e5b80b",
   "icons": [
     {
-      "src": "https://i.postimg.cc/85z1XzN4/romeo-logo-new.png",
+      "src": "https://i.postimg.cc/j2jhVwbL/IMG-20260401-054744.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "https://i.postimg.cc/85z1XzN4/romeo-logo-new.png",
+      "src": "https://i.postimg.cc/j2jhVwbL/IMG-20260401-054744.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
