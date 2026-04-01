@@ -1,20 +1,22 @@
 {
   "name": "ROMEO LIVE TV",
-  "short_name": "ROMEO",
+  "short_name": "ROMEO TV",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#040714",
+  "background_color": "#0a0f1d",
   "theme_color": "#e5b80b",
   "icons": [
     {
-      "src": "https://i.postimg.cc/bJrhMwWy/1774636158233.png",
+      "src": "https://i.postimg.cc/85z1XzN4/romeo-logo-new.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://i.postimg.cc/bJrhMwWy/1774636158233.png",
+      "src": "https://i.postimg.cc/85z1XzN4/romeo-logo-new.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
