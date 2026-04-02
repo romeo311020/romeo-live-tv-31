@@ -327,7 +327,15 @@
       "cat": "ramadan",
       "type": "series",
       "total_episodes": "30",
-      "episodes": []
+      "episodes": [
+        {
+          "num": "1",
+          "name": "الحلقة 1",
+          "link": "https://m.reviewrate.net/embed-tfao70u1mz2v.html",
+          "link2": "",
+          "download_url": ""
+        }
+      ]
     },
     {
       "id": 21,
