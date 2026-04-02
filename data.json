@@ -644,7 +644,15 @@
       "cat": "ramadan",
       "type": "series",
       "total_episodes": "30",
-      "episodes": []
+      "episodes": [
+        {
+          "num": "1",
+          "name": "الحلقة 1",
+          "link": "https://shahid.mbc.net/ar/player/episodes/المداح%3A-أسطورة-النهاية-الموسم-6-الحلقة-1/id-49923659890586",
+          "link2": "",
+          "download_url": ""
+        }
+      ]
     },
     {
       "id": 26,
