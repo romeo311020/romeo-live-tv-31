@@ -641,9 +641,11 @@
       "id": 25,
       "name": "المداح",
       "img": "https://i.postimg.cc/QC13Vz8D/images-(3).jpg",
+      "link": "",
+      "link2": "",
+      "download_url": "",
       "cat": "ramadan",
       "type": "series",
-      "total_episodes": "30",
       "episodes": [
         {
           "num": "1",
