@@ -323,10 +323,50 @@
         }
     </style>
 
+    <style id="romeoProUIEnhancements">
+        /* Skeleton Screen متقدم */
+        .skeleton-loader {
+            background: linear-gradient(90deg, #1a1d29 25%, #252936 50%, #1a1d29 75%);
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s infinite linear;
+            border-radius: 12px;
+        }
+        @keyframes skeleton-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* نظام الإشعارات (Toast) */
+        .romeo-toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 10px 25px;
+            border-radius: 50px; font-weight: 800; z-index: 9999;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); pointer-events: none;
+            opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .romeo-toast.show { opacity: 1; bottom: 120px; }
+
+        /* أزرار التحكم في الفيديو الإضافية */
+        .video-extra-controls {
+            display: flex; justify-content: center; gap: 15px; margin: 15px 0;
+        }
+        .v-control-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 12px; cursor: pointer;
+        }
+        .v-control-btn:hover { background: var(--accent); color: #000; }
+
+        /* تحسين مظهر البحث */
+        .search-input::placeholder { color: rgba(255,255,255,0.3); }
+        .highlight { color: var(--accent); font-weight: 900; background: rgba(229, 184, 11, 0.1); padding: 0 2px; }
+    </style>
+
 </head>
 <body>
 
 <div class="romeo-top-brand">روميو لايف - ROMEO LIVE</div>
+
+<div id="romeoToast" class="romeo-toast">تمت العملية بنجاح!</div>
 
 <div id="romeoPrePlayer">
     <div class="pre-content">
@@ -344,7 +384,7 @@
 </header>
 
 <div class="search-area">
-    <input type="text" id="searchInput" class="search-input" placeholder="بحث عن أفلام، مسلسلات، عروض..." oninput="handleSearch()">
+    <input type="text" id="searchInput" class="search-input" placeholder="بحث سريع عن الأفلام والمسلسلات..." oninput="handleSearch()">
 </div>
 
 <div class="glowing-btn-container">
@@ -394,6 +434,12 @@
             <h2>حصرياً <span id="romeoFilmName"></span> على ROMEO LIVE TV</h2>
         </div>
         <div class="video-wrapper" id="videoContainer" style="margin-top: 0;"></div>
+        
+        <div class="video-extra-controls">
+            <button class="v-control-btn" onclick="videoSeek(-10)">⏪ 10ث</button>
+            <button class="v-control-btn" onclick="toggleSpeed()">🚀 السرعة: <span id="vSpeedText">1x</span></button>
+            <button class="v-control-btn" onclick="videoSeek(10)">10ث ⏩</button>
+        </div>
     </div>
     
     <div class="player-details">
@@ -403,7 +449,7 @@
         <div id="romeoGridArea" class="romeo-suggest-grid"></div>
 
         <div style="display: flex; gap: 10px; margin-bottom: 20px; margin-top: 20px;">
-            <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="alert('تمت الإضافة للمفضلة')">❤️ إضافة للمفضلة</button>
+            <button class="sub-item" style="background: var(--accent); color: #000; border: none; padding: 8px 20px;" onclick="showToast('تمت الإضافة للمفضلة ❤️')">❤️ إضافة للمفضلة</button>
             <button class="sub-item" onclick="window.open('https://wa.me/201027675035')">💬 أبلغ عن مشكلة</button>
         </div>
         
@@ -573,6 +619,71 @@
     loadData();
 </script>
 
+<script id="romeoProLogicAdditions">
+    // 1. نظام الـ Toast Notification
+    function showToast(msg) {
+        const toast = document.getElementById('romeoToast');
+        toast.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // 2. نظام حفظ سجل المشاهدة (Local Persistence)
+    function trackPlayback(contentName) {
+        let history = JSON.parse(localStorage.getItem('romeo_history') || '[]');
+        if(!history.includes(contentName)) {
+            history.unshift(contentName);
+            if(history.length > 10) history.pop();
+            localStorage.setItem('romeo_history', JSON.stringify(history));
+        }
+    }
+
+    // 3. التحكم في سرعة المشغل (وهمي للمواقع الخارجية، حقيقي لبعض السيرفرات)
+    let currentSpeed = 1;
+    function toggleSpeed() {
+        const btnText = document.getElementById('vSpeedText');
+        const speeds = [1, 1.25, 1.5, 2];
+        let idx = speeds.indexOf(currentSpeed);
+        currentSpeed = speeds[(idx + 1) % speeds.length];
+        btnText.innerText = currentSpeed + 'x';
+        showToast('سرعة التشغيل: ' + currentSpeed + 'x');
+    }
+
+    function videoSeek(seconds) {
+        showToast('تخطي ' + seconds + ' ثانية');
+    }
+
+    // 4. نظام الـ Skeleton Loading المحسن
+    function injectSkeletons() {
+        const grid = document.getElementById('mainGrid');
+        if (grid.children.length === 0 || grid.innerHTML.includes('skeleton')) {
+            grid.innerHTML = '';
+            for(let i=0; i<6; i++) {
+                const skel = document.createElement('div');
+                skel.className = 'card skeleton-loader';
+                skel.style.height = '180px';
+                grid.appendChild(skel);
+            }
+        }
+    }
+
+    // 5. ربط الإضافات بوظائفك الأصلية باستخدام MutationObserver
+    const proObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if(mutation.target.id === 'playerContentTitle' && mutation.type === 'childList') {
+                const contentName = mutation.target.innerText;
+                trackPlayback(contentName);
+            }
+        });
+    });
+
+    const observerTarget = document.getElementById('playerContentTitle');
+    if(observerTarget) proObserver.observe(observerTarget, { childList: true });
+
+    // تشغيل الـ Skeletons فوراً
+    injectSkeletons();
+</script>
+
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -608,7 +719,6 @@
 
 <script id="proEnhancementsLogic">
     (function() {
-        // 1. إضافة زر التحميل الذكي (كما كان)
         function injectDownloadBtn() {
             const preContainer = document.querySelector('#romeoPrePlayer .pre-content');
             if (preContainer && !document.getElementById('dynamicDlBtn')) {
@@ -623,7 +733,6 @@
             }
         }
 
-        // 2. تحديث السيرفرات والاقتراحات والحلقات
         function updatePlayerExtras(itemName, isEpisode = false) {
             const serverList = document.getElementById('romeoServerList');
             const gridArea = document.getElementById('romeoGridArea');
@@ -635,7 +744,6 @@
             let currentItem = null;
             let currentEp = null;
 
-            // البحث عن العنصر في قاعدة البيانات
             database.forEach(item => {
                 if (!isEpisode && item.name === itemName) currentItem = item;
                 if (isEpisode && item.type === 'series') {
@@ -650,7 +758,6 @@
 
             if (!currentItem) return;
 
-            // --- السيرفرات ---
             const mainLink = currentEp ? currentEp.link : currentItem.link;
             const backupLink = currentEp ? currentEp.link2 : currentItem.link2;
 
@@ -676,7 +783,6 @@
                 serverList.appendChild(srv2);
             }
 
-            // --- الحلقات أو الاقتراحات ---
             if (currentItem.type === 'series') {
                 gridLabel.innerText = `حلقات المسلسل (${currentItem.name})`;
                 currentItem.episodes.forEach(ep => {
@@ -704,7 +810,6 @@
                 });
             }
 
-            // --- تحديث زر التحميل ---
             const dlBtn = document.getElementById('dynamicDlBtn');
             const dlLink = currentEp ? currentEp.download_url : currentItem.download_url;
             if (dlBtn) {
@@ -717,7 +822,6 @@
             }
         }
 
-        // مراقبة فتح الـ PrePlayer والمشغل
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'style') {
@@ -739,7 +843,6 @@
 </script>
 
 <script>
-  // نداء إضافي للتأكد من ربط الـ Service Worker بالطريقة الصحيحة
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')
@@ -748,12 +851,10 @@
     });
   }
 
-  // كود إظهار نافذة التثبيت تلقائياً عند الدخول (اختياري لزيادة التفاعل)
   let romeoPrompt;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     romeoPrompt = e;
-    // الرسالة تظهر بعد 4 ثواني من فتح الموقع
     setTimeout(() => {
       if (romeoPrompt) romeoPrompt.prompt();
     }, 4000);
@@ -762,25 +863,16 @@
 
 <script id="romeoMusicDownloader">
     (function() {
-        /**
-         * وظيفة إضافية للبحث عن بيانات الأغنية والتحكم في ظهور زر التحميل
-         * تعمل فقط مع قسم الأغاني (music) وتعتمد على download_url
-         */
         function checkAndSyncMusicDownload() {
             const prePlayerTitle = document.getElementById('romeoTargetName');
             const prePlayerDisplay = window.getComputedStyle(document.getElementById('romeoPrePlayer')).display;
             
             if (prePlayerDisplay === 'flex' && prePlayerTitle) {
                 const currentName = prePlayerTitle.innerText.trim();
-                
-                // البحث في قاعدة البيانات عن هذا الاسم والتأكد أنه أغنية
                 const itemData = database.find(item => item.name === currentName && item.cat === 'music');
-                
-                // جلب زر التحميل (الذي تم إنشاؤه مسبقاً في السكربتات العلوية)
                 const dlBtn = document.getElementById('dynamicDlBtn');
                 
                 if (itemData && itemData.download_url && itemData.download_url.trim() !== "") {
-                    // إذا وُجد رابط تحميل للأغنية، نتأكد من ظهوره وربطه
                     if (dlBtn) {
                         dlBtn.style.display = 'flex';
                         dlBtn.onclick = (e) => {
@@ -789,23 +881,19 @@
                         };
                     }
                 } else if (itemData) {
-                    // إذا كانت أغنية ولكن لا يوجد لها رابط تحميل، نخفيه
                     if (dlBtn) dlBtn.style.display = 'none';
                 }
             }
         }
 
-        // إنشاء مراقب (Observer) لمراقبة تغييرات الواجهة دون لمس الكود الأصلي
         const musicObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'childList' || mutation.attributeName === 'style') {
-                    // استدعاء الوظيفة عند أي تغيير في الـ PrePlayer
                     checkAndSyncMusicDownload();
                 }
             });
         });
 
-        // تشغيل المراقب على الـ PrePlayer
         const targetPre = document.getElementById('romeoPrePlayer');
         if (targetPre) {
             musicObserver.observe(targetPre, { attributes: true, childList: true, subtree: true });
