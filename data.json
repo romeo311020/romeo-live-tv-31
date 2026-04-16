@@ -2563,7 +2563,15 @@
       "download_url": "",
       "cat": "arabic",
       "type": "series",
-      "episodes": []
+      "episodes": [
+        {
+          "num": "1",
+          "name": "الحلقة 1",
+          "link": "https://m.reviewrate.net/embed-0qevq44odkg8.html",
+          "link2": "",
+          "download_url": ""
+        }
+      ]
     }
   ],
   "categories": [
