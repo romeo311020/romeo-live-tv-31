@@ -2623,6 +2623,17 @@
       "cat": "egy1",
       "type": "movie",
       "episodes": []
+    },
+    {
+      "id": 1777155667550,
+      "name": "اللعبة 5",
+      "img": "https://i.postimg.cc/m2jSrwq0/69.png",
+      "link": "",
+      "link2": "",
+      "download_url": "",
+      "cat": "arabic",
+      "type": "series",
+      "episodes": []
     }
   ],
   "categories": [
