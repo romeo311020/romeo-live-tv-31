@@ -2675,6 +2675,17 @@
       "cat": "music",
       "type": "movie",
       "episodes": []
+    },
+    {
+      "id": 1777154708442,
+      "name": "الفرنساوي",
+      "img": "https://i.postimg.cc/wxcMKbR9/e-L2P6j-EFYX2h-IZ3gj-RP2KV0j-Of3-367x550.webp",
+      "link": "",
+      "link2": "",
+      "download_url": "",
+      "cat": "arabic",
+      "type": "series",
+      "episodes": []
     }
   ],
   "categories": [
