@@ -944,5 +944,47 @@
     })();
 </script>
 
+<style>
+    /* التصميم النهائي للوجو - نسخة ROMEO PRO */
+    .player-logo-pro {
+        position: fixed; /* تغيير من absolute لـ fixed عشان يثبت فوق كل حاجة */
+        top: 65px; 
+        left: 20px; 
+        width: 40px; /* حجم صغير جداً واحترافي */
+        height: auto;
+        z-index: 99999 !important; /* رقم خيالي عشان مستحيل حاجة تغطي عليه */
+        opacity: 0.7; 
+        filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));
+        display: none; /* مخفي في البداية */
+        pointer-events: none;
+    }
+
+    /* كود إظهار اللوجو بمجرد ما المشغل يفتح */
+    body.modal-open .player-logo-pro, 
+    #playerUI[style*="display: flex"] .player-logo-pro {
+        display: block !important;
+    }
+</style>
+
+<script>
+    (function() {
+        // حذف أي نسخة قديمة من اللوجو عشان ميتكررش
+        const oldLogo = document.querySelector('.player-logo-pro');
+        if(oldLogo) oldLogo.remove();
+
+        const logoUrl = 'https://i.postimg.cc/X7kZw8yf/IMG-20260504-004755.png';
+        const playerContainer = document.getElementById('playerUI');
+
+        if (playerContainer) {
+            const beinLogo = document.createElement('img');
+            beinLogo.src = logoUrl;
+            beinLogo.className = 'player-logo-pro';
+            
+            // إضافة اللوجو داخل حاوية المشغل مباشرة
+            playerContainer.appendChild(beinLogo);
+        }
+    })();
+</script>
+
 </body>
 </html>
