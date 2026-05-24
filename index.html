@@ -905,5 +905,143 @@
     })();
 </script>
 
+
+<div id="romeoAiNotification" class="romeo-ai-notif-box">
+    <span id="romeoAiNotifText">تم إضافة فيلم عصابة الماكس 2024 📽️</span>
+</div>
+
+<style id="romeoDesktopAndAiStyles">
+    /* 1. تصميم مربع الإشعارات الشفاف ذو الإضاءة الحمراء اللامعة الخفيفة */
+    .romeo-ai-notif-box {
+        position: fixed;
+        bottom: -100px; /* مخفي في البداية */
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 0, 0, 0.15); /* أحمر شفاف */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 0, 0, 0.3); /* حواف حمراء خفيفة */
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 9999;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.25), inset 0 0 10px rgba(255, 0, 0, 0.1); /* ظل لامع خفيف */
+        transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.6s;
+        pointer-events: none;
+        white-space: nowrap;
+        direction: rtl;
+    }
+    /* عند ظهور الإشعار يرتفع فوق شريط التنقل السفلي */
+    .romeo-ai-notif-box.active-view {
+        bottom: 95px; 
+    }
+
+    /* 2. تحسينات العرض المخصصة للشاشات الكبيرة والكمبيوتر (Desktop Optimization) */
+    @media (min-width: 992px) {
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            background: #040714;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+        header {
+            border-bottom: 1px solid rgba(229, 184, 11, 0.1);
+        }
+        .hero-menu {
+            grid-template-columns: repeat(4, 1fr);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 25px 0;
+        }
+        .main-btn {
+            height: 90px;
+            font-size: 13px;
+        }
+        .main-btn i {
+            font-size: 28px;
+        }
+        .search-area {
+            max-width: 600px;
+            margin: 15px auto 0;
+        }
+        .search-input {
+            font-size: 14px;
+            padding: 14px 25px;
+        }
+        .cards-grid {
+            grid-template-columns: repeat(5, 1fr) !important; /* عرض احترافي وموزع على الكمبيوتر */
+            gap: 20px;
+            padding-bottom: 60px;
+        }
+        .card img {
+            height: 250px; /* حجم بوستر أكبر ومتناسق للكمبيوتر */
+        }
+        .card-info {
+            font-size: 12px;
+            padding: 12px 5px;
+        }
+        /* إخفاء شريط التنقل الخاص بالموبايل على الكمبيوتر لأن الشاشة كبيرة وكل شيء واضح */
+        .bottom-nav {
+            display: none !important;
+        }
+        /* تعديل مكان الإشعار الذكي على الكمبيوتر ليكون متناسقاً في الأسفل */
+        .romeo-ai-notif-box.active-view {
+            bottom: 30px;
+        }
+        /* تحسين مظهر مستعرض الحلقات والمشغل على الكمبيوتر */
+        #episodesView, .player-view {
+            max-width: 1200px;
+            left: 50% !important;
+            transform: translateX(-50%);
+        }
+        .ep-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+    }
+</style>
+
+<script id="romeoAiNotificationAndDesktopLogic">
+    (function() {
+        // دالة ذكية لإظهار الإشعار الاحترافي بالاسم الممرر
+        window.romeoTriggerAiNotif = function(textMessage) {
+            const notifBox = document.getElementById('romeoAiNotification');
+            const notifText = document.getElementById('romeoAiNotifText');
+            if (notifBox && notifText) {
+                notifText.innerHTML = textMessage;
+                notifBox.classList.add('active-view');
+                
+                // يختفي تلقائياً بعد 10 ثوانٍ كاملة كما طلبت
+                setTimeout(() => {
+                    notifBox.classList.remove('active-view');
+                }, 10000);
+            }
+        };
+
+        // فحص مصفوفة البيانات بشكل مستمر حتى تكتمل قراءتها من السيرفر وعرض آخر فيلم مضاف
+        let checkDbInterval = setInterval(() => {
+            if (window.database && window.database.length > 0) {
+                clearInterval(checkDbInterval);
+                
+                // جلب آخر عنصر تمت إضافته للمصفوفة (أحدث فيلم أو مسلسل بآخر الـ JSON أو أوله حسب ترتيبك)
+                // هنا نقوم بأخذ العنصر الأول كافتراضي، وإذا كنت تضيف الأفلام الجديدة في آخر الملف يمكنك استخدام database[database.length - 1]
+                const latestContent = window.database[0]; 
+                
+                if (latestContent && latestContent.name) {
+                    // تأخير إظهار الرسالة 4 ثوانٍ بعد فتح الموقع (حتى يختفي لوجو الترحيب أو يتحمل الموقع بسلاسة)
+                    setTimeout(() => {
+                        window.romeoTriggerAiNotif(`تم إضافة فيلم ${latestContent.name} 📽️`);
+                    }, 4000);
+                }
+            }
+        }, 300);
+    })();
+</script>
+
 </body>
 </html>
