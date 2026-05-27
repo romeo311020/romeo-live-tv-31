@@ -1150,5 +1150,136 @@
     })();
 </script>
 
+<style id="romeoPerfectFinalFix">
+    /* 1. تعديلات الصورة رقم 1 (صفحة المشاهدة والتحميل المسبق): ضبط الأزرار تحت بعض وتوسيط الإغلاق */
+    @media screen and (min-width: 992px) {
+        /* تصفير الـ Grid في عمود اليسار وجعل الأزرار تحت بعض تماماً ومتناسقة وعمودية */
+        #romeoPrePlayer .pre-content {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 30px !important;
+        }
+
+        /* إلغاء الـ Grid عن الأزرار وجعلها تترتب عمودياً بنظام flex متناسق داخل الجانب الأيسر */
+        #romeoPrePlayer .btn-red-play,
+        #romeoPrePlayer #dynamicDlBtn {
+            transform: none !important; /* حذف الإزاحة القديمة لجعلهم تحت بعض مظبوط */
+            margin: 0 auto 15px auto !important; /* توسيط ومسافة سفلية */
+            width: 100% !important;
+            max-width: 380px !important;
+            height: 60px !important;
+            font-size: 18px !important;
+        }
+
+        /* زر الإغلاق والتراجع: وضعه في المنتصف بالعرض بالظبط، وجعله شفاف واحترافي بنظام Glassmorphism */
+        #romeoPrePlayer .romeo-bottom-close {
+            position: absolute !important;
+            bottom: 40px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important; /* التوسيط بالعرض في السنتر تماماً */
+            width: 280px !important;
+            min-width: unset !important;
+            background: rgba(255, 255, 255, 0.04) !important; /* شفافية احترافية */
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+            padding: 14px 0 !important;
+            border-radius: 50px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            transition: all 0.3s ease !important;
+            font-size: 14px !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        #romeoPrePlayer .romeo-bottom-close:hover {
+            background: rgba(255, 0, 0, 0.2) !important; /* تأثير أحمر خفيف عند الهوفر */
+            border-color: rgba(255, 0, 0, 0.4) !important;
+            color: #fff !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3) !important;
+        }
+    }
+
+    /* 2. تعديلات الصورة رقم 2 (الشاشة الترحيبية): تقريب اسم الموقع من اللوجو الكبير وتقليل المسافة البينية */
+    @media screen and (min-width: 992px) {
+        #premium-welcome-wrapper .premium-container {
+            grid-template-columns: 1.1fr 1fr !important;
+            row-gap: 5px !important; /* تقليل الفجوة العمودية بين الصفوف */
+        }
+
+        /* تقريب اسم الموقع تحت اللوجو مباشرة */
+        #premium-welcome-wrapper .brand-logo-main {
+            margin-bottom: 5px !important; /* تقليص المسافة الكبيرة */
+        }
+
+        #premium-welcome-wrapper .brand-title {
+            margin-top: 0 !important; /* إزالة أي مسافة علوية لتقريبه فوراً */
+            font-size: 44px !important;
+        }
+    }
+</style>
+
+<script id="romeoPerfectFinalFixLogic">
+    (function() {
+        // دالة إضافية فائقة لترتيب وحقن حاوية مرنة للأزرار بالجهة اليسرى في الديسكتوب لضمان الترتيب العمودي الصحيح بنسبة 100%
+        function applyFinalVerticalFix() {
+            if (window.innerWidth >= 992) {
+                const playBtn = document.getElementById('prePlayBtn');
+                const dlBtn = document.getElementById('dynamicDlBtn');
+                
+                if (playBtn && dlBtn) {
+                    let parentGrid = playBtn.parentElement;
+                    
+                    // تحضير حاوية مرنة لجمع الزرين عمودياً تحت بعض بدون التأثير على الكود القديم
+                    if (!document.getElementById('romeoButtonsVerticalWrapper')) {
+                        const wrapper = document.createElement('div');
+                        wrapper.id = 'romeoButtonsVerticalWrapper';
+                        wrapper.style.display = 'flex';
+                        wrapper.style.flexDirection = 'column';
+                        wrapper.style.justifyContent = 'center';
+                        wrapper.style.alignItems = 'center';
+                        wrapper.style.width = '100%';
+                        wrapper.style.gridColumn = '1';
+                        wrapper.style.gridRow = '2';
+                        
+                        // نقل الزرين لداخل الحاوية الجديدة لترتيبهم تحت بعض بالملي
+                        playBtn.parentNode.insertBefore(wrapper, playBtn);
+                        wrapper.appendChild(playBtn);
+                        wrapper.appendChild(dlBtn);
+                    }
+                }
+            }
+        }
+
+        // الاستماع الفوري ومراقبة نافذة العرض المسبق لتفعيل الترتيب العمودي بمجرد فتح أي فيلم
+        const finalFixObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (window.innerWidth >= 992 && mutation.attributeName === 'style') {
+                    const display = window.getComputedStyle(mutation.target).display;
+                    if (display === 'flex') {
+                        setTimeout(applyFinalVerticalFix, 50);
+                    }
+                }
+            });
+        });
+
+        const targetPre = document.getElementById('romeoPrePlayer');
+        if (targetPre) {
+            finalFixObserver.observe(targetPre, { attributes: true });
+        }
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 992) {
+                applyFinalVerticalFix();
+            }
+        });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.innerWidth >= 992) {
+                setTimeout(applyFinalVerticalFix, 1000);
+            }
+        });
+    })();
+</script>
+
 </body>
 </html>
