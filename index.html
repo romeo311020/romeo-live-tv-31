@@ -905,143 +905,391 @@
     })();
 </script>
 
-
-<div id="romeoAiNotification" class="romeo-ai-notif-box">
-    <span id="romeoAiNotifText">تم إضافة فيلم عصابة الماكس 2024 📽️</span>
-</div>
-
-<style id="romeoDesktopAndAiStyles">
-    /* 1. تصميم مربع الإشعارات الشفاف ذو الإضاءة الحمراء اللامعة الخفيفة */
-    .romeo-ai-notif-box {
-        position: fixed;
-        bottom: -100px; /* مخفي في البداية */
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255, 0, 0, 0.15); /* أحمر شفاف */
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 0, 0, 0.3); /* حواف حمراء خفيفة */
-        color: #ffffff;
-        padding: 10px 20px;
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: bold;
-        text-align: center;
-        z-index: 9999;
-        box-shadow: 0 0 15px rgba(255, 0, 0, 0.25), inset 0 0 10px rgba(255, 0, 0, 0.1); /* ظل لامع خفيف */
-        transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.6s;
-        pointer-events: none;
-        white-space: nowrap;
-        direction: rtl;
-    }
-    /* عند ظهور الإشعار يرتفع فوق شريط التنقل السفلي */
-    .romeo-ai-notif-box.active-view {
-        bottom: 95px; 
-    }
-
-    /* 2. تحسينات العرض المخصصة للشاشات الكبيرة والكمبيوتر (Desktop Optimization) */
+<style id="desktopEnhancements">
     @media (min-width: 992px) {
+        /* 1. إعدادات عامة وهوامش مرنة للشاشات الكبيرة */
+        :root {
+            --clamp-padding: clamp(20px, 4vw, 80px);
+            --clamp-font-title: clamp(22px, 2.5vw, 36px);
+        }
+
         body {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            background: #040714;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            font-size: 15px;
         }
+
         header {
-            border-bottom: 1px solid rgba(229, 184, 11, 0.1);
+            padding: 20px var(--clamp-padding);
         }
-        .hero-menu {
-            grid-template-columns: repeat(4, 1fr);
+
+        .logo-text {
+            font-size: 2rem;
+        }
+
+        .search-area {
+            padding: 30px var(--clamp-padding) 10px;
             max-width: 800px;
             margin: 0 auto;
-            padding: 25px 0;
         }
+
+        .search-input {
+            padding: 16px 25px;
+            font-size: 15px;
+            border-radius: 16px;
+        }
+
+        .hero-menu {
+            padding: 20px var(--clamp-padding);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .main-btn {
             height: 90px;
+            border-radius: 16px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .main-btn i {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .sub-menu {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px var(--clamp-padding);
+            gap: 15px;
+        }
+
+        .sub-item {
+            padding: 16px;
+            font-size: 13px;
+            border-radius: 12px;
+        }
+
+        .section-title {
+            padding: 40px var(--clamp-padding) 15px;
+            font-size: 22px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            padding: 15px var(--clamp-padding) 140px;
+            gap: 25px;
+            grid-template-columns: repeat(5, 1fr) !important;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1400px) {
+            .cards-grid {
+                grid-template-columns: repeat(6, 1fr) !important;
+            }
+        }
+
+        .card {
+            border-radius: 16px;
+        }
+
+        .card img {
+            height: 280px;
+        }
+
+        .card-info {
+            padding: 15px 10px;
             font-size: 13px;
         }
-        .main-btn i {
-            font-size: 28px;
+
+        /* تأثيرات تحويم وحركة متقدمة وحرة لمؤشر الماوس (Hover Effects) */
+        .card:hover {
+            transform: scale(1.08) translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7), 0 0 20px rgba(229, 184, 11, 0.3);
         }
-        .search-area {
-            max-width: 600px;
-            margin: 15px auto 0;
+
+        .main-btn:hover {
+            transform: translateY(-5px);
+            background: rgba(229, 184, 11, 0.15);
+            box-shadow: 0 0 20px rgba(229, 184, 11, 0.2);
         }
-        .search-input {
-            font-size: 14px;
-            padding: 14px 25px;
+
+        .sub-item:hover {
+            transform: scale(1.02);
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--accent-glow);
         }
-        .cards-grid {
-            grid-template-columns: repeat(5, 1fr) !important; /* عرض احترافي وموزع على الكمبيوتر */
-            gap: 20px;
-            padding-bottom: 60px;
+
+        .ep-item:hover {
+            transform: scale(1.03) !important;
+            box-shadow: 0 0 25px var(--accent-glow);
         }
-        .card img {
-            height: 250px; /* حجم بوستر أكبر ومتناسق للكمبيوتر */
-        }
-        .card-info {
-            font-size: 12px;
-            padding: 12px 5px;
-        }
-        /* إخفاء شريط التنقل الخاص بالموبايل على الكمبيوتر لأن الشاشة كبيرة وكل شيء واضح */
-        .bottom-nav {
-            display: none !important;
-        }
-        /* تعديل مكان الإشعار الذكي على الكمبيوتر ليكون متناسقاً في الأسفل */
-        .romeo-ai-notif-box.active-view {
-            bottom: 30px;
-        }
-        /* تحسين مظهر مستعرض الحلقات والمشغل على الكمبيوتر */
-        #episodesView, .player-view {
-            max-width: 1200px;
-            left: 50% !important;
-            transform: translateX(-50%);
-        }
-        .ep-grid {
-            grid-template-columns: repeat(4, 1fr) !important;
+
+        /* 2. تحسين وتنسيق الصفحة الترحيبية على الكمبيوتر (Netflix Style) */
+        #premium-welcome-wrapper .premium-container {
             max-width: 1000px;
-            margin: 20px auto;
+            width: 90%;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 50px;
+            text-align: right;
+            background: rgba(15, 20, 35, 0.4);
+            padding: 50px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #premium-welcome-wrapper .brand-logo-main {
+            width: 180px;
+            margin: 0 0 20px auto;
+            display: block;
+        }
+
+        #premium-welcome-wrapper .brand-title {
+            font-size: 42px;
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        #premium-welcome-wrapper p {
+            text-align: right;
+            margin-top: 15px !important;
+            font-size: 14px;
+        }
+
+        #premium-welcome-wrapper .neon-button-grid {
+            gap: 20px;
+        }
+
+        #premium-welcome-wrapper .neon-btn {
+            padding: 18px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            justify-content: space-between;
+        }
+
+        #premium-welcome-wrapper .neon-btn:hover {
+            transform: scale(1.04) translateX(-5px);
+            box-shadow: 0 10px 30px rgba(229, 184, 11, 0.3);
+        }
+
+        #premium-welcome-wrapper .btn-channels:hover {
+            border-color: #0073ff;
+            box-shadow: 0 10px 30px rgba(0, 115, 255, 0.3);
+        }
+
+        #premium-welcome-wrapper .btn-matches:hover {
+            border-color: #00ff88;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        /* 3. تحسين صفحة المشغل بالكامل (Player View - Desktop Side Layout) */
+        #playerView {
+            display: none; /* يتم التحكم بالـ flex عبر الكود الأصلي */
+            flex-direction: row !important;
+            align-items: stretch !important;
+            padding: 40px clamp(20px, 3vw, 60px) !important;
+            gap: 40px;
+            overflow-y: auto;
+        }
+
+        /* الحاوية اليسرى: الفيديو والسيرفرات والتحكم */
+        #videoContainerWrapper {
+            flex: 1.3 !important;
+            margin-top: 0 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch !important;
+        }
+
+        #videoContainerWrapper .video-wrapper {
+            width: 100% !important;
+            max-width: none !important;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #videoContainerWrapper .video-extra-controls {
+            margin: 25px 0 0 0;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+
+        #videoContainerWrapper .v-control-btn {
+            padding: 12px 25px;
+            font-size: 14px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        /* الحاوية اليمنى: تفاصيل الفيديو، الحلقات والاقتراحات */
+        #playerView .player-details {
+            flex: 0.7 !important;
+            width: auto !important;
+            max-width: none !important;
+            margin-top: 0 !important;
+            background: rgba(26, 29, 41, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            overflow-y: auto;
+            max-height: calc(100vh - 80px);
+        }
+
+        #playerView .player-title {
+            font-size: var(--clamp-font-title);
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 15px;
+        }
+
+        #playerView .romeo-server-container {
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            overflow-x: visible;
+        }
+
+        #playerView .romeo-server-btn {
+            padding: 10px 22px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        #playerView .romeo-suggest-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 15px;
+        }
+
+        #playerView .suggest-card img {
+            height: 110px;
+        }
+
+        #playerView .suggest-card div {
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        #playerView .romeo-exclusive-banner {
+            width: 100% !important;
+            max-width: none !important;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        #playerView .romeo-bottom-close {
+            margin-top: 40px;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 14px;
+        }
+
+        /* تعديل زر الخروج العلوي للمشغل على الـ Desktop */
+        #playerView .back-nav-btn {
+            display: block !important;
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            z-index: 2200;
+        }
+
+        /* 4. تحسين نافذة عرض الحلقات المنفصلة (Episodes View) */
+        #episodesView {
+            padding: 40px var(--clamp-padding) !important;
+        }
+
+        #episodesView #seriesHeader {
+            margin-top: 50px !important;
+            font-size: 32px;
+            font-weight: 900;
+        }
+
+        #episodesView .ep-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 20px;
+            max-width: 1300px;
+            margin: 30px auto 0;
+        }
+
+        /* 5. تعديل شاشة ما قبل التشغيل (Pre-Player Modal) */
+        #romeoPrePlayer .pre-content {
+            max-width: 500px;
+            background: rgba(26, 29, 41, 0.9);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        #romeoPrePlayer .romeo-pre-poster {
+            width: 180px;
+            height: 250px;
+        }
+
+        /* شريط التنقل السفلي - إخفاء أو تثبيت متناسق */
+        .bottom-nav {
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+            width: 500px;
+            bottom: 25px;
+            height: 70px;
+            border-radius: 25px;
         }
     }
 </style>
 
-<script id="romeoAiNotificationAndDesktopLogic">
+<script id="desktopEnhancementsLogic">
     (function() {
-        // دالة ذكية لإظهار الإشعار الاحترافي بالاسم الممرر
-        window.romeoTriggerAiNotif = function(textMessage) {
-            const notifBox = document.getElementById('romeoAiNotification');
-            const notifText = document.getElementById('romeoAiNotifText');
-            if (notifBox && notifText) {
-                notifText.innerHTML = textMessage;
-                notifBox.classList.add('active-view');
-                
-                // يختفي تلقائياً بعد 10 ثوانٍ كاملة كما طلبت
-                setTimeout(() => {
-                    notifBox.classList.remove('active-view');
-                }, 10000);
-            }
-        };
+        // مستمع أحداث ذكي ومحسن للتحكم في تهيئة وإعادة ترتيب الواجهة بسلاسة عند تغيير حجم الشاشة
+        function handleDesktopUIAdjustments() {
+            const width = window.innerWidth;
+            const playerView = document.getElementById('playerView');
+            const videoWrapper = document.getElementById('videoContainerWrapper');
+            const playerDetails = document.querySelector('#playerView .player-details');
+            const exclusiveBanner = document.getElementById('romeoExclusiveBanner');
 
-        // فحص مصفوفة البيانات بشكل مستمر حتى تكتمل قراءتها من السيرفر وعرض آخر فيلم مضاف
-        let checkDbInterval = setInterval(() => {
-            if (window.database && window.database.length > 0) {
-                clearInterval(checkDbInterval);
-                
-                // جلب آخر عنصر تمت إضافته للمصفوفة (أحدث فيلم أو مسلسل بآخر الـ JSON أو أوله حسب ترتيبك)
-                // هنا نقوم بأخذ العنصر الأول كافتراضي، وإذا كنت تضيف الأفلام الجديدة في آخر الملف يمكنك استخدام database[database.length - 1]
-                const latestContent = window.database[0]; 
-                
-                if (latestContent && latestContent.name) {
-                    // تأخير إظهار الرسالة 4 ثوانٍ بعد فتح الموقع (حتى يختفي لوجو الترحيب أو يتحمل الموقع بسلاسة)
-                    setTimeout(() => {
-                        window.romeoTriggerAiNotif(`تم إضافة فيلم ${latestContent.name} 📽️`);
-                    }, 4000);
+            if (width >= 992) {
+                // في حالة الشاشات الكبيرة: نقل البانر الحصري ليكون أعلى تفاصيل الفيديو في اليمين بدلاً من أعلى المشغل
+                if (playerView && videoWrapper && playerDetails && exclusiveBanner) {
+                    if (exclusiveBanner.parentElement === videoWrapper) {
+                        playerDetails.insertBefore(exclusiveBanner, playerDetails.firstChild);
+                    }
+                }
+            } else {
+                // إعادة الوضع التلقائي للموبايل عند تصغير الشاشة
+                if (playerView && videoWrapper && exclusiveBanner) {
+                    if (exclusiveBanner.parentElement === playerDetails) {
+                        videoWrapper.insertBefore(exclusiveBanner, videoWrapper.firstChild);
+                    }
                 }
             }
-        }, 300);
+        }
+
+        // تشغيل التهيئة فور تحميل الصفحة وعند تغيير الأبعاد
+        window.addEventListener('resize', handleDesktopUIAdjustments);
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(handleDesktopUIAdjustments, 1000);
+        });
+
+        // ربط منطق التحويل بمراقب التغييرات لضمان العمل الفوري أثناء تشغيل الأفلام
+        const desktopObserver = new MutationObserver(() => {
+            handleDesktopUIAdjustments();
+        });
+
+        const playerTarget = document.getElementById('playerView');
+        if (playerTarget) {
+            desktopObserver.observe(playerTarget, { attributes: true, attributeFilter: ['style'] });
+        }
     })();
 </script>
-
 </body>
 </html>
