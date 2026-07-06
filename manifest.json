@@ -1,7 +1,7 @@
 {
-  "name": "ROMEO LIVE TV",
-  "short_name": "ROMEO TV",
-  "description": "المنصة الأقوى لمشاهدة الأفلام والمسلسلات والمباريات بث مباشر",
+  "name": "LIVE MATCH",
+  "short_name": "LIVE MATCH",
+  "description": "المنصة الأقوى لمشاهدة القنوات و المباريات بث مباشر",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0a0f1d",
@@ -9,13 +9,13 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "https://i.postimg.cc/j2jhVwbL/IMG-20260401-054744.jpg",
+      "src": "https://i.postimg.cc/XqRZSY1q/file-000000005be471f4bce25565fa31730c.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "https://i.postimg.cc/j2jhVwbL/IMG-20260401-054744.jpg",
+      "src": "https://i.postimg.cc/XqRZSY1q/file-000000005be471f4bce25565fa31730c.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
