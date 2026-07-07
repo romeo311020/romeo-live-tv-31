@@ -707,5 +707,201 @@
         document.getElementById('stream-preview-box').innerHTML = "يرجى تعبئة رابط بث لمعاينته هنا فوراً...";
     }
 </script>
+<style>
+    /* 1️⃣ نظام الألوان الفخم الجديد والظل المتوهج اللامع (Neon Admin UI) */
+    :root { 
+        --gold: #00ff87 !important; /* تحويل الذهبي القديم إلى الأخضر النيوني الرياضي المضيء */
+        --gold-hover: #00cc6a !important;
+        --bg: #050814 !important; 
+        --card: rgba(15, 23, 42, 0.6) !important; 
+        --card-border: rgba(255, 255, 255, 0.08) !important;
+        --input-bg: rgba(30, 41, 59, 0.4) !important;
+        --neon-glow: 0 0 25px rgba(0, 255, 135, 0.35); /* ظل لامع متوهج */
+    }
+
+    body { 
+        background: var(--bg) !important; 
+        background-image: radial-gradient(circle at 50% 0%, rgba(0, 255, 135, 0.04), transparent 50%) !important;
+    }
+
+    /* تطبيق التأثير اللامع على كروت المباريات والقنوات */
+    .glass-card, .item-card, header {
+        border-radius: 16px !important;
+        background: var(--card) !important;
+        border: 1px solid var(--card-border) !important;
+        transition: all 0.3s ease;
+    }
+    .item-card:hover {
+        border-color: var(--gold) !important;
+        box-shadow: var(--neon-glow) !important;
+    }
+
+    /* الأزرار المضيئة */
+    .btn-primary, button[type="submit"], #submitBtn {
+        background: var(--gold) !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 12px rgba(0, 255, 135, 0.2);
+        transition: all 0.3s;
+    }
+    .btn-primary:hover, button[type="submit"]:hover, #submitBtn:hover {
+        box-shadow: var(--neon-glow) !important;
+        transform: translateY(-2px);
+    }
+
+    /* حياكة مخصصة لصندوق التشكيلة المطور */
+    .lineup-textarea-container {
+        grid-column: span 2;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 10px;
+    }
+    .lineup-textarea-container label {
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+    .lineup-hint {
+        background: rgba(0, 255, 135, 0.05);
+        border: 1px solid rgba(0, 255, 135, 0.15);
+        color: #a7f3d0;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+</style>
+
+<script>
+    // 2️⃣ حقن حقل نص "التشكيلة" ديناميكياً داخل فورم المباريات عند تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", () => {
+        // البحث عن مكان نموذج حقول المباراة لإضافة حقل التشكيلة بداخله
+        const mUrlInput = document.getElementById("m-url") || document.querySelector("input[placeholder*='رابط بث']");
+        if (mUrlInput && !document.getElementById("m-lineup")) {
+            const formGroupContainer = mUrlInput.closest(".form-group") || mUrlInput.parentElement;
+            
+            // إنشاء بنية حقل التشكيلة الجديد
+            const lineupWrapper = document.createElement("div");
+            lineupWrapper.className = "lineup-textarea-container";
+            lineupWrapper.innerHTML = `
+                <label><i class="fa-solid fa-users-rectangle"></i> تشكيلة المباراة (افصل بين اللاعبين بفاصلة ,)</label>
+                <div class="lineup-hint">💡 اكتب أسماء اللاعبين بترتيب المراكز (بدءاً من حارس المرمى ثم الدفاع ثم الوسط ثم الهجوم) ليتم توزيعهم على شكل ملعب ثلاثي الأبعاد في الموقع الرئيسي تلقائياً.</div>
+                <textarea id="m-lineup" rows="3" style="background:var(--input-bg); border:1px solid var(--card-border); padding:12px; border-radius:10px; color:#fff; font-size:0.95rem; outline:none; resize:vertical; width:100%;" placeholder="مثال: الشناوي, حجازي, عبدالمنعم, هاني, حمدي, فتحي, عاشور, زيزو, صلاح, مرموش, مصطفى"></textarea>
+            `;
+            
+            // حقن الحقل بعد حقل رابط البث مباشرة
+            formGroupContainer.insertAdjacentElement('afterend', lineupWrapper);
+        }
+    });
+
+    // 3️⃣ تعديل دوال لوحة التحكم (الحفظ والتعديل) لتدعم قراءة وحفظ التشكيلة تلقائياً
+    // تعديل دالة الارسال والجمع
+    const oldHandleFormSubmit = window.handleFormSubmit;
+    window.handleFormSubmit = function() {
+        const typeInput = document.getElementById('form-type') || { value: 'match' };
+        
+        // إذا كان العنصر الحالي المحفوظ هو مباراة، نقوم بالتقاط نص التشكيلة المكتوب
+        if (typeInput.value === 'match' || document.getElementById('m-lineup')) {
+            const lineupValue = document.getElementById('m-lineup') ? document.getElementById('m-lineup').value : '';
+            
+            // ربط القيمة ببيانات المصفوفة قبل حفظها النهائي
+            const activeId = document.getElementById('edit-id') ? document.getElementById('edit-id').value : '';
+            if (activeId && window.database && window.database.matches) {
+                const matchObj = window.database.matches.find(m => String(m.id) === String(activeId));
+                if (matchObj) matchObj.lineup = lineupValue;
+            } else if (!activeId && window.database && window.database.matches) {
+                // في حالة الإضافة الجديدة، ننتظر الدالة الأصلية لتضيفه ثم نلحق التشكيلة بآخر عنصر تم إنشاؤه
+                setTimeout(() => {
+                    if(window.database.matches.length > 0) {
+                        window.database.matches[window.database.matches.length - 1].lineup = lineupValue;
+                    }
+                }, 10);
+            }
+        }
+        
+        if (typeof oldHandleFormSubmit === "function") oldHandleFormSubmit();
+    };
+
+    // تعديل دالة التعديل (لتعبئة حقل التشكيلة عند الضغط على زر القلم لتعديل مباراة قديمة)
+    const oldEditItem = window.editItem;
+    window.editItem = function(type, id) {
+        if (typeof oldEditItem === "function") oldEditItem(type, id);
+        
+        if (type === 'match' && window.database && window.database.matches) {
+            const item = window.database.matches.find(m => String(m.id) === String(id));
+            if (item && document.getElementById('m-lineup')) {
+                document.getElementById('m-lineup').value = item.lineup || '';
+            }
+        }
+    };
+</script>
+<style>
+    /* 1️⃣ تحديث الألوان للنيون والظل اللامع الفخم */
+    :root { 
+        --neon-green: #00ff87 !important; 
+        --neon-green-hover: #00cc6a !important;
+        --bg: #050814 !important; 
+        --card: rgba(15, 23, 42, 0.6) !important; 
+        --card-border: rgba(255, 255, 255, 0.08) !important;
+        --neon-glow: 0 0 20px rgba(0, 255, 135, 0.35);
+    }
+
+    body { background: var(--bg) !important; }
+
+    /* تطبيق الظل المتوهج على الكروت والأزرار النشطة */
+    .glass-card, .item-card, header {
+        border-radius: 16px !important;
+        background: var(--card) !important;
+        border: 1px solid var(--card-border) !important;
+        transition: all 0.3s ease;
+    }
+    .item-card:hover {
+        border-color: var(--neon-green) !important;
+        box-shadow: var(--neon-glow) !important;
+    }
+
+    /* أزرار مضيئة */
+    .btn-primary, #submitBtn {
+        background: var(--neon-green) !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+        border: none !important;
+        transition: all 0.3s;
+    }
+    .btn-primary:hover, #submitBtn:hover {
+        box-shadow: var(--neon-glow) !important;
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+    // 2️⃣ حقن خيار "لم تبدأ ⏰" تلقائياً في قائمة الحالات داخل الفورم
+    document.addEventListener("DOMContentLoaded", () => {
+        const statusSelect = document.getElementById("m-status") || document.querySelector("select");
+        if (statusSelect && !statusSelect.innerHTML.includes("not_started")) {
+            // إضافة الخيار الجديد للقائمة
+            const newOption = document.createElement("option");
+            newOption.value = "not_started";
+            newOption.text = "لم تبدأ بعد ⏰";
+            statusSelect.appendChild(newOption);
+        }
+    });
+
+    // 3️⃣ تحسين معالجة البيانات لدعم الحالة الجديدة "not_started" عند الحفظ والرفع
+    const originalHandleFormSubmit = window.handleFormSubmit;
+    if (typeof originalHandleFormSubmit === "function") {
+        window.handleFormSubmit = function() {
+            // التأكد من جلب القيمة الصحيحة لحالة المباراة قبل الحفظ
+            const statusInput = document.getElementById("m-status");
+            if (statusInput && statusInput.value === "today") {
+                statusInput.value = "not_started"; // توحيد المسمى مع الموقع الرئيسي ليعمل الفلتر بدقة
+            }
+            originalHandleFormSubmit();
+        };
+    }
+</script>
 </body>
 </html>

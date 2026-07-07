@@ -1537,5 +1537,166 @@
         border: 1px solid rgba(255,255,255,0.1);
     }
 </style>
+<style>
+    /* 1️⃣ نظام الألوان الجديد والظل المتوهج اللامع (Neon Glow UX) */
+    :root {
+        --bg-black: #050814 !important;
+        --card-bg: rgba(15, 23, 42, 0.6) !important;
+        --neon-green: #00ff87 !important;
+        --neon-glow: 0 0 25px rgba(0, 255, 135, 0.45); /* ظل لامع متوهج */
+    }
+
+    body { background-color: var(--bg-black) !important; }
+    
+    /* جعل الكروت والمشغل بظل لامع فخم */
+    .glass-card, .match-card {
+        border-radius: 16px !important;
+        transition: all 0.3s ease;
+    }
+    .glass-card:hover, .match-card:hover {
+        border-color: var(--neon-green) !important;
+        box-shadow: var(--neon-glow) !important;
+    }
+
+    /* 2️⃣ تصميم شريط الأزرار الاحترافي ليكون (فوق المشغل والتشكيلة) */
+    .premium-control-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 8px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.06);
+        flex-wrap: wrap;
+    }
+
+    .p-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255,255,255,0.06);
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    .p-btn:hover, .p-btn.active {
+        background: var(--neon-green);
+        color: #000;
+        font-weight: 700;
+        box-shadow: var(--neon-glow);
+        border-color: var(--neon-green);
+    }
+    .p-btn-back { background: #ff4757 !important; color: #fff !important; margin-right: auto; border: none; }
+    
+    /* تصميم ملعب التشكيلة المرئي المطور */
+    .visual-pitch {
+        background: linear-gradient(135px, #113825, #1b5337);
+        background-image: radial-gradient(circle at 50% 50%, transparent 60px, rgba(255,255,255,0.15) 61px, transparent 62px), linear-gradient(to bottom, transparent 49%, rgba(255,255,255,0.15) 50%, transparent 51%);
+        position: relative; width: 100%; height: 360px; border: 2px solid rgba(255,255,255,0.2); border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.5); margin-bottom: 20px;
+    }
+    .v-lineup { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 10px; }
+    .v-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+    .v-player { display: flex; flex-direction: column; align-items: center; }
+    .v-shirt { width: 30px; height: 30px; background: #e11d48; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem; border: 2px solid #fff; }
+    .v-name { background: rgba(0, 0, 0, 0.8); color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-top: 4px; white-space: nowrap; }
+
+    /* حماية ومظهر المشغل */
+    .premium-iframe-holder { width: 100%; border-radius: 16px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.1); box-shadow: var(--neon-glow); margin-bottom: 20px; }
+    .premium-iframe-holder iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
+</style>
+
+<script>
+    // 3️⃣ تدمير وحذف روابط الفوتر القديمة فوراً من الصفحة عند تحميلها
+    document.addEventListener("DOMContentLoaded", () => {
+        const keywords = ["سياسة الخصوصية", "Privacy Policy", "شروط الخدمة", "DMCA", "حقوق الملكية"];
+        document.querySelectorAll("footer, div, p, a").forEach(el => {
+            keywords.forEach(word => { el.innerText && el.innerText.includes(word) && el.remove(); });
+        });
+        
+        // إضافة الفوتر النظيف والمطور بدلاً من المحذوف
+        const f = document.createElement("footer");
+        f.innerHTML = `<p style="text-align:center; padding:20px; color:#64748b; font-size:0.85rem;">&copy; 2026 LIVE MATCH. جميع الحقوق محفوظة.</p>`;
+        document.body.appendChild(f);
+        
+        // إضافة قسم خيار التصفية "لم تبدأ" في التبويبات العلوية تلقائياً
+        const tabsContainer = document.querySelector(".nav-tabs") || document.querySelector(".categories-flex");
+        if(tabsContainer && !tabsContainer.innerHTML.includes("not_started")) {
+            tabsContainer.insertAdjacentHTML('beforeend', `<button class="tab-btn" onclick="filterCategory('not_started')">لم تبدأ ⏰</button>`);
+        }
+    });
+
+    // 4️⃣ إعادة بناء دالة تشغيل البث والمشغل بالكامل لوضع الأزرار في الأعلى وتفعيل التنقل والتشكيلة
+    window.bootLivePlayer = function(matchId) {
+        const match = localDatabase.matches.find(m => String(m.id) === String(matchId));
+        if(!match) return;
+
+        // إخفاء الأقسام والصفحة الرئيسية
+        const homeView = document.getElementById("home-screen") || document.querySelector(".main-content") || document.querySelector(".matches-grid").parentElement;
+        homeView.style.display = "none";
+
+        // التحقق من وجود حاوية عرض المشغل أو إنشائها فوراً فوق أي عنصر قديم
+        let playerScreen = document.getElementById("custom-player-screen");
+        if(!playerScreen) {
+            playerScreen = document.createElement("div");
+            playerScreen.id = "custom-player-screen";
+            homeView.parentElement.appendChild(playerScreen);
+        }
+        playerScreen.style.display = "block";
+
+        // بناء الواجهة الاحترافية: الأزرار في الأعلى -> ثم المشغل والتشكيلة
+        playerScreen.innerHTML = `
+            <div class="premium-control-bar">
+                <button id="p-btn-stream" class="p-btn active" onclick="togglePlayerTabs('stream')"><i class="fa-solid fa-play"></i> المشغل المباشر</button>
+                <button id="p-btn-pitch" class="p-btn" onclick="togglePlayerTabs('pitch')"><i class="fa-solid fa-users-viewfinder"></i> تشكيلة المباراة</button>
+                <button class="p-btn p-btn-back" onclick="exitCustomPlayer()"><i class="fa-solid fa-arrow-left"></i> رجوع للمباريات</button>
+            </div>
+
+            <div id="holder-stream" class="premium-iframe-holder">
+                <iframe src="${match.url || 'https://p1.paanda-hd.com/albaplayer/extra-1/'}" allowfullscreen="true" scrolling="no" allow="autoplay; encrypted-media"></iframe>
+            </div>
+
+            <div id="holder-pitch" class="visual-pitch" style="display:none;">
+                <div class="v-lineup" id="dynamic-pitch-container"></div>
+            </div>
+        `;
+
+        // بناء وتوزيع أسماء اللاعبين في خطوط عرض الملعب
+        const pitchTarget = document.getElementById("dynamic-pitch-container");
+        if(!match.lineup) {
+            pitchTarget.innerHTML = `<p style="text-align:center; color:#94a3b8; padding-top:150px; font-size:0.9rem;">التشكيلة الرسمية للمباراة لم تصدر بعد ⏰</p>`;
+        } else {
+            const arr = match.lineup.split(',').map(p => p.trim());
+            let html = `<div class="v-row"><div class="v-player"><div class="v-shirt">1</div><div class="v-name">${arr[0] || 'الشناوي'}</div></div></div>`; // حارس
+            if(arr[1]) html += `<div class="v-row">` + arr.slice(1,5).map((p,i)=>`<div class="v-player"><div class="v-shirt">${i+2}</div><div class="v-name">${p}</div></div>`).join('') + `</div>`; // دفاع
+            if(arr[5]) html += `<div class="v-row">` + arr.slice(5,8).map((p,i)=>`<div class="v-player"><div class="v-shirt">${i+6}</div><div class="v-name">${p}</div></div>`).join('') + `</div>`; // وسط
+            if(arr[8]) html += `<div class="v-row">` + arr.slice(8,11).map((p,i)=>`<div class="v-player"><div class="v-shirt">${i+9}</div><div class="v-name">${p}</div></div>`).join('') + `</div>`; // هجوم
+            pitchTarget.innerHTML = html;
+        }
+    };
+
+    // دالة التبديل والتنقل بين المشغل وتشكيلة الملعب
+    window.togglePlayerTabs = function(target) {
+        document.getElementById("holder-stream").style.display = target === 'stream' ? 'block' : 'none';
+        document.getElementById("holder-pitch").style.display = target === 'pitch' ? 'block' : 'none';
+        
+        document.getElementById("p-btn-stream").classList.toggle("active", target === 'stream');
+        document.getElementById("p-btn-pitch").classList.toggle("active", target === 'pitch');
+    };
+
+    // دالة الخروج وإيقاف البث والعودة للرئيسية
+    window.exitCustomPlayer = function() {
+        document.getElementById("custom-player-screen").style.display = "none";
+        document.getElementById("holder-stream").querySelector("iframe").src = ""; // كتم وإيقاف تشغيل الفيديو فوراً
+        
+        const homeView = document.getElementById("home-screen") || document.querySelector(".main-content") || document.querySelector(".matches-grid").parentElement;
+        homeView.style.display = "block";
+    };
+</script>
 </body>
 </html>
