@@ -1,61 +1,53 @@
 {
-    "notification": {
-        "title": "شاهد أقوى مباريات الأسبوع بجودة فائقة بدون تقطيع على منصتنا!",
-        "image": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1000",
-        "link": "https://google.com"
+  "matches": [
+    {
+      "id": "match_1710000000000",
+      "team1Name": "ريال مدريد",
+      "team2Name": "برشلونة",
+      "team1Logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+      "team2Logo": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona.svg",
+      "tournament": "الدوري الإسباني - الجولة 32",
+      "url": "https://example.com/live/stream1",
+      "commentator": "عصام الشوالي",
+      "stadium": "سانتياجو برنابيو",
+      "time": "09:00 PM",
+      "status": "live"
     },
-    "matches": [
-        {
-            "id": "match_sample_1",
-            "team1Name": "مصر",
-            "team2Name": "إسبانيا",
-            "team1Logo": "https://cdn-icons-png.flaticon.com/512/323/323306.png",
-            "team2Logo": "https://cdn-icons-png.flaticon.com/512/323/323319.png",
-            "tournament": "نهائي أولمبياد 2026",
-            "stadium": "ستاد القاهرة الدولي",
-            "referee": "حكم دولي نُخبة",
-            "commentator": "خليل البلوشي",
-            "quality": "4K ULTRA HD",
-            "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-            "status": "live",
-            "time": "",
-            "team1Lineup": [
-                "محمد الشناوي - حارس مرمى",
-                "محمد عبد المنعم - مدافع",
-                "أحمد حجازي - مدافع",
-                "أحمد فتوح - ظهير أيسر",
-                "محمد هاني - ظهير أيمن",
-                "مروان عطية - خط وسط",
-                "إمام عاشور - خط وسط",
-                "أحمد سيد زيزو - جناح",
-                "محمود تريزيجيه - جناح",
-                "مصطفى محمد - مهاجم",
-                "محمد صلاح - مهاجم"
-            ],
-            "team2Lineup": [
-                "أوناي سيمون - حارس مرمى",
-                "إيميريك لابورت - مدافع",
-                "روبين لو نورماند - مدافع",
-                "مارك كوكوريلا - ظهير أيسر",
-                "داني كرفاخال - ظهير أيمن",
-                "رودري - خط وسط",
-                "فابيان رويز - خط وسط",
-                "داني أولمو - صانع ألعاب",
-                "نيكو ويليامز - جناح",
-                "لامين يامال - جناح",
-                "ألفارو موراتا - مهاجم"
-            ]
-        }
-    ],
-    "channels": [
-        {
-            "id": "channel_sample_1",
-            "name": "beIN SPORTS Premium 1",
-            "logo": "https://cdn-icons-png.flaticon.com/512/725/725298.png",
-            "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-            "type": "HLS",
-            "quality": "1080p",
-            "status": "نشطة"
-        }
-    ]
+    {
+      "id": "match_1710000000001",
+      "team1Name": "مانشستر سيتي",
+      "team2Name": "ليفربول",
+      "team1Logo": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+      "team2Logo": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg",
+      "tournament": "الدوري الإنجليزي الممتاز",
+      "url": "https://example.com/live/stream2",
+      "commentator": "حفيظ دراجي",
+      "stadium": "الاتحاد",
+      "time": "07:30 PM",
+      "status": "ended"
+    }
+  ],
+  "channels": [
+    {
+      "id": "channel_1710000000002",
+      "name": "beIN SPORTS 1 HD",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1a/BeIN_Sports_logo.svg",
+      "url": "https://example.com/hls/bein1/index.m3u8",
+      "type": "HLS",
+      "quality": "Auto"
+    },
+    {
+      "id": "channel_1710000000003",
+      "name": "SSC SPORTS 1 HD",
+      "logo": "https://example.com/logos/ssc1.png",
+      "url": "https://example.com/iframe/ssc1",
+      "type": "IFRAME",
+      "quality": "1080p"
+    }
+  ],
+  "notification": {
+    "title": "🔥 شاهد الآن البث المباشر لأقوى مباريات اليوم بجودة عالية وبدون تقطيع!",
+    "image": "https://example.com/banners/live-banner.jpg",
+    "link": "https://example.com/special-offer"
+  }
 }
