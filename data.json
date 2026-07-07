@@ -27,16 +27,7 @@
       "status": "ended"
     }
   ],
-  "channels": [
-    {
-      "id": "channel_1710000000003",
-      "name": "SSC SPORTS 1 HD",
-      "logo": "https://example.com/logos/ssc1.png",
-      "url": "https://example.com/iframe/ssc1",
-      "type": "IFRAME",
-      "quality": "1080p"
-    }
-  ],
+  "channels": [],
   "notification": {
     "title": "🔥 شاهد الآن البث المباشر لأقوى مباريات اليوم بجودة عالية وبدون تقطيع!",
     "image": "https://example.com/banners/live-banner.jpg",
