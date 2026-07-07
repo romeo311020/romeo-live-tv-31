@@ -29,14 +29,6 @@
   ],
   "channels": [
     {
-      "id": "channel_1710000000002",
-      "name": "beIN SPORTS 1 HD",
-      "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1a/BeIN_Sports_logo.svg",
-      "url": "https://example.com/hls/bein1/index.m3u8",
-      "type": "HLS",
-      "quality": "Auto"
-    },
-    {
       "id": "channel_1710000000003",
       "name": "SSC SPORTS 1 HD",
       "logo": "https://example.com/logos/ssc1.png",
