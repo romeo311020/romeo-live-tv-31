@@ -14,7 +14,16 @@
       "status": "not_started"
     }
   ],
-  "channels": [],
+  "channels": [
+    {
+      "id": "channel_1783467070019",
+      "name": "ON SPORTS",
+      "logo": "https://i.postimg.cc/NfjBgwq1/images.png",
+      "url": "<iframe width=\"560\" height=\"315\" src=\"https://www.elahmad.to/tv/mobiletv/glarb.php?id=on_time_sports1\" style=\"border:none;\" allowfullscreen allow=\"autoplay; fullscreen; picture-in-picture; xr-spatial-tracking; encrypted-media\"></iframe>",
+      "type": "IFRAME",
+      "quality": "Auto"
+    }
+  ],
   "notification": {
     "title": "🔥 شاهد الآن البث المباشر لأقوى مباريات اليوم بجودة عالية وبدون تقطيع!",
     "image": "https://i.postimg.cc/Kj3KYxFj/file-0000000073687246b8c112219bcdd25a.png",
