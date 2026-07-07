@@ -1,19 +1,5 @@
 {
-  "matches": [
-    {
-      "id": "match_1710000000001",
-      "team1Name": "مانشستر سيتي",
-      "team2Name": "ليفربول",
-      "team1Logo": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
-      "team2Logo": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg",
-      "tournament": "الدوري الإنجليزي الممتاز",
-      "url": "https://example.com/live/stream2",
-      "commentator": "حفيظ دراجي",
-      "stadium": "الاتحاد",
-      "time": "07:30 PM",
-      "status": "ended"
-    }
-  ],
+  "matches": [],
   "channels": [],
   "notification": {
     "title": "🔥 شاهد الآن البث المباشر لأقوى مباريات اليوم بجودة عالية وبدون تقطيع!",
