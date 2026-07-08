@@ -1087,5 +1087,254 @@
         }
     };
 </script>
+<style>
+    /* 1️⃣ تحديث الألوان للنيون والظل اللامع الفخم */
+    :root { 
+        --neon-green: #00ff87 !important; 
+        --neon-green-hover: #00cc6a !important;
+        --bg: #050814 !important; 
+        --card: rgba(15, 23, 42, 0.6) !important; 
+        --card-border: rgba(255, 255, 255, 0.08) !important;
+        --neon-glow: 0 0 20px rgba(0, 255, 135, 0.35);
+    }
+
+    body { background: var(--bg) !important; }
+
+    /* تطبيق الظل المتوهج على الكروت والأزرار النشطة */
+    .glass-card, .item-card, header {
+        border-radius: 16px !important;
+        background: var(--card) !important;
+        border: 1px solid var(--card-border) !important;
+        transition: all 0.3s ease;
+    }
+    .item-card:hover {
+        border-color: var(--neon-green) !important;
+        box-shadow: var(--neon-glow) !important;
+    }
+
+    /* أزرار مضيئة */
+    .btn-primary, #submitBtn {
+        background: var(--neon-green) !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+        border: none !important;
+        transition: all 0.3s;
+    }
+    .btn-primary:hover, #submitBtn:hover {
+        box-shadow: var(--neon-glow) !important;
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+    // 2️⃣ حقن خيار "لم تبدأ ⏰" تلقائياً في قائمة الحالات داخل الفورم
+    document.addEventListener("DOMContentLoaded", () => {
+        const statusSelect = document.getElementById("m-status") || document.querySelector("select");
+        if (statusSelect && !statusSelect.innerHTML.includes("not_started")) {
+            // إضافة الخيار الجديد للقائمة
+            const newOption = document.createElement("option");
+            newOption.value = "not_started";
+            newOption.text = "لم تبدأ بعد ⏰";
+            statusSelect.appendChild(newOption);
+        }
+    });
+
+    // 3️⃣ تحسين معالجة البيانات لدعم الحالة الجديدة "not_started" عند الحفظ والرفع
+    const originalHandleFormSubmit = window.handleFormSubmit;
+    if (typeof originalHandleFormSubmit === "function") {
+        window.handleFormSubmit = function() {
+            // التأكد من جلب القيمة الصحيحة لحالة المباراة قبل الحفظ
+            const statusInput = document.getElementById("m-status");
+            if (statusInput && statusInput.value === "today") {
+                statusInput.value = "not_started"; // توحيد المسمى مع الموقع الرئيسي ليعمل الفلتر بدقة
+            }
+            originalHandleFormSubmit();
+        };
+    }
+</script>
+<style>
+    /* تصميم النافذة المنبثقة الشفافة والفاخرة */
+    .pitch-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(5, 8, 20, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .pitch-modal-content {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 550px;
+        padding: 25px;
+        box-shadow: 0 0 30px rgba(0, 255, 135, 0.2);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding-bottom: 10px;
+    }
+    .modal-header h3 { color: #00ff87; font-weight: 900; font-size: 1.2rem; }
+    
+    /* تصميم حقول المراكز الرياضية */
+    .center-row {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+    }
+    .center-label {
+        font-size: 0.85rem;
+        color: #00ff87;
+        font-weight: 700;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .center-row input {
+        width: 100%;
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 10px;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.9rem;
+        outline: none;
+    }
+    .center-row input:focus { border-color: #00ff87; }
+</style>
+
+<div id="lineupModal" class="pitch-modal">
+    <div class="pitch-modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-users-gear"></i> إدخال تشكيلة المباراة</h3>
+            <button class="btn" style="padding:5px 10px; color:#ff4757;" onclick="closeLineupModal()">إغلاق ✕</button>
+        </div>
+        
+        <div class="center-row">
+            <span class="center-label">🧤 حارس المرمى (لاعب واحد)</span>
+            <input type="text" id="pos-gk" placeholder="مثال: محمد الشناوي">
+        </div>
+        <div class="center-row">
+            <span class="center-label">🛡️ خط الدفاع (افصل بفاصلة بين الـ 4 لاعبين)</span>
+            <input type="text" id="pos-def" placeholder="مثال: حجازي, عبدالمنعم, هاني, حمدي">
+        </div>
+        <div class="center-row">
+            <span class="center-label">⚙️ خط الوسط (افصل بفاصلة بين الـ 3 لاعبين)</span>
+            <input type="text" id="pos-mid" placeholder="مثال: حمدي فتحي, إمام عاشور, زيزو">
+        </div>
+        <div class="center-row">
+            <span class="center-label">🔥 خط الهجوم (افصل بفاصلة بين الـ 3 لاعبين)</span>
+            <input type="text" id="pos-att" placeholder="مثال: محمد صلاح, تريزيجيه, مصطفى محمد">
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;" onclick="saveLineupFromModal()">
+            <i class="fa-solid fa-cloud-arrow-up"></i> رفع وتثبيت التشكيلة بالترتيب
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // البحث عن مكان وضع الزر العادي الجديد للتشكيلة داخل فورم إضافة المباراة
+        const mUrlInput = document.getElementById("m-url") || document.querySelector("input[placeholder*='رابط بث']");
+        if (mUrlInput) {
+            const container = mUrlInput.closest(".form-group") || mUrlInput.parentElement;
+            
+            // إنشاء الزر الشفاف والاحترافي الجديد
+            const btnWrapper = document.createElement("div");
+            btnWrapper.style.cssText = "grid-column: span 2; margin-top: 15px;";
+            btnWrapper.innerHTML = `
+                <label style="color:#00ff87; font-weight:700; font-size:0.9rem; display:block; margin-bottom:8px;">إدارة اللاعبين والخطط</label>
+                <button type="button" class="btn" style="background:rgba(0, 255, 135, 0.1); border:1px solid #00ff87; color:#fff; width:100%; justify-content:center; padding:12px;" onclick="openLineupModal()">
+                    <i class="fa-solid fa-users-rectangle" style="color:#00ff87"></i> اضغط هنا لفتح قائمة توزيع تشكيلة المباراة
+                </button>
+                <input type="hidden" id="m-lineup"> `;
+            container.insertAdjacentElement('afterend', btnWrapper);
+        }
+    });
+
+    function openLineupModal() {
+        // إذا كنا نقوم بتعديل مباراة حالية، نقوم بفك النص القديم وتوزيعه في المربعات
+        const currentLineup = document.getElementById("m-lineup").value;
+        if(currentLineup) {
+            const arr = currentLineup.split(',').map(p => p.trim());
+            document.getElementById("pos-gk").value = arr[0] || '';
+            document.getElementById("pos-def").value = arr.slice(1, 5).join(', ') || '';
+            document.getElementById("pos-mid").value = arr.slice(5, 8).join(', ') || '';
+            document.getElementById("pos-att").value = arr.slice(8, 11).join(', ') || '';
+        } else {
+            document.getElementById("pos-gk").value = '';
+            document.getElementById("pos-def").value = '';
+            document.getElementById("pos-mid").value = '';
+            document.getElementById("pos-att").value = '';
+        }
+        document.getElementById("lineupModal").style.display = "flex";
+    }
+
+    function closeLineupModal() {
+        document.getElementById("lineupModal").style.display = "none";
+    }
+
+    function saveLineupFromModal() {
+        const gk = document.getElementById("pos-gk").value.trim();
+        const def = document.getElementById("pos-def").value.trim();
+        const mid = document.getElementById("pos-mid").value.trim();
+        const att = document.getElementById("pos-att").value.trim();
+
+        if(!gk) return alert("يرجى إدخال اسم حارس المرمى على الأقل!");
+
+        // تجميع كل المدخلات في سطر واحد بالترتيب السليم مفصول بفاصلة ليقرأه الموقع الرئيسي
+        const finalArray = [gk];
+        if(def) finalArray.push(...def.split(',').map(p => p.trim()));
+        if(mid) finalArray.push(...mid.split(',').map(p => p.trim()));
+        if(att) finalArray.push(...att.split(',').map(p => p.trim()));
+
+        document.getElementById("m-lineup").value = finalArray.join(', ');
+        
+        closeLineupModal();
+        alert("✔️ تم تجميع خطة وتشكيلة المباراة بنجاح، جاهزة للحفظ النهائي!");
+    }
+
+    // ربط الحقل المخفي بدوال الحفظ الأصلية للوحة التحكم
+    const backupHandleFormSubmit = window.handleFormSubmit;
+    window.handleFormSubmit = function() {
+        const activeId = document.getElementById('edit-id') ? document.getElementById('edit-id').value : '';
+        const lineupVal = document.getElementById("m-lineup") ? document.getElementById("m-lineup").value : '';
+        
+        if (activeId && window.database && window.database.matches) {
+            const matchObj = window.database.matches.find(m => String(m.id) === String(activeId));
+            if (matchObj) matchObj.lineup = lineupVal;
+        } else if (!activeId && window.database && window.database.matches) {
+            setTimeout(() => {
+                if(window.database.matches.length > 0) {
+                    window.database.matches[window.database.matches.length - 1].lineup = lineupVal;
+                }
+            }, 15);
+        }
+        if (typeof backupHandleFormSubmit === "function") backupHandleFormSubmit();
+    };
+
+    const backupEditItem = window.editItem;
+    window.editItem = function(type, id) {
+        if (typeof backupEditItem === "function") backupEditItem(type, id);
+        if (type === 'match' && window.database && window.database.matches) {
+            const item = window.database.matches.find(m => String(m.id) === String(id));
+            if (item && document.getElementById('m-lineup')) {
+                document.getElementById('m-lineup').value = item.lineup || '';
+            }
+        }
+    };
+</script>
 </body>
 </html>

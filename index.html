@@ -1698,5 +1698,129 @@
         homeView.style.display = "block";
     };
 </script>
+<style>
+    /* نظام التبويب والتحكم ليكون فوق المشغل والملعب */
+    .premium-controls-bar {
+        display: flex; gap: 8px; margin-bottom: 15px; background: rgba(255, 255, 255, 0.03);
+        padding: 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap;
+    }
+    .p-ctrl-btn {
+        background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.06);
+        color: #fff; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+        font-weight: 600; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    }
+    .p-ctrl-btn.active, .p-ctrl-btn:hover { background: #00ff87; color: #000; font-weight: 700; box-shadow: 0 0 15px rgba(0,255,135,0.4); border-color: #00ff87; }
+    .p-ctrl-btn-back { background: #ff4757 !important; color: #fff !important; margin-right: auto; border: none; }
+
+    /* مظهر الملعب ثلاثي الأبعاد الاحترافي */
+    .visual-football-pitch {
+        background: linear-gradient(135px, #113825, #1b5337);
+        background-image: radial-gradient(circle at 50% 50%, transparent 60px, rgba(255,255,255,0.12) 61px, transparent 62px), linear-gradient(to bottom, transparent 49%, rgba(255,255,255,0.12) 50%, transparent 51%);
+        position: relative; width: 100%; height: 380px; border: 2px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.5); margin-bottom: 20px;
+    }
+    .v-pitch-lineup { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 10px; }
+    .v-pitch-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+    .v-pitch-player { display: flex; flex-direction: column; align-items: center; }
+    .v-player-shirt { width: 32px; height: 32px; background: #e11d48; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem; border: 2px solid #fff; }
+    .v-player-name { background: rgba(0, 0, 0, 0.85); color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-top: 4px; white-space: nowrap; }
+    
+    .status-badge-notstarted { background: rgba(59, 130, 246, 0.15) !important; color: #3b82f6 !important; border: 1px solid rgba(59,130,246,0.3) !important; }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1️⃣ حقن تبويب "لم تبدأ ⏰" في القائمة العلوية لصفحتك الأصلية تلقائياً
+        const tabsBox = document.querySelector(".categories-flex") || document.querySelector(".nav-tabs");
+        if(tabsBox && !tabsBox.innerHTML.includes("not_started")) {
+            tabsBox.insertAdjacentHTML('beforeend', `<button class="category-btn" onclick="filterCategory('not_started')">لم تبدأ ⏰</button>`);
+        }
+
+        // 2️⃣ إزالة وحذف فوتر الحقوق والروابط القديمة من الصفحة نهائياً للحماية
+        const badWords = ["سياسة الخصوصية", "Privacy Policy", "شروط الخدمة", "DMCA", "حقوق الملكية"];
+        document.querySelectorAll("footer, div, p, a").forEach(el => {
+            badWords.forEach(w => { el.innerText && el.innerText.includes(w) && el.remove(); });
+        });
+    });
+
+    // 3️⃣ إعادة بناء وتطوير محرك تشغيل المشغل الأصلي ليدعم ظهور الأزرار بالأعلى والملعب
+    window.bootLivePlayer = function(matchId) {
+        const match = localDatabase.matches.find(m => String(m.id) === String(matchId));
+        if(!match) return;
+
+        // إخفاء الواجهة الرئيسية الأصلية للموقع
+        const mainScreen = document.getElementById("home-screen") || document.querySelector(".main-content") || document.querySelector(".matches-grid").parentElement;
+        mainScreen.style.display = "none";
+
+        // إنشاء أو جلب حاوية العرض المتطورة الشفافة
+        let customView = document.getElementById("premium-player-view");
+        if(!customView) {
+            customView = document.createElement("div");
+            customView.id = "premium-player-view";
+            customView.className = "main-content";
+            mainScreen.parentElement.appendChild(customView);
+        }
+        customView.style.display = "block";
+
+        // بناء الهيكل: الأزرار والتبويبات بالأعلى -> المشغل والملعب بالأسفل
+        customView.innerHTML = `
+            <div class="premium-controls-bar">
+                <button id="p-nav-stream" class="p-ctrl-btn active" onclick="switchPremiumTabs('stream')"><i class="fa-solid fa-play"></i> شاشة البث</button>
+                <button id="p-nav-pitch" class="p-ctrl-btn" onclick="switchPremiumTabs('pitch')"><i class="fa-solid fa-users-viewfinder"></i> تشكيلة الملعب</button>
+                <button class="p-ctrl-btn p-ctrl-btn-back" onclick="exitPremiumPlayer()"><i class="fa-solid fa-arrow-left"></i> العودة للمباريات</button>
+            </div>
+
+            <div id="p-box-stream" style="width:100%; border-radius:16px; overflow:hidden; background:#000; border:1px solid rgba(255,255,255,0.1); margin-bottom:20px;">
+                <iframe src="${match.url || ''}" style="width:100%; aspect-ratio:16/9; border:none; display:block;" allowfullscreen="true" scrolling="no" allow="autoplay; encrypted-media"></iframe>
+            </div>
+
+            <div id="p-box-pitch" class="visual-football-pitch" style="display:none;">
+                <div class="v-pitch-lineup" id="v-pitch-target"></div>
+            </div>
+        `;
+
+        // توزيع الأسماء ديناميكياً داخل خطوط عرض الملعب
+        const pitchTarget = document.getElementById("v-pitch-target");
+        if(!match.lineup) {
+            pitchTarget.innerHTML = `<p style="text-align:center; color:#94a3b8; padding-top:160px; font-size:0.9rem;">التشكيلة الرسمية للمباراة لم تصدر بعد ⏰</p>`;
+        } else {
+            const arr = match.lineup.split(',').map(p => p.trim());
+            let html = `<div class="v-pitch-row"><div class="v-pitch-player"><div class="v-player-shirt">1</div><div class="v-player-name">${arr[0] || 'الشناوي'}</div></div></div>`;
+            if(arr[1]) html += `<div class="v-pitch-row">` + arr.slice(1,5).map((p,i)=>`<div class="v-pitch-player"><div class="v-player-shirt">${i+2}</div><div class="v-player-name">${p}</div></div>`).join('') + `</div>`;
+            if(arr[5]) html += `<div class="v-pitch-row">` + arr.slice(5,8).map((p,i)=>`<div class="v-pitch-player"><div class="v-player-shirt">${i+6}</div><div class="v-player-name">${p}</div></div>`).join('') + `</div>`;
+            if(arr[8]) html += `<div class="v-pitch-row">` + arr.slice(8,11).map((p,i)=>`<div class="v-pitch-player"><div class="v-player-shirt">${i+9}</div><div class="v-player-name">${p}</div></div>`).join('') + `</div>`;
+            pitchTarget.innerHTML = html;
+        }
+    };
+
+    window.switchPremiumTabs = function(target) {
+        document.getElementById("p-box-stream").style.display = target === 'stream' ? 'block' : 'none';
+        document.getElementById("p-box-pitch").style.display = target === 'pitch' ? 'block' : 'none';
+        document.getElementById("p-nav-stream").classList.toggle("active", target === 'stream');
+        document.getElementById("p-nav-pitch").classList.toggle("active", target === 'pitch');
+    };
+
+    window.exitPremiumPlayer = function() {
+        document.getElementById("premium-player-view").style.display = "none";
+        document.getElementById("p-box-stream").querySelector("iframe").src = ""; 
+        const mainScreen = document.getElementById("home-screen") || document.querySelector(".main-content") || document.querySelector(".matches-grid").parentElement;
+        mainScreen.style.display = "block";
+    };
+
+    // تحسين دالة الفلترة الأصلية لتدعم كروت "لم تبدأ بعد"
+    const originalRender = window.renderMatches;
+    if(typeof originalRender === 'function') {
+        const originalFilterCategory = window.filterCategory;
+        window.filterCategory = function(cat) {
+            if(typeof originalFilterCategory === 'function') originalFilterCategory(cat);
+            // تلوين زر الحالة الجديدة عند تفعيله
+            document.querySelectorAll(".category-btn").forEach(btn => {
+                if(btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(cat)) {
+                    document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                }
+            });
+        };
+    }
+</script>
 </body>
 </html>
